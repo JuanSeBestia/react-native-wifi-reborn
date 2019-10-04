@@ -1,6 +1,6 @@
 {
   "name": "react-native-wifi",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "A react-native implementation for viewing and connecting to Wifi networks on Android and iOS devices.",
   "main": "index.js",
   "scripts": {
@@ -17,15 +17,15 @@
   "author": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/blackdeve/react-native-wifi.git"
+    "url": "git+https://github.com/JuanSeBestia/react-native-wifi"
   },
   "peerDependencies": {
     "react-native": ">=0.13"
   },
   "dependencies": {},
   "bugs": {
-    "url": "https://github.com/blackdeve/react-native-wifi/issues"
+    "url": "https://github.com/JuanSeBestia/react-native-wifi/issues"
   },
-  "homepage": "https://github.com/blackdeve/react-native-wifi#readme",
+  "homepage": "https://github.com/JuanSeBestia/react-native-wifis#readme",
   "license": "ISC"
 }
