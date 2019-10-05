@@ -9,6 +9,10 @@
 
 `$ react-native link react-native-wifi`
 
+### [IOS] IMPORTANT NOTE:
+
+You need use enable Access WIFI Information, with correct profile 
+
 ### Manual installation
 
 
