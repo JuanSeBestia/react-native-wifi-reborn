@@ -227,22 +227,19 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	    conf.preSharedKey = "\"" + password + "\"";
 	    
 	    conf.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+		conf.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
 	    
-	    conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+		conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
 	    
 	    conf.status = WifiConfiguration.Status.ENABLED;
 	    
 	    conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
 	    conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
 	    
-	    conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
 	    
 	    conf.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
 	    conf.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
 	    
-	    conf.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-	    conf.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-
 		}	else if (capabilities.contains("WEP")) {
 			conf.wepKeys[0] = "\"" + password + "\"";
 			conf.wepTxKeyIndex = 0;
