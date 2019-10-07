@@ -38,7 +38,7 @@ const App = () => {
     }
 
     try {
-      const ssid = WifiManager.getCurrentWifiSSID();
+      const ssid = await WifiManager.getCurrentWifiSSID();
       setSsid(ssid);
       console.log('Your current connected wifi SSID is ' + ssid);
     } catch (error) {
