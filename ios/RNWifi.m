@@ -1,11 +1,49 @@
 #import "RNWifi.h"
 #import <NetworkExtension/NetworkExtension.h>
 #import <SystemConfiguration/CaptiveNetwork.h>
+#import <CoreLocation/CoreLocation.h>
+
 // If using official settings URL
 //#import <UIKit/UIKit.h>
 
+
+@interface WifiManager () <CLLocationManagerDelegate>
+@property (nonatomic,strong) CLLocationManager *locationManager;
+@end
 @implementation WifiManager
-  
+
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+      NSLog(@"RNWIFI:Init");
+          if (@available(iOS 13, *)) {
+              self.locationManager = [[CLLocationManager alloc] init];
+              self.locationManager.delegate = self;
+          }
+  }
+  return self;
+}
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    // TODO: implement signal
+    NSLog(@"RNWIFI:statechaged %d",[CLLocationManager authorizationStatus]);
+}
+
+- (BOOL) synchronousRequestPermission
+{
+    [self.locationManager requestWhenInUseAuthorization];
+    // TODO: implment signal with didChangeAuthorizationStatus
+    while([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
+        sleep(1);
+        NSLog(@"RNWIFI:Waiting request... current state:%d",[CLLocationManager authorizationStatus]);
+    }
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse){
+        return YES;
+    }
+    return NO;
+    
+}
+
 + (BOOL)requiresMainQueueSetup
 {
   return YES;
@@ -77,6 +115,18 @@ RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
 RCT_REMAP_METHOD(getCurrentWifiSSID,
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject) {
+    if (@available(iOS 13, *)) {
+        // for iOS 13, need permission of location
+        BOOL hasPermission = [self synchronousRequestPermission];
+        if(hasPermission){
+            NSLog(@"RNWIFI:Location Services enabled on iOS 13");
+        }
+        else{
+            //Location Services are available we will need software to ask to turn this On
+            //The user is SOL if they refuse to turn on Location Services
+            NSLog(@"RNWIFI:ERROR:Location Services not enabled");
+        }
+    }
     
     NSString *kSSID = (NSString*) kCNNetworkInfoKeySSID;
     
@@ -88,13 +138,14 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
             return;
         }
     }
-    
+    NSLog(@"RNWIFI:ERROR:Cannot detect SSID");
     reject(@"cannot_detect_ssid", @"Cannot detect SSID", nil);
 }
 
 - (NSDictionary*)constantsToExport {
+    // Officially better to use UIApplicationOpenSettingsURLString
     return @{
-             @"settingsURL": @"UIApplicationOpenSettingsURLString"
+             @"settingsURL": @"App-Prefs:root=WIFI"
              };
 }
 
