@@ -25,23 +25,23 @@
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-    // TODO: implement signal
-    NSLog(@"RNWIFI:statechaged %d",[CLLocationManager authorizationStatus]);
+    NSLog(@"RNWIFI:statechaged %d", status);
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"RNWIFI:authorizationStatus" object:nil userInfo:nil];
 }
 
-- (BOOL) synchronousRequestPermission
-{
-    [self.locationManager requestWhenInUseAuthorization];
-    // TODO: implment signal with didChangeAuthorizationStatus
-    while([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined){
-        sleep(1);
-        NSLog(@"RNWIFI:Waiting request... current state:%d",[CLLocationManager authorizationStatus]);
-    }
-    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse){
-        return YES;
-    }
-    return NO;
+- (NSString *) getWifiSSID {
+    NSLog(@"RNWIFI:getWifiSSID");
+    NSString *kSSID = (NSString*) kCNNetworkInfoKeySSID;
     
+    NSArray *ifs = (__bridge_transfer id)CNCopySupportedInterfaces();
+    for (NSString *ifnam in ifs) {
+        NSDictionary *info = (__bridge_transfer id)CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam);
+        if (info[kSSID]) {
+            return info[kSSID];
+        }
+    }
+    return nil;
 }
 
 + (BOOL)requiresMainQueueSetup
@@ -112,34 +112,39 @@ RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
     
 }
 
+
 RCT_REMAP_METHOD(getCurrentWifiSSID,
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject) {
+    
     if (@available(iOS 13, *)) {
-        // for iOS 13, need permission of location
-        BOOL hasPermission = [self synchronousRequestPermission];
-        if(hasPermission){
-            NSLog(@"RNWIFI:Location Services enabled on iOS 13");
-        }
-        else{
-            //Location Services are available we will need software to ask to turn this On
-            //The user is SOL if they refuse to turn on Location Services
-            NSLog(@"RNWIFI:ERROR:Location Services not enabled");
-        }
-    }
-    
-    NSString *kSSID = (NSString*) kCNNetworkInfoKeySSID;
-    
-    NSArray *ifs = (__bridge_transfer id)CNCopySupportedInterfaces();
-    for (NSString *ifnam in ifs) {
-        NSDictionary *info = (__bridge_transfer id)CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam);
-        if (info[kSSID]) {
-            resolve(info[kSSID]);
+        // need request Location permission
+        [self.locationManager requestWhenInUseAuthorization];
+        [[NSNotificationCenter defaultCenter] addObserverForName:@"RNWIFI:authorizationStatus" object:nil queue:nil usingBlock:^(NSNotification *note)
+        {
+            if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse |
+                [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways){
+                NSString *SSID = [self getWifiSSID];
+                if (SSID){
+                    resolve(SSID);
+                    return;
+                }
+                NSLog(@"RNWIFI:ERROR:Cannot detect SSID");
+                reject(@"cannot_detect_ssid", @"Cannot detect SSID", nil);
+            }else{
+                reject(@"ios_error", @"Permission not granted", nil);
+            }
+            
+        }];
+    }else{
+        NSString *SSID = [self getWifiSSID];
+        if (SSID){
+            resolve(SSID);
             return;
         }
+        NSLog(@"RNWIFI:ERROR:Cannot detect SSID");
+        reject(@"cannot_detect_ssid", @"Cannot detect SSID", nil);
     }
-    NSLog(@"RNWIFI:ERROR:Cannot detect SSID");
-    reject(@"cannot_detect_ssid", @"Cannot detect SSID", nil);
 }
 
 - (NSDictionary*)constantsToExport {
