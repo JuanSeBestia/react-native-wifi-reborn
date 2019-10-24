@@ -5,21 +5,9 @@ jobs:
       - image: 'circleci/node:latest'
     steps:
       - checkout
-      - checkout
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "example/AwesomeProject/package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+      - run: npm ci
 
-      - run: cd example/AwesomeProject/ && npm ci
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "example/AwesomeProject/package.json" }}
       - run:
           name: release
           command: npm run semantic-release || true
