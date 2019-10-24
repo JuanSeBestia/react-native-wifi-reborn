@@ -115,14 +115,15 @@ RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
 RCT_REMAP_METHOD(getCurrentWifiSSID,
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject) {
-    
-    if (@available(iOS 13, *)) {
+    BOOL hasLocationPermission = [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse ||
+    [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways;
+    if (@available(iOS 13, *) && hasLocationPermission == NO) {
         // Need request LocationPermission or HotSpot or have VPN connection
         // https://forums.developer.apple.com/thread/117371#364495
         [self.locationManager requestWhenInUseAuthorization];
         [[NSNotificationCenter defaultCenter] addObserverForName:@"RNWIFI:authorizationStatus" object:nil queue:nil usingBlock:^(NSNotification *note)
         {
-            if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse |
+            if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse ||
                 [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways){
                 NSString *SSID = [self getWifiSSID];
                 if (SSID){
