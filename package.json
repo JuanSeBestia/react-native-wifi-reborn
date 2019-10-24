@@ -30,6 +30,8 @@
   "homepage": "https://github.com/JuanSeBestia/react-native-wifi-reborn#readme",
   "license": "ISC",
   "devDependencies": {
+    "@semantic-release/changelog": "^3.0.4",
+    "@semantic-release/git": "^7.0.16",
     "semantic-release": "^15.13.27"
   }
 }
