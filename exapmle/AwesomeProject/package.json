@@ -11,7 +11,7 @@
   "dependencies": {
     "react": "16.8.1",
     "react-native": "0.61.2",
-    "react-native-wifi": "git+https://github.com/JuanSeBestia/react-native-wifi.git"
+    "react-native-wifi-reborn": "git+https://github.com/JuanSeBestia/react-native-wifi.git"
   },
   "devDependencies": {
     "@babel/core": "^7.5.0",

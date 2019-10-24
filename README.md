@@ -1,13 +1,15 @@
 
-# react-native-wifi
+# react-native-wifi-reborn
+
+This project is based on (https://github.com/robwalkerco/react-native-wifi)
 
 ## Getting started
 
-`$ npm install react-native-wifi --save`
+`$ npm install react-native-wifi-reborn --save`
 
-### Mostly automatic installation
+### Mostly automatic installation RN <0.59 
 
-`$ react-native link react-native-wifi`
+`$ react-native link react-native-wifi-reborn`
 
 ### [IOS] IMPORTANT NOTE:
 
@@ -34,18 +36,18 @@ You need put "Privacy - Location When In Use Usage Description" or "Privacy - Lo
   - Add `new RNWifiPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
   	```
-  	include ':react-native-wifi'
-  	project(':react-native-wifi').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-wifi/android')
+  	include ':react-native-wifi-reborn'
+  	project(':react-native-wifi-reborn').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-wifi/android')
   	```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
   	```
-      implementation project(':react-native-wifi')
+      implementation project(':react-native-wifi-reborn')
   	```
 
 
 ## Usage
 ```javascript
-import WifiManager from 'react-native-wifi';
+import WifiManager from 'react-native-wifi-reborn';
 
 WifiManager.connectToProtectedSSID(ssid, password, isWep)
 .then(() => {

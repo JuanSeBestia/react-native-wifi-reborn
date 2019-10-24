@@ -17,11 +17,13 @@ import {
 } from 'react-native';
 
 import {Header, Colors} from 'react-native/Libraries/NewAppScreen';
-import WifiManager from 'react-native-wifi';
+import WifiManager from 'react-native-wifi-reborn';
 
 const App = () => {
-  const [connected, setConneted] = useState({connected: false, ssid: ''});
+  const [connected, setConneted] = useState({connected: false, ssid: 'S4N'});
   const [ssid, setSsid] = useState('');
+  const password ="secret-secret";
+  const isWep = false;
 
   const wifi = async () => {
     try {
