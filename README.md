@@ -13,6 +13,10 @@
 
 You need use enable Access WIFI Information, with correct profile 
 
+#### [IOS 13 +] IMPORTANT NOTE:
+
+You need put "Privacy - Location When In Use Usage Description" or "Privacy - Location Always and When In Use Usage Description" in Settings -> info
+
 ### Manual installation
 
 
