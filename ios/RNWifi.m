@@ -31,7 +31,6 @@
 }
 
 - (NSString *) getWifiSSID {
-    NSLog(@"RNWIFI:getWifiSSID");
     NSString *kSSID = (NSString*) kCNNetworkInfoKeySSID;
     
     NSArray *ifs = (__bridge_transfer id)CNCopySupportedInterfaces();
@@ -118,7 +117,8 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
                  rejecter:(RCTPromiseRejectBlock)reject) {
     
     if (@available(iOS 13, *)) {
-        // need request Location permission
+        // Need request LocationPermission or HotSpot or have VPN connection
+        // https://forums.developer.apple.com/thread/117371#364495
         [self.locationManager requestWhenInUseAuthorization];
         [[NSNotificationCenter defaultCenter] addObserverForName:@"RNWIFI:authorizationStatus" object:nil queue:nil usingBlock:^(NSNotification *note)
         {
