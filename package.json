@@ -4,7 +4,8 @@
   "description": "A react-native implementation for viewing and connecting to Wifi networks on Android and iOS devices.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "semantic-release": "semantic-release"
   },
   "keywords": [
     "react",
@@ -17,7 +18,7 @@
   "author": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JuanSeBestia/react-native-wifi-reborn"
+    "url": "https://github.com/JuanSeBestia/react-native-wifi-reborn"
   },
   "peerDependencies": {
     "react-native": ">=0.13"
@@ -27,5 +28,8 @@
     "url": "https://github.com/JuanSeBestia/react-native-wifi-reborn/issues"
   },
   "homepage": "https://github.com/JuanSeBestia/react-native-wifi-reborn#readme",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "semantic-release": "^15.13.27"
+  }
 }
