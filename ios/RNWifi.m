@@ -9,6 +9,7 @@
 
 @interface WifiManager () <CLLocationManagerDelegate>
 @property (nonatomic,strong) CLLocationManager *locationManager;
+@property (nonatomic) BOOL solved;
 @end
 @implementation WifiManager
 
@@ -16,6 +17,7 @@
   self = [super init];
   if (self) {
       NSLog(@"RNWIFI:Init");
+      self.solved = YES;
           if (@available(iOS 13, *)) {
               self.locationManager = [[CLLocationManager alloc] init];
               self.locationManager.delegate = self;
@@ -121,21 +123,25 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
         // Need request LocationPermission or HotSpot or have VPN connection
         // https://forums.developer.apple.com/thread/117371#364495
         [self.locationManager requestWhenInUseAuthorization];
+        self.solved = NO;
         [[NSNotificationCenter defaultCenter] addObserverForName:@"RNWIFI:authorizationStatus" object:nil queue:nil usingBlock:^(NSNotification *note)
         {
-            if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse ||
-                [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways){
-                NSString *SSID = [self getWifiSSID];
-                if (SSID){
-                    resolve(SSID);
-                    return;
+            if(self.solved == NO){
+                if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse ||
+                    [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways){
+                    NSString *SSID = [self getWifiSSID];
+                    if (SSID){
+                        resolve(SSID);
+                        return;
+                    }
+                    NSLog(@"RNWIFI:ERROR:Cannot detect SSID");
+                    reject(@"cannot_detect_ssid", @"Cannot detect SSID", nil);
+                }else{
+                    reject(@"ios_error", @"Permission not granted", nil);
                 }
-                NSLog(@"RNWIFI:ERROR:Cannot detect SSID");
-                reject(@"cannot_detect_ssid", @"Cannot detect SSID", nil);
-            }else{
-                reject(@"ios_error", @"Permission not granted", nil);
             }
-            
+            // Avoid call when live-reloaded app
+            self.solved = YES;
         }];
     }else{
         NSString *SSID = [self getWifiSSID];
