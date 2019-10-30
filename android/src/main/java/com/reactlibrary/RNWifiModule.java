@@ -2,15 +2,6 @@ package com.reactlibrary;
 
 import com.facebook.react.uimanager.*;
 import com.facebook.react.bridge.*;
-import com.facebook.systrace.Systrace;
-import com.facebook.systrace.SystraceMessage;
-// import com.facebook.react.LifecycleState;
-import com.facebook.react.ReactInstanceManager;
-import com.facebook.react.ReactRootView;
-import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.facebook.react.shell.MainReactPackage;
-import com.facebook.soloader.SoLoader;
 
 import android.provider.Settings;
 import android.net.wifi.ScanResult;
@@ -28,10 +19,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
 import android.os.Build;
-import android.os.Bundle;
-import android.widget.Toast;
 import java.util.List;
-import java.lang.Thread;
 
 import org.json.JSONArray;
 import org.json.JSONException;
