@@ -254,7 +254,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		if ( updateNetwork == -1 ) {
       updateNetwork = wifi.addNetwork(conf);
       wifi.saveConfiguration();
-		};
+		}
 
     if ( updateNetwork == -1 ) {
       return false;
@@ -263,12 +263,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     boolean disconnect = wifi.disconnect();
 		if ( !disconnect ) {
 			return false;
-		};
+		}
 
 		boolean enableNetwork = wifi.enableNetwork(updateNetwork, true);
 		if ( !enableNetwork ) {
 			return false;
-		};
+		}
 
 		return true;
 	}
