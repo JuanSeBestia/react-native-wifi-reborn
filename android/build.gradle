@@ -1,3 +1,15 @@
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.1'
+    }
+}
+
 apply plugin: 'com.android.library'
 
 def safeExtGet(prop, fallback) {
@@ -22,7 +34,16 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url "$projectDir/../node_modules/react-native/android"
+    }
+    google()
+    jcenter()
+}
+
 dependencies {
+    //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
 }
   
