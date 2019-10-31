@@ -3,27 +3,49 @@
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 
-This project is based on (https://github.com/robwalkerco/react-native-wifi)
+This project is based on the no longer maintained https://github.com/robwalkerco/react-native-wifi.
 
 
 ## Getting started
 
 `$ npm install react-native-wifi-reborn --save`
 
-### Mostly automatic installation RN <0.59 
-
-`$ react-native link react-native-wifi-reborn`
-
-### [IOS] IMPORTANT NOTE:
+### iOS setup
 
 You need use enable Access WIFI Information, with correct profile 
 
-#### [IOS 13 +] IMPORTANT NOTE:
+#### iOS 13
 
 You need put "Privacy - Location When In Use Usage Description" or "Privacy - Location Always and When In Use Usage Description" in Settings -> info
 
-### Manual installation
+### Autolinking (React Native 60+)
 
+This library is correctly autolinked on React Native 60+ 🎉.
+
+#### When using Wix React Native Navigation
+
+##### Android
+
+While the library is included (via settings.gradle) and added (via build.gradle), you still need to manually added to your MainApplication.
+
+```java
+import com.reactlibrary.RNWifiPackage;
+
+public class MainApplication extends NavigationApplication {
+@Override
+	public List<ReactPackage> createAdditionalReactPackages() {
+	return Arrays.asList(
+		...,
+		new RNWifiPackage());
+	}
+}
+```
+
+### React Native Link (for React Native 0.59 and below)
+
+`$ react-native link react-native-wifi-reborn`
+
+### Manual linking
 
 #### iOS
 
@@ -47,7 +69,6 @@ You need put "Privacy - Location When In Use Usage Description" or "Privacy - Lo
       implementation project(':react-native-wifi-reborn')
   	```
 
-
 ## Usage
 ```javascript
 import WifiManager from 'react-native-wifi-reborn';
@@ -66,4 +87,7 @@ WifiManager.getCurrentWifiSSID()
 	console.log('Cannot get current SSID!')
 })
 ```
-  
+
+## Documentation
+
+Todo.
