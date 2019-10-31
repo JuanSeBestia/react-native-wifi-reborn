@@ -110,6 +110,9 @@ Used on iOS. FIXME: why?
 
 #### Errors:
 * `notInRange`: The WIFI network is not currently in range.
+* `addOrUpdateFailed`: Could not add or update the network configuration.
+* `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
+* `enableNetworkFailed`: Could not connect to network.
 
 ### getCurrentWifiSSID
 ### forceWifiUsage(useWifi: bool) [Android]

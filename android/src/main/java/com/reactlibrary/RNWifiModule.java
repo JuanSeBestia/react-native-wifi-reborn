@@ -167,8 +167,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		wifi.setWifiEnabled(enabled);
 	}
 
-	//
-
 	/**
 	 * Send the SSID and password of a Wifi network into this to connect to the network.
 	 * Example:  wifi.findAndConnect(ssid, password);
@@ -183,7 +181,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	@ReactMethod
 	public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
 		final List <ScanResult> results = wifi.getScanResults();
-		boolean connected = false;
 		for (ScanResult result: results) {
 			String resultString = "" + result.SSID;
 			if (SSID.equals(resultString)) {
@@ -193,6 +190,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
 		promise.reject("notInRange", String.format("Not in range of the provided SSID: %s ", SSID));
 	}
+
+
 
 	/**
 	 * Use this method to check if the device is currently connected to Wifi.
@@ -213,21 +212,21 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	/**
 	 * Method to connect to WIFI Network
 	 *
-	 * @param result
+	 * @param result wifi scan result
 	 * @param password
-	 * @param ssid
+	 * @param SSID
 	 * @return
 	 */
 	//
-	public Boolean connectTo(ScanResult result, String password, String ssid) {
+	void connectTo(final ScanResult result, final String SSID, final String password, final Promise promise) {
 		//Make new configuration
-		WifiConfiguration conf = new WifiConfiguration();
+		final WifiConfiguration conf = new WifiConfiguration();
 		
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        conf.SSID = ssid;
-    } else {
-        conf.SSID = "\"" + ssid + "\"";
-    }
+        	conf.SSID = SSID;
+		} else {
+			conf.SSID = "\"" + SSID + "\"";
+		}
 
 		String capabilities = result.capabilities;
 		
@@ -275,22 +274,28 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 			}
 		}
 
-    // If network not already in configured networks add new network
-		if ( updateNetwork == -1 ) {
-      updateNetwork = wifi.addNetwork(conf);
-      wifi.saveConfiguration();
+    	// If network not already in configured networks add new network
+		if (updateNetwork == -1) {
+			updateNetwork = wifi.addNetwork(conf);
+			wifi.saveConfiguration();
 		}
 
-    if ( updateNetwork == -1 ) {
-      return false;
-    }
+		if (updateNetwork == -1) {
+		  promise.reject("addOrUpdateFailed", String.format("Could not add or update network configuration with SSID %s.", SSID));
+		}
 
-    boolean disconnect = wifi.disconnect();
+    	boolean disconnect = wifi.disconnect();
 		if ( !disconnect ) {
-			return false;
+			promise.reject("disconnectFailed", String.format("Disconnecting network with SSID %s failed (before connect).", SSID));
 		}
 
-		return wifi.enableNetwork(updateNetwork, true);
+		final boolean enableNetwork = wifi.enableNetwork(updateNetwork, true);
+		if (enableNetwork) {
+			promise.resolve(null);
+			return;
+		}
+		promise.reject("connectNetworkFailed", String.format("Could not connect to network with SSID: %s", SSID));
+
 	}
 
 	/**
