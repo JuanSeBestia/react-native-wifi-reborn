@@ -104,5 +104,3 @@ If you want to use it, you need to add the `android.permission.WRITE_SETTINGS` p
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 </manifest>
 ```
-
-Todo.
