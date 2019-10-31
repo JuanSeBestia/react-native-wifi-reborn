@@ -177,7 +177,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	//
 
 	/**
-	 * Send the ssid and password of a Wifi network into this to connect to the network.
+	 * Send the SSID and password of a Wifi network into this to connect to the network.
 	 * Example:  wifi.findAndConnect(ssid, password);
 	 * After 10 seconds, a post telling you whether you are connected will pop up.
 	 * Callback returns true if ssid is in the range
@@ -245,8 +245,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
           capabilities.contains("WPA2") || 
           capabilities.contains("WPA/WPA2 PSK")) {
 
-	    // appropriate ciper is need to set according to security type used,
-	    // ifcase of not added it will not be able to connect
+	    // appropriate cipher is need to set according to security type used,
+	    // if not added it will not be able to connect
 	    conf.preSharedKey = "\"" + password + "\"";
 	    
 	    conf.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
@@ -273,7 +273,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 			conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
 		}
 
-		//Remove the existing configuration for this netwrok
+		//Remove the existing configuration for this network
 		List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
 
 		int updateNetwork = -1;
@@ -317,7 +317,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	}
 
 	/**
-	 * This method will return current ssid
+	 * This method will return current SSID
 	 *
 	 * @param promise
 	 */
