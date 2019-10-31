@@ -19,6 +19,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
 import android.os.Build;
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 import org.json.JSONArray;
@@ -57,20 +59,14 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 				JSONObject wifiObject = new JSONObject();
 				if(!result.SSID.equals("")){
 					try {
-            wifiObject.put("SSID", result.SSID);
-            wifiObject.put("BSSID", result.BSSID);
-            wifiObject.put("capabilities", result.capabilities);
-            wifiObject.put("frequency", result.frequency);
-            wifiObject.put("level", result.level);
-            wifiObject.put("timestamp", result.timestamp);
-            //Other fields not added
-            //wifiObject.put("operatorFriendlyName", result.operatorFriendlyName);
-            //wifiObject.put("venueName", result.venueName);
-            //wifiObject.put("centerFreq0", result.centerFreq0);
-            //wifiObject.put("centerFreq1", result.centerFreq1);
-            //wifiObject.put("channelWidth", result.channelWidth);
+						wifiObject.put("SSID", result.SSID);
+						wifiObject.put("BSSID", result.BSSID);
+						wifiObject.put("capabilities", result.capabilities);
+						wifiObject.put("frequency", result.frequency);
+						wifiObject.put("level", result.level);
+						wifiObject.put("timestamp", result.timestamp);
 					} catch (JSONException e) {
-          	errorCallback.invoke(e.getMessage());
+          				errorCallback.invoke(e.getMessage());
 					}
 					wifiArray.put(wifiObject);
 				}
@@ -126,15 +122,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                     manager.requestNetwork(builder.build(), new ConnectivityManager.NetworkCallback() {
                         @Override
                         public void onAvailable(Network network) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            // FIXME: should this be try catched?
+                        	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 manager.bindProcessToNetwork(network);
                             } else {
                                 //This method was deprecated in API level 23
                                 ConnectivityManager.setProcessDefaultNetwork(network);
-                            }
-                            try {
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
                             manager.unregisterNetworkCallback(this);
                         }
@@ -182,26 +175,23 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	 * After 10 seconds, a post telling you whether you are connected will pop up.
 	 * Callback returns true if ssid is in the range
 	 *
-	 * @param ssid
-	 * @param password
-	 * @param isWep
+	 * @param SSID name of the network to connect with
+	 * @param password password of the network to connect with
+	 * @param isWep required for iOS
 	 * @param promise
 	 */
 	@ReactMethod
-	public void connectToProtectedSSID(String ssid, String password, Boolean isWep, Promise promise) {
-		List < ScanResult > results = wifi.getScanResults();
+	public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
+		final List <ScanResult> results = wifi.getScanResults();
 		boolean connected = false;
 		for (ScanResult result: results) {
 			String resultString = "" + result.SSID;
-			if (ssid.equals(resultString)) {
-				connected = connectTo(result, password, ssid);
+			if (SSID.equals(resultString)) {
+				connectTo(result, SSID, password, promise);
 			}
 		}
-		if (connected) {
-			promise.resolve(true);
-		} else {
-			promise.reject("Can't connect to wifi!", "Can't connect to wifi!");
-		}
+
+		promise.reject("notInRange", String.format("Not in range of the provided SSID: %s ", SSID));
 	}
 
 	/**
@@ -300,12 +290,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 			return false;
 		}
 
-		boolean enableNetwork = wifi.enableNetwork(updateNetwork, true);
-		if ( !enableNetwork ) {
-			return false;
-		}
-
-		return true;
+		return wifi.enableNetwork(updateNetwork, true);
 	}
 
 	/**
