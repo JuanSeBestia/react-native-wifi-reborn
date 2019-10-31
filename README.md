@@ -97,7 +97,7 @@ This work is in progress.
 ### forceWifiUsage(useWifi: bool) [Android]
 
 Method to force wifi usage if the user needs to send requests via wifi if it does not have internet connection.
-If you want to use it, you need to add the zzz permission to your AndroidManifest.xml.
+If you want to use it, you need to add the `android.permission.WRITE_SETTINGS` permission to your AndroidManifest.xml.
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
