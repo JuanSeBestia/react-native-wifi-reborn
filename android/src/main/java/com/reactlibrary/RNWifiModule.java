@@ -41,7 +41,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		return "WifiManager";
 	}
 
-	//Method to load wifi list into string via Callback. Returns a stringified JSONArray
+	/**
+	 * Method to load wifi list into string via Callback. Returns a stringified JSONArray
+	 *
+	 * @param successCallback
+	 * @param errorCallback
+	 */
 	@ReactMethod
 	public void loadWifiList(Callback successCallback, Callback errorCallback) {
 		try {
@@ -76,14 +81,19 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		}
 	}
 
-	//Method to force wifi usage if the user needs to send requests via wifi
-	//if it does not have internet connection. Useful for IoT applications, when
-	//the app needs to communicate and send requests to a device that have no 
-	//internet connection via wifi.
+	//
 
-	//Receives a boolean to enable forceWifiUsage if true, and disable if false.
-	//Is important to enable only when communicating with the device via wifi 
-	//and remember to disable it when disconnecting from device.
+	/**
+	 * Method to force wifi usage if the user needs to send requests via wifi
+	 * if it does not have internet connection. Useful for IoT applications, when
+	 * the app needs to communicate and send requests to a device that have no
+	 * internet connection via wifi.
+	 *
+	 * Receives a boolean to enable forceWifiUsage if true, and disable if false.
+	 * Is important to enable only when communicating with the device via wifi
+	 * and remember to disable it when disconnecting from device.
+	 * @param useWifi
+	 */
 	@ReactMethod
 	public void forceWifiUsage(boolean useWifi) {
         boolean canWriteFlag = false;
@@ -101,7 +111,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
                         context.startActivity(intent);
                     }
-
                 }
 
 
@@ -145,22 +154,39 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         }
     }
 
-	//Method to check if wifi is enabled
+	/**
+	 * Method to check if wifi is enabled
+	 *
+	 * @param isEnabled
+	 */
 	@ReactMethod
 	public void isEnabled(Callback isEnabled) {
 		isEnabled.invoke(wifi.isWifiEnabled());
 	}
 
-	//Method to connect/disconnect wifi service
+	/**
+	 * Method to connect/disconnect wifi service
+	 *
+	 * @param enabled
+	 */
 	@ReactMethod
 	public void setEnabled(Boolean enabled) {
 		wifi.setWifiEnabled(enabled);
 	}
 
-	//Send the ssid and password of a Wifi network into this to connect to the network.
-	//Example:  wifi.findAndConnect(ssid, password);
-	//After 10 seconds, a post telling you whether you are connected will pop up.
-	//Callback returns true if ssid is in the range
+	//
+
+	/**
+	 * Send the ssid and password of a Wifi network into this to connect to the network.
+	 * Example:  wifi.findAndConnect(ssid, password);
+	 * After 10 seconds, a post telling you whether you are connected will pop up.
+	 * Callback returns true if ssid is in the range
+	 *
+	 * @param ssid
+	 * @param password
+	 * @param isWep
+	 * @param promise
+	 */
 	@ReactMethod
 	public void connectToProtectedSSID(String ssid, String password, Boolean isWep, Promise promise) {
 		List < ScanResult > results = wifi.getScanResults();
@@ -178,7 +204,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		}
 	}
 
-	//Use this method to check if the device is currently connected to Wifi.
+	/**
+	 * Use this method to check if the device is currently connected to Wifi.
+	 *
+	 * @param connectionStatusResult
+	 */
 	@ReactMethod
 	public void connectionStatus(Callback connectionStatusResult) {
 		ConnectivityManager connManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -190,7 +220,15 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		}
 	}
 
-	//Method to connect to WIFI Network
+	/**
+	 * Method to connect to WIFI Network
+	 *
+	 * @param result
+	 * @param password
+	 * @param ssid
+	 * @return
+	 */
+	//
 	public Boolean connectTo(ScanResult result, String password, String ssid) {
 		//Make new configuration
 		WifiConfiguration conf = new WifiConfiguration();
@@ -270,13 +308,19 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		return true;
 	}
 
-	//Disconnect current Wifi.
+	/**
+	 * Disconnect current Wifi.
+	 */
 	@ReactMethod
 	public void disconnect() {
 		wifi.disconnect();
 	}
 
-	//This method will return current ssid
+	/**
+	 * This method will return current ssid
+	 *
+	 * @param promise
+	 */
 	@ReactMethod
 	public void getCurrentWifiSSID(final Promise promise) {
 		WifiInfo info = wifi.getConnectionInfo();
@@ -290,7 +334,10 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		promise.resolve(ssid);
 	}
 
-	//This method will return the basic service set identifier (BSSID) of the current access point
+	/**]
+	 * This method will return the basic service set identifier (BSSID) of the current access point
+	 * @param callback
+	 */
 	@ReactMethod
 	public void getBSSID(final Callback callback) {
 		WifiInfo info = wifi.getConnectionInfo();
@@ -300,14 +347,22 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		callback.invoke(bssid.toUpperCase());
 	}
 
-	//This method will return current wifi signal strength
+	/**
+	 * This method will return current wifi signal strength
+	 *
+	 * @param callback
+	 */
 	@ReactMethod
 	public void getCurrentSignalStrength(final Callback callback) {
 		int linkSpeed = wifi.getConnectionInfo().getRssi();
 		callback.invoke(linkSpeed);
 	}
 
-	//This method will return current wifi frequency
+	/**
+	 * This method will return current wifi frequency
+	 *
+	 * @param callback
+	 */
 	@ReactMethod
 	public void getFrequency(final Callback callback) {
 		WifiInfo info = wifi.getConnectionInfo();
@@ -315,7 +370,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		callback.invoke(frequency);
 	}
 
-	//This method will return current IP
+	/**
+	 * This method will return current IP
+	 *
+	 * @param callback
+	 */
 	@ReactMethod
 	public void getIP(final Callback callback) {
 		WifiInfo info = wifi.getConnectionInfo();
@@ -323,7 +382,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		callback.invoke(stringip);
 	}
 
-	//This method will remove the wifi network as per the passed SSID from the device list
+	/**
+	 * This method will remove the wifi network as per the passed SSID from the device list
+	 *
+	 * @param ssid
+	 * @param callback
+	 */
 	@ReactMethod
 	public void isRemoveWifiNetwork(String ssid, final Callback callback) {
     List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
@@ -339,7 +403,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		callback.invoke(false);
 	}
 
-	// This method is similar to `loadWifiList` but it forcefully starts the wifi scanning on android and in the callback fetches the list
+	/**
+	 * This method is similar to `loadWifiList` but it forcefully starts the wifi scanning on android and in the callback fetches the list
+	 *
+	 * @param successCallback
+	 * @param errorCallback
+	 */
 	@ReactMethod
 	public void reScanAndLoadWifiList(Callback successCallback, Callback errorCallback) {
 		WifiReceiver receiverWifi = new WifiReceiver(wifi, successCallback, errorCallback);
@@ -347,7 +416,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     wifi.startScan();
 	}
 
-	public static String longToIP(int longIp){
+	static String longToIP(int longIp){
 		StringBuffer sb = new StringBuffer("");
 		String[] strip=new String[4];
 		strip[3]=String.valueOf((longIp >>> 24));
@@ -364,51 +433,51 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		return sb.toString();
 	}
 
+	//region WifiReceiver hey
+
 	class WifiReceiver extends BroadcastReceiver {
 
-			private Callback successCallback;
-			private Callback errorCallback;
-			private WifiManager wifi;
+		private Callback successCallback;
+		private Callback errorCallback;
+		private WifiManager wifi;
 
-			public WifiReceiver(final WifiManager wifi, Callback successCallback, Callback errorCallback) {
-				super();
-				this.successCallback = successCallback;
-				this.errorCallback = errorCallback;
-				this.wifi = wifi;
- 			}
+		public WifiReceiver(final WifiManager wifi, Callback successCallback, Callback errorCallback) {
+			super();
+			this.successCallback = successCallback;
+			this.errorCallback = errorCallback;
+			this.wifi = wifi;
+		}
 
-			// This method call when number of wifi connections changed
-      public void onReceive(Context c, Intent intent) {
-				// LocalBroadcastManager.getInstance(c).unregisterReceiver(this);
-				c.unregisterReceiver(this);
-				// getReactApplicationContext().getCurrentActivity().registerReceiver
-				try {
-					List < ScanResult > results = this.wifi.getScanResults();
-					JSONArray wifiArray = new JSONArray();
+		// This method call when number of wifi connections changed
+		public void onReceive(Context c, Intent intent) {
+			// LocalBroadcastManager.getInstance(c).unregisterReceiver(this);
+			c.unregisterReceiver(this);
+			// getReactApplicationContext().getCurrentActivity().registerReceiver
+			try {
+				List < ScanResult > results = this.wifi.getScanResults();
+				JSONArray wifiArray = new JSONArray();
 
-					for (ScanResult result: results) {
-						JSONObject wifiObject = new JSONObject();
-						if(!result.SSID.equals("")){
-							try {
-		            wifiObject.put("SSID", result.SSID);
-		            wifiObject.put("BSSID", result.BSSID);
-		            wifiObject.put("capabilities", result.capabilities);
-		            wifiObject.put("frequency", result.frequency);
-		            wifiObject.put("level", result.level);
-		            wifiObject.put("timestamp", result.timestamp);
-							} catch (JSONException e) {
-		          	this.errorCallback.invoke(e.getMessage());
-								return;
-							}
-							wifiArray.put(wifiObject);
+				for (ScanResult result: results) {
+					JSONObject wifiObject = new JSONObject();
+					if(!result.SSID.equals("")){
+						try {
+				wifiObject.put("SSID", result.SSID);
+				wifiObject.put("BSSID", result.BSSID);
+				wifiObject.put("capabilities", result.capabilities);
+				wifiObject.put("frequency", result.frequency);
+				wifiObject.put("level", result.level);
+				wifiObject.put("timestamp", result.timestamp);
+						} catch (JSONException e) {
+				this.errorCallback.invoke(e.getMessage());
+							return;
 						}
+						wifiArray.put(wifiObject);
 					}
-					this.successCallback.invoke(wifiArray.toString());
-					return;
-				} catch (IllegalViewOperationException e) {
-					this.errorCallback.invoke(e.getMessage());
-					return;
 				}
-      }
-  }
+				this.successCallback.invoke(wifiArray.toString());
+			} catch (IllegalViewOperationException e) {
+				this.errorCallback.invoke(e.getMessage());
+			}
+		}
+	}
 }
