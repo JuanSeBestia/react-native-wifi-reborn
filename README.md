@@ -90,4 +90,19 @@ WifiManager.getCurrentWifiSSID()
 
 ## Documentation
 
+This work is in progress.
+
+### connectToProtectedSSID
+### getCurrentWifiSSID
+### forceWifiUsage(useWifi: bool) [Android]
+
+Method to force wifi usage if the user needs to send requests via wifi if it does not have internet connection.
+If you want to use it, you need to add the zzz permission to your AndroidManifest.xml.
+
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+</manifest>
+```
+
 Todo.
