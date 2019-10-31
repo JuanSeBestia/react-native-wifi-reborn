@@ -3,27 +3,53 @@
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 
-This project is based on (https://github.com/robwalkerco/react-native-wifi)
+This project is based on the no longer maintained https://github.com/robwalkerco/react-native-wifi.
 
 
 ## Getting started
 
 `$ npm install react-native-wifi-reborn --save`
 
-### Mostly automatic installation RN <0.59 
-
-`$ react-native link react-native-wifi-reborn`
-
-### [IOS] IMPORTANT NOTE:
+### iOS setup
 
 You need use enable Access WIFI Information, with correct profile 
 
-#### [IOS 13 +] IMPORTANT NOTE:
+#### iOS 13
 
 You need put "Privacy - Location When In Use Usage Description" or "Privacy - Location Always and When In Use Usage Description" in Settings -> info
 
-### Manual installation
+### Android
 
+Location permission (a runtime permission starting Android 6) is required for some methods. FIXME: add resources / example.
+
+### Autolinking (React Native 60+)
+
+This library is correctly autolinked on React Native 60+ 🎉.
+
+#### When using Wix React Native Navigation
+
+##### Android
+
+While the library is included (via settings.gradle) and added (via build.gradle), you still need to manually added to your MainApplication.
+
+```java
+import com.reactlibrary.RNWifiPackage;
+
+public class MainApplication extends NavigationApplication {
+@Override
+	public List<ReactPackage> createAdditionalReactPackages() {
+	return Arrays.asList(
+		...,
+		new RNWifiPackage());
+	}
+}
+```
+
+### React Native Link (for React Native 0.59 and below)
+
+`$ react-native link react-native-wifi-reborn`
+
+### Manual linking
 
 #### iOS
 
@@ -47,7 +73,6 @@ You need put "Privacy - Location When In Use Usage Description" or "Privacy - Lo
       implementation project(':react-native-wifi-reborn')
   	```
 
-
 ## Usage
 ```javascript
 import WifiManager from 'react-native-wifi-reborn';
@@ -66,4 +91,41 @@ WifiManager.getCurrentWifiSSID()
 	console.log('Cannot get current SSID!')
 })
 ```
-  
+
+## API
+
+This work is in progress.
+
+### connectToProtectedSSID(SSID: string, password: string, isWep: boolean): Promise
+
+Returns a promise that resolves when connected or rejects with the error when it couldn't connect to the wifi network.
+
+#### SSID
+Type: `string`
+The SSID of the wifi network to connect with.
+
+#### password
+Type: `string`
+The password of the wifi network to connect with.
+
+#### isWeb
+Type: `boolean`
+Used on iOS. FIXME: why?
+
+#### Errors:
+* `notInRange`: The WIFI network is not currently in range.
+* `addOrUpdateFailed`: Could not add or update the network configuration.
+* `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
+* `connectNetworkFailed`: Could not connect to network.
+
+### getCurrentWifiSSID
+### forceWifiUsage(useWifi: bool) [Android]
+
+Method to force wifi usage if the user needs to send requests via wifi if it does not have internet connection.
+If you want to use it, you need to add the `android.permission.WRITE_SETTINGS` permission to your AndroidManifest.xml.
+
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+</manifest>
+```
