@@ -88,11 +88,29 @@ WifiManager.getCurrentWifiSSID()
 })
 ```
 
-## Documentation
+## API
 
 This work is in progress.
 
-### connectToProtectedSSID
+### connectToProtectedSSID(SSID: string, password: string, isWep: boolean): Promise
+
+Returns a promise that resolves when connected or rejects with the reason why it couldn't connect to the WIFI network.
+
+#### SSID
+Type: `string`
+The SSID of the wifi network to connect with.
+
+#### password
+Type: `string`
+The password of the wifi network to connect with.
+
+#### isWeb
+Type: `boolean`
+Used on iOS. FIXME: why?
+
+#### Errors:
+* `notInRange`: The WIFI network is not currently in range.
+
 ### getCurrentWifiSSID
 ### forceWifiUsage(useWifi: bool) [Android]
 
