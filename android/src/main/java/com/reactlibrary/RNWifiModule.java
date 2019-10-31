@@ -2,6 +2,7 @@ package com.reactlibrary;
 
 import com.facebook.react.uimanager.*;
 import com.facebook.react.bridge.*;
+import com.reactlibrary.utils.PermissionUtils;
 
 import android.provider.Settings;
 import android.net.wifi.ScanResult;
@@ -20,6 +21,7 @@ import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.List;
 
@@ -31,9 +33,18 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	private final WifiManager wifi;
 	private final ReactApplicationContext context;
 
+	private final static int ADD_NETWORK_FAILED = -1;
+	private enum WIFI_ENCRYPTION {
+		NONE,
+		WEP,
+		WPA2,
+		WPA3,
+	}
+
 	RNWifiModule(ReactApplicationContext context) {
 		super(context);
 
+		// TODO: get when needed
 		wifi = (WifiManager)context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 		this.context = context;
 	}
@@ -180,19 +191,144 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	 */
 	@ReactMethod
 	public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
-		final List <ScanResult> results = wifi.getScanResults();
-		for (ScanResult result: results) {
-			String resultString = "" + result.SSID;
-			if (SSID.equals(resultString)) {
-				connectTo(result, SSID, password, promise);
+		// do we have location permission?
+		final boolean isLocationGranted = PermissionUtils.isLocationGranted(context);
+
+		// FIXME: and what about if location is off?
+		if (isLocationGranted) {
+			final WIFI_ENCRYPTION encryption = findEncryptionByScanning(SSID);
+			if (encryption != null) {
+				promise.reject("notInRange", String.format("Not in range of the provided SSID: %s ", SSID));
+			}
+			connectTo(SSID, password, encryption, promise);
+		}
+
+		// TODO: make the wifi encryption configurable
+		connectTo(SSID, password, WIFI_ENCRYPTION.WPA2, promise);
+	}
+
+	//region Helpers
+
+	// @RequiresPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+	private @Nullable WIFI_ENCRYPTION findEncryptionByScanning(final String SSID) {
+		final List <ScanResult> scanResults = wifi.getScanResults();
+		for (ScanResult scanResult: scanResults) {
+			if (SSID.equals(scanResult.SSID)) {
+				String capabilities = scanResult.capabilities;
+
+				// TODO: WPA3
+				if (capabilities.contains("WPA") ||
+						capabilities.contains("WPA2") ||
+						capabilities.contains("WPA/WPA2 PSK")) {
+					return WIFI_ENCRYPTION.WPA2;
+				}
+				if (capabilities.contains("WEP")) {
+					return WIFI_ENCRYPTION.WEP;
+				}
+				return WIFI_ENCRYPTION.NONE;
 			}
 		}
 
-		promise.reject("notInRange", String.format("Not in range of the provided SSID: %s ", SSID));
+		return null;
 	}
 
- 	// @ReactMethod
-	// public void connectToProtectedSSIDLocationFree(@No)
+	/**
+	 * Connect with a WIFI network.
+	 *
+	 * @param SSID of the network to connect with
+	 * @param password of the network to connect with
+	 * @param promise to resolve or reject if connecting worked
+	 */
+	private void connectTo(@NonNull final String SSID, @NonNull final String password, @NonNull final WIFI_ENCRYPTION encryption, @NonNull final Promise promise) {
+//		// TODO: Test on Android 10
+//		if (isAndroid10OrLater()) {
+//			final WifiNetworkSpecifier wifiNetworkSpecifier = new WifiNetworkSpecifier.Builder()
+//					.setSsid(SSID)
+//					.setWpa2Passphrase(password)
+//					.build();
+//
+//			final ConnectivityManager connectivityManager = (ConnectivityManager) this.context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+//			if (connectivityManager == null) {
+//				promise.reject("error", "error");
+//				return;
+//			}
+//
+//			promise.resolve(null);
+//		} else {
+
+		// create network
+		final WifiConfiguration wifiConfiguration = new WifiConfiguration();
+		wifiConfiguration.SSID = formatWithBackslashes(SSID);
+
+		switch (encryption) {
+			case WPA2:
+				stuffWifiConfigurationWithWPA2(wifiConfiguration, password);
+				break;
+			case WEP:
+				stuffWifiConfigurationWithWEP(wifiConfiguration, password);
+				break;
+			case NONE:
+				stuffWifiConfigurationWithoutEncryption(wifiConfiguration);
+				break;
+		}
+
+		// add to wifi manager
+		final WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+		if (wifiManager == null) {
+			promise.reject("wifiManagerError", "Could not get the WifiManager (SystemService).");
+		}
+		final int networkId = wifiManager.addNetwork(wifiConfiguration);
+		if (networkId == ADD_NETWORK_FAILED) {
+			promise.reject("addOrUpdateFailed", String.format("Could not add or update network configuration with SSID %s.", SSID));
+		}
+
+		// wifiManager.saveConfiguration(); is not needed as this is already done by addNetwork or removeNetwork
+
+		final boolean disconnect = wifiManager.disconnect();
+		if (!disconnect) {
+			promise.reject("disconnectFailed", String.format("Disconnecting network with SSID %s failed (before connect).", SSID));
+		}
+
+		final boolean enableNetwork = wifiManager.enableNetwork(networkId, true);
+		if (enableNetwork) {
+			promise.resolve(null);
+			return;
+		}
+		promise.reject("connectNetworkFailed", String.format("Could not connect to network with SSID: %s", SSID));
+	}
+
+	private void stuffWifiConfigurationWithWPA2(final WifiConfiguration wifiConfiguration, final String password) {
+		// appropriate cipher is need to set according to security type used,
+		// if not added it will not be able to connect
+		wifiConfiguration.preSharedKey = formatWithBackslashes(password);
+
+		wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+		wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+
+		wifiConfiguration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+
+		wifiConfiguration.status = WifiConfiguration.Status.ENABLED;
+
+		wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+		wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+
+
+		wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+		wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+	}
+
+	private void stuffWifiConfigurationWithWEP(final WifiConfiguration wifiConfiguration, final String password) {
+		wifiConfiguration.wepKeys[0] = formatWithBackslashes(password);
+		wifiConfiguration.wepTxKeyIndex = 0;
+		wifiConfiguration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+		wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+	}
+
+	private void stuffWifiConfigurationWithoutEncryption(final WifiConfiguration wifiConfiguration) {
+		wifiConfiguration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+	}
+
+	//endregion
 
 	/**
 	 * Use this method to check if the device is currently connected to Wifi.
@@ -208,94 +344,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		} else {
 			connectionStatusResult.invoke(false);
 		}
-	}
-
-	/**
-	 * Method to connect to WIFI Network
-	 *
-	 * @param result wifi scan result
-	 * @param password
-	 * @param SSID
-	 * @return
-	 */
-	private void connectTo(final ScanResult result, final String SSID, final String password, final Promise promise) {
-		//Make new configuration
-		final WifiConfiguration conf = new WifiConfiguration();
-		
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        	conf.SSID = SSID;
-		} else {
-			conf.SSID = "\"" + SSID + "\"";
-		}
-
-		String capabilities = result.capabilities;
-		
-		if (capabilities.contains("WPA")  || 
-          capabilities.contains("WPA2") || 
-          capabilities.contains("WPA/WPA2 PSK")) {
-
-	    // appropriate cipher is need to set according to security type used,
-	    // if not added it will not be able to connect
-	    conf.preSharedKey = "\"" + password + "\"";
-	    
-	    conf.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-		conf.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-	    
-		conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-	    
-	    conf.status = WifiConfiguration.Status.ENABLED;
-	    
-	    conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-	    conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-	    
-	    
-	    conf.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-	    conf.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-	    
-		}	else if (capabilities.contains("WEP")) {
-			conf.wepKeys[0] = "\"" + password + "\"";
-			conf.wepTxKeyIndex = 0;
-			conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-			conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
-
-		} else {
-			conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-		}
-
-		//Remove the existing configuration for this network
-		List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
-
-		int updateNetwork = -1;
-
-		for(WifiConfiguration wifiConfig : mWifiConfigList){
-			if(wifiConfig.SSID.equals(conf.SSID)){
-				conf.networkId = wifiConfig.networkId;
-				updateNetwork = wifi.updateNetwork(conf);
-			}
-		}
-
-    	// If network not already in configured networks add new network
-		if (updateNetwork == -1) {
-			updateNetwork = wifi.addNetwork(conf);
-			wifi.saveConfiguration();
-		}
-
-		if (updateNetwork == -1) {
-		  promise.reject("addOrUpdateFailed", String.format("Could not add or update network configuration with SSID %s.", SSID));
-		}
-
-    	boolean disconnect = wifi.disconnect();
-		if ( !disconnect ) {
-			promise.reject("disconnectFailed", String.format("Disconnecting network with SSID %s failed (before connect).", SSID));
-		}
-
-		final boolean enableNetwork = wifi.enableNetwork(updateNetwork, true);
-		if (enableNetwork) {
-			promise.resolve(null);
-			return;
-		}
-		promise.reject("connectNetworkFailed", String.format("Could not connect to network with SSID: %s", SSID));
-
 	}
 
 	/**
@@ -423,8 +471,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		return sb.toString();
 	}
 
-	//region WifiReceiver hey
-
 	class WifiReceiver extends BroadcastReceiver {
 
 		private final Callback successCallback;
@@ -469,5 +515,20 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 				this.errorCallback.invoke(e.getMessage());
 			}
 		}
+	}
+
+	private static String formatWithBackslashes(final String value) {
+		return String.format("\"%s\"", value);
+	}
+
+	private static boolean isAndroidLollipopOrLater() {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+	}
+
+	/**
+	 * @return true if the current sdk is above or equal to Android M
+	 */
+	private static boolean isAndroid10OrLater() {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 	}
 }
