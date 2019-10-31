@@ -94,7 +94,7 @@ This work is in progress.
 
 ### connectToProtectedSSID(SSID: string, password: string, isWep: boolean): Promise
 
-Returns a promise that resolves when connected or rejects with the reason why it couldn't connect to the WIFI network.
+Returns a promise that resolves when connected or rejects with the error when it couldn't connect to the wifi network.
 
 #### SSID
 Type: `string`
@@ -112,7 +112,7 @@ Used on iOS. FIXME: why?
 * `notInRange`: The WIFI network is not currently in range.
 * `addOrUpdateFailed`: Could not add or update the network configuration.
 * `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
-* `enableNetworkFailed`: Could not connect to network.
+* `connectNetworkFailed`: Could not connect to network.
 
 ### getCurrentWifiSSID
 ### forceWifiUsage(useWifi: bool) [Android]
