@@ -26,19 +26,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RNWifiModule extends ReactContextBaseJavaModule {
+	private WifiManager wifi;
+	private ReactApplicationContext context;
 
-	//WifiManager Instance
-	WifiManager wifi;
-	ReactApplicationContext context;
+	RNWifiModule(ReactApplicationContext context) {
+		super(context);
 
-	//Constructor
-	public RNWifiModule(ReactApplicationContext reactContext) {
-		super(reactContext);
-		wifi = (WifiManager)reactContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-		context = (ReactApplicationContext) getReactApplicationContext();
+		wifi = (WifiManager)context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+		this.context = context;
 	}
 
-	//Name for module register to use:
 	@Override
 	public String getName() {
 		return "WifiManager";
