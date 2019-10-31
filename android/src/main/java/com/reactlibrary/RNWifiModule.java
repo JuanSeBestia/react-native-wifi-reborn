@@ -28,8 +28,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RNWifiModule extends ReactContextBaseJavaModule {
-	private WifiManager wifi;
-	private ReactApplicationContext context;
+	private final WifiManager wifi;
+	private final ReactApplicationContext context;
 
 	RNWifiModule(ReactApplicationContext context) {
 		super(context);
@@ -121,7 +121,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
                     manager.requestNetwork(builder.build(), new ConnectivityManager.NetworkCallback() {
                         @Override
-                        public void onAvailable(Network network) {
+                        public void onAvailable(@NonNull final Network network) {
                             // FIXME: should this be try catched?
                         	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 manager.bindProcessToNetwork(network);
@@ -191,7 +191,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		promise.reject("notInRange", String.format("Not in range of the provided SSID: %s ", SSID));
 	}
 
-
+ 	// @ReactMethod
+	// public void connectToProtectedSSIDLocationFree(@No)
 
 	/**
 	 * Use this method to check if the device is currently connected to Wifi.
@@ -217,8 +218,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	 * @param SSID
 	 * @return
 	 */
-	//
-	void connectTo(final ScanResult result, final String SSID, final String password, final Promise promise) {
+	private void connectTo(final ScanResult result, final String SSID, final String password, final Promise promise) {
 		//Make new configuration
 		final WifiConfiguration conf = new WifiConfiguration();
 		
@@ -406,8 +406,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     wifi.startScan();
 	}
 
-	static String longToIP(int longIp){
-		StringBuffer sb = new StringBuffer("");
+	private static String longToIP(int longIp){
+		StringBuffer sb = new StringBuffer();
 		String[] strip=new String[4];
 		strip[3]=String.valueOf((longIp >>> 24));
 		strip[2]=String.valueOf((longIp & 0x00FFFFFF) >>> 16);
@@ -427,9 +427,9 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
 	class WifiReceiver extends BroadcastReceiver {
 
-		private Callback successCallback;
-		private Callback errorCallback;
-		private WifiManager wifi;
+		private final Callback successCallback;
+		private final Callback errorCallback;
+		private final WifiManager wifi;
 
 		public WifiReceiver(final WifiManager wifi, Callback successCallback, Callback errorCallback) {
 			super();
