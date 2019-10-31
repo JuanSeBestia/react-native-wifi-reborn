@@ -18,6 +18,10 @@ You need use enable Access WIFI Information, with correct profile
 
 You need put "Privacy - Location When In Use Usage Description" or "Privacy - Location Always and When In Use Usage Description" in Settings -> info
 
+### Android
+
+Location permission (a runtime permission starting Android 6) is required for some methods. FIXME: add resources / example.
+
 ### Autolinking (React Native 60+)
 
 This library is correctly autolinked on React Native 60+ 🎉.
