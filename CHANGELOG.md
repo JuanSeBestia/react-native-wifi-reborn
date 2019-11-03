@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.0.4...v2.1.0) (2019-11-03)
+
+
+### Features
+
+* **Android:** Update gradle configuration ([475cc30](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/475cc3029fdb1f9406e04894ff9eaee64844464d)), closes [#5](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/5)
+
 ## [2.0.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.0.3...v2.0.4) (2019-11-03)
 
 
