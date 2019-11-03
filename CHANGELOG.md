@@ -1,3 +1,10 @@
+## [2.0.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.0.3...v2.0.4) (2019-11-03)
+
+
+### Bug Fixes
+
+* **ios:** Change settingsURL value so Apple accepts it. Referencing comments from: ([653330e](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/653330e7676cf21859f7a0a982c22ae85530c807))
+
 ## [2.0.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.0.2...v2.0.3) (2019-10-25)
 
 
