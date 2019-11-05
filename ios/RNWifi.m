@@ -2,9 +2,7 @@
 #import <NetworkExtension/NetworkExtension.h>
 #import <SystemConfiguration/CaptiveNetwork.h>
 #import <CoreLocation/CoreLocation.h>
-
-// If using official settings URL
-//#import <UIKit/UIKit.h>
+#import <UIKit/UIKit.h>
 
 
 @interface WifiManager () <CLLocationManagerDelegate>
@@ -162,4 +160,3 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
 }
 
 @end
-
