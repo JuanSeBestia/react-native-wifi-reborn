@@ -1,4 +1,4 @@
-package com.reactlibrary;
+package com.reactlibrary.rnwifi;
 
 import com.facebook.react.uimanager.*;
 import com.facebook.react.bridge.*;
