@@ -132,7 +132,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                             .getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkRequest.Builder builder;
                     builder = new NetworkRequest.Builder();
-                    //set the transport type do WIFI
+                    //set the transport type to WIFI
                     builder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
 
 
@@ -452,7 +452,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	}
 
 	private static String longToIP(int longIp){
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String[] strip=new String[4];
 		strip[3]=String.valueOf((longIp >>> 24));
 		strip[2]=String.valueOf((longIp & 0x00FFFFFF) >>> 16);
