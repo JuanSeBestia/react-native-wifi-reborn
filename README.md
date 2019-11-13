@@ -20,7 +20,7 @@ You need put "Privacy - Location When In Use Usage Description" or "Privacy - Lo
 
 ### Android
 
-Location permission (a runtime permission starting Android 6) is required for some methods. FIXME: add resources / example.
+Location permission (a runtime permission starting Android 6) is required for some methods (https://github.com/inthepocket/react-native-wifi-reborn#connecttoprotectedssidssid-string-password-string-iswep-boolean-promise). Make sure to request them at runtime: https://facebook.github.io/react-native/docs/permissionsandroid.
 
 ### Autolinking (React Native 60+)
 
@@ -94,7 +94,7 @@ WifiManager.getCurrentWifiSSID()
 
 ## API
 
-This work is in progress.
+_The api documentation is in progress._
 
 ### connectToProtectedSSID(SSID: string, password: string, isWep: boolean): Promise
 
@@ -118,7 +118,19 @@ Used on iOS. FIXME: why?
 * `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
 * `connectNetworkFailed`: Could not connect to network.
 
+### loadWifiList
+### isEnabled
+### setEnabled
+### connectionStatus
+### disconnect
 ### getCurrentWifiSSID
+### getBSSID
+### getCurrentSignalStrength
+### getFrequency
+### getIP
+### isRemoveWifiNetwork
+### reScanAndLoadWifiList
+
 ### forceWifiUsage(useWifi: bool) [Android]
 
 Method to force wifi usage if the user needs to send requests via wifi if it does not have internet connection.
