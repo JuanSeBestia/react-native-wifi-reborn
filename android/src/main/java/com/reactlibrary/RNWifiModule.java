@@ -20,8 +20,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.List;
 
@@ -240,21 +241,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	 * @param promise to resolve or reject if connecting worked
 	 */
 	private void connectTo(@NonNull final String SSID, @NonNull final String password, @NonNull final WIFI_ENCRYPTION encryption, @NonNull final Promise promise) {
-//		// TODO: Test on Android 10
-//		if (isAndroid10OrLater()) {
-//			final WifiNetworkSpecifier wifiNetworkSpecifier = new WifiNetworkSpecifier.Builder()
-//					.setSsid(SSID)
-//					.setWpa2Passphrase(password)
-//					.build();
-//
-//			final ConnectivityManager connectivityManager = (ConnectivityManager) this.context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-//			if (connectivityManager == null) {
-//				promise.reject("error", "error");
-//				return;
-//			}
-//
-//			promise.resolve(null);
-//		} else {
+		// Note: For now Android 10 still works but in the future, the WifiConfiguration methods are all deprecated.
+		// if (isAndroid10OrLater()) {
+		// 		1) create WifiNetworkSpecifier https://developer.android.com/reference/android/net/wifi/WifiNetworkSpecifier.Builder
+		//		2) create NetworkRequest https://developer.android.com/reference/android/net/NetworkRequest.Builder
+		//      3) connectivityManager.requestNetwork()
 
 		// create network
 		final WifiConfiguration wifiConfiguration = new WifiConfiguration();
