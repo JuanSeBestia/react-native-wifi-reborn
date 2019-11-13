@@ -97,8 +97,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		}
 	}
 
-	//
-
 	/**
 	 * Method to force wifi usage if the user needs to send requests via wifi
 	 * if it does not have internet connection. Useful for IoT applications, when
@@ -485,9 +483,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
 		// This method call when number of wifi connections changed
 		public void onReceive(Context c, Intent intent) {
-			// LocalBroadcastManager.getInstance(c).unregisterReceiver(this);
 			c.unregisterReceiver(this);
-			// getReactApplicationContext().getCurrentActivity().registerReceiver
 			try {
 				List < ScanResult > results = this.wifi.getScanResults();
 				JSONArray wifiArray = new JSONArray();
