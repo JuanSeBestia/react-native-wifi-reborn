@@ -47,7 +47,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		NONE,
 		WEP,
 		WPA2,
-		WPA3,
 	}
 
 	RNWifiModule(ReactApplicationContext context) {
@@ -225,7 +224,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 			if (SSID.equals(scanResult.SSID)) {
 				String capabilities = scanResult.capabilities;
 
-				// TODO: WPA3
 				if (capabilities.contains("WPA") ||
 						capabilities.contains("WPA2") ||
 						capabilities.contains("WPA/WPA2 PSK")) {
