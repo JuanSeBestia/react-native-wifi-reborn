@@ -38,6 +38,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class RNWifiModule extends ReactContextBaseJavaModule {
 	private final WifiManager wifi;
 	private final ReactApplicationContext context;
