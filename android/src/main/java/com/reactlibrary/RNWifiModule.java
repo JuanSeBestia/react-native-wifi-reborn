@@ -139,7 +139,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                     manager.requestNetwork(builder.build(), new ConnectivityManager.NetworkCallback() {
                         @Override
                         public void onAvailable(@NonNull final Network network) {
-                            // FIXME: should this be try catched?
+                            // FIXME: should this be try catch?
                         	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 manager.bindProcessToNetwork(network);
                             } else {
@@ -413,8 +413,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	@ReactMethod
 	public void getIP(final Callback callback) {
 		WifiInfo info = wifi.getConnectionInfo();
-		String stringip = longToIP(info.getIpAddress());
-		callback.invoke(stringip);
+		String stringIP = longToIP(info.getIpAddress());
+		callback.invoke(stringIP);
 	}
 
 	/**
