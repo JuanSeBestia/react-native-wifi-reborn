@@ -29,7 +29,7 @@ public final class PermissionUtils
      * @return true if you have any location permission or the sdk is below Android M.
      * @throws InvalidParameterException if {@code context} is null
      */
-    public static boolean isLocationGranted(@NonNull final Context context) throws InvalidParameterException
+    public static boolean isLocationPermissionGranted(@NonNull final Context context) throws InvalidParameterException
     {
         if (context == null)
         {

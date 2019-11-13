@@ -198,14 +198,16 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	 */
 	@ReactMethod
 	public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
-		// do we have location permission?
-		final boolean isLocationGranted = PermissionUtils.isLocationGranted(context);
+		final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
+		final boolean isLocationOn = LocationUtils.isLocationOn(context);
 
-		// FIXME: and what about if location is off?
-		if (isLocationGranted) {
+		if (locationPermissionGranted && isLocationOn) {
+			@SuppressLint("MissingPermission")
 			final WIFI_ENCRYPTION encryption = findEncryptionByScanning(SSID);
-			if (encryption != null) {
+			// FIXME: Weird that encryption being null means that the wifi network could not be found
+			if (encryption == null) {
 				promise.reject("notInRange", String.format("Not in range of the provided SSID: %s ", SSID));
+				return;
 			}
 			connectTo(SSID, password, encryption, promise);
 		}
@@ -216,7 +218,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
 	//region Helpers
 
-	// @RequiresPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+	@RequiresPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
 	private @Nullable WIFI_ENCRYPTION findEncryptionByScanning(final String SSID) {
 		final List <ScanResult> scanResults = wifi.getScanResults();
 		for (ScanResult scanResult: scanResults) {
