@@ -1,35 +1,44 @@
 package com.reactlibrary;
 
-import com.facebook.react.uimanager.*;
-import com.facebook.react.bridge.*;
-import com.reactlibrary.utils.PermissionUtils;
-
-import android.provider.Settings;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
-import android.net.wifi.WifiConfiguration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.NetworkRequest;
-import android.net.NetworkCapabilities;
-import android.net.Network;
-import android.net.Uri;
-import android.net.wifi.WifiInfo;
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.BroadcastReceiver;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
+import android.net.Uri;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
 
-import java.util.List;
+import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.reactlibrary.utils.LocationUtils;
+import com.reactlibrary.utils.PermissionUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
+@SuppressWarnings("deprecation")
 public class RNWifiModule extends ReactContextBaseJavaModule {
 	private final WifiManager wifi;
 	private final ReactApplicationContext context;
@@ -39,7 +48,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		NONE,
 		WEP,
 		WPA2,
-		WPA3,
 	}
 
 	RNWifiModule(ReactApplicationContext context) {
@@ -89,8 +97,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		}
 	}
 
-	//
-
 	/**
 	 * Method to force wifi usage if the user needs to send requests via wifi
 	 * if it does not have internet connection. Useful for IoT applications, when
@@ -127,14 +133,14 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                             .getSystemService(Context.CONNECTIVITY_SERVICE);
                     NetworkRequest.Builder builder;
                     builder = new NetworkRequest.Builder();
-                    //set the transport type do WIFI
+                    //set the transport type to WIFI
                     builder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
 
 
                     manager.requestNetwork(builder.build(), new ConnectivityManager.NetworkCallback() {
                         @Override
                         public void onAvailable(@NonNull final Network network) {
-                            // FIXME: should this be try catched?
+                            // FIXME: should this be try catch?
                         	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 manager.bindProcessToNetwork(network);
                             } else {
@@ -192,14 +198,16 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	 */
 	@ReactMethod
 	public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
-		// do we have location permission?
-		final boolean isLocationGranted = PermissionUtils.isLocationGranted(context);
+		final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
+		final boolean isLocationOn = LocationUtils.isLocationOn(context);
 
-		// FIXME: and what about if location is off?
-		if (isLocationGranted) {
+		if (locationPermissionGranted && isLocationOn) {
+			@SuppressLint("MissingPermission")
 			final WIFI_ENCRYPTION encryption = findEncryptionByScanning(SSID);
-			if (encryption != null) {
+			// FIXME: Weird that encryption being null means that the wifi network could not be found
+			if (encryption == null) {
 				promise.reject("notInRange", String.format("Not in range of the provided SSID: %s ", SSID));
+				return;
 			}
 			connectTo(SSID, password, encryption, promise);
 		}
@@ -210,14 +218,13 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
 	//region Helpers
 
-	// @RequiresPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+	@RequiresPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
 	private @Nullable WIFI_ENCRYPTION findEncryptionByScanning(final String SSID) {
 		final List <ScanResult> scanResults = wifi.getScanResults();
 		for (ScanResult scanResult: scanResults) {
 			if (SSID.equals(scanResult.SSID)) {
 				String capabilities = scanResult.capabilities;
 
-				// TODO: WPA3
 				if (capabilities.contains("WPA") ||
 						capabilities.contains("WPA2") ||
 						capabilities.contains("WPA/WPA2 PSK")) {
@@ -407,8 +414,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	@ReactMethod
 	public void getIP(final Callback callback) {
 		WifiInfo info = wifi.getConnectionInfo();
-		String stringip = longToIP(info.getIpAddress());
-		callback.invoke(stringip);
+		String stringIP = longToIP(info.getIpAddress());
+		callback.invoke(stringIP);
 	}
 
 	/**
@@ -441,12 +448,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	@ReactMethod
 	public void reScanAndLoadWifiList(Callback successCallback, Callback errorCallback) {
 		WifiReceiver receiverWifi = new WifiReceiver(wifi, successCallback, errorCallback);
-   	getReactApplicationContext().getCurrentActivity().registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-    wifi.startScan();
+		getReactApplicationContext().registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+    	wifi.startScan();
 	}
 
 	private static String longToIP(int longIp){
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String[] strip=new String[4];
 		strip[3]=String.valueOf((longIp >>> 24));
 		strip[2]=String.valueOf((longIp & 0x00FFFFFF) >>> 16);
@@ -477,9 +484,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
 		// This method call when number of wifi connections changed
 		public void onReceive(Context c, Intent intent) {
-			// LocalBroadcastManager.getInstance(c).unregisterReceiver(this);
 			c.unregisterReceiver(this);
-			// getReactApplicationContext().getCurrentActivity().registerReceiver
 			try {
 				List < ScanResult > results = this.wifi.getScanResults();
 				JSONArray wifiArray = new JSONArray();
