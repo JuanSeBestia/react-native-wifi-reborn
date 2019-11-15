@@ -47,7 +47,7 @@ You need put "Privacy - Location When In Use Usage Description" or "Privacy - Lo
 #### iOS
 
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-wifi` and add `RNWifi.xcodeproj`
+2. Go to `node_modules` ➜ `react-native-wifi-reborn` and add `RNWifi.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libRNWifi.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
 
@@ -61,7 +61,7 @@ You need put "Privacy - Location When In Use Usage Description" or "Privacy - Lo
 2. Append the following lines to `android/settings.gradle`:
    ```
    include ':react-native-wifi-reborn'
-   project(':react-native-wifi-reborn').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-wifi/android')
+   project(':react-native-wifi-reborn').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-wifi-reborn/android')
    ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
    ```
