@@ -9,3 +9,6 @@ Nodeunit contributors (sorted alphabetically)
 
   * Update gradle configuration
   
+* **[kristfal](https://github.com/kristfal)**
+
+  * [android] rename the default name of package
