@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.1.0...v2.1.1) (2019-11-15)
+
+
+### Bug Fixes
+
+* **Android:** Rename package to avoid colisions ([17da67e](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/17da67e6bbe2675dd307071414a63bf1b24c58b6))
+
 # [2.1.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.0.4...v2.1.0) (2019-11-03)
 
 
