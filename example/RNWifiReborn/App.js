@@ -6,25 +6,52 @@
  * @flow
  */
 
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
   ScrollView,
   View,
-  Text,
   StatusBar,
+  Text,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Header, Colors} from 'react-native/Libraries/NewAppScreen';
+import WifiManager from 'react-native-wifi-reborn';
 
-const App: () => React$Node = () => {
+const App = () => {
+  const [connected, setConneted] = useState({connected: false, ssid: 'S4N'});
+  const [ssid, setSsid] = useState('');
+  const password ="secret-secret";
+  const isWep = false;
+
+  const wifi = async () => {
+    try {
+      const data = await WifiManager.connectToProtectedSSID(
+        ssid,
+        password,
+        isWep,
+      );
+      console.log('Connected successfully!', {data});
+      setConneted({connected: true, ssid});
+    } catch (error) {
+      setConneted({connected: false, error: error.message});
+      console.log('Connection failed!', {error});
+    }
+
+    try {
+      const ssid = await WifiManager.getCurrentWifiSSID();
+      setSsid(ssid);
+      console.log('Your current connected wifi SSID is ' + ssid);
+    } catch (error) {
+      setSsid('Cannot get current SSID!' + error.message);
+      console.log('Cannot get current SSID!', {error});
+    }
+  };
+  useEffect(() => {
+    wifi();
+  }, []);
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -33,39 +60,19 @@ const App: () => React$Node = () => {
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
           <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>ssid</Text>
+            <Text style={styles.sectionDescription}>
+              {JSON.stringify(ssid)}
+            </Text>
           </View>
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Conencted</Text>
+            <Text style={styles.sectionDescription}>
+              {JSON.stringify(connected)}
+            </Text>
+          </View>
+          <View style={styles.body}></View>
         </ScrollView>
       </SafeAreaView>
     </>
