@@ -1,3 +1,24 @@
+## [2.1.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.1.0...v2.1.1) (2019-11-15)
+
+
+### Bug Fixes
+
+* **Android:** Rename package to avoid colisions ([17da67e](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/17da67e6bbe2675dd307071414a63bf1b24c58b6))
+
+# [2.1.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.0.4...v2.1.0) (2019-11-03)
+
+
+### Features
+
+* **Android:** Update gradle configuration ([475cc30](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/475cc3029fdb1f9406e04894ff9eaee64844464d)), closes [#5](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/5)
+
+## [2.0.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.0.3...v2.0.4) (2019-11-03)
+
+
+### Bug Fixes
+
+* **ios:** Change settingsURL value so Apple accepts it. Referencing comments from: ([653330e](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/653330e7676cf21859f7a0a982c22ae85530c807))
+
 ## [2.0.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.0.2...v2.0.3) (2019-10-25)
 
 
