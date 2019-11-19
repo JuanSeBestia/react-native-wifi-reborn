@@ -22,7 +22,7 @@ import WifiManager from 'react-native-wifi-reborn';
 const App = () => {
   const [connected, setConneted] = useState({connected: false, ssid: 'S4N'});
   const [ssid, setSsid] = useState('');
-  const password ="secret-secret";
+  const password ="tanenbaum-1981";
   const isWep = false;
 
   const wifi = async () => {
