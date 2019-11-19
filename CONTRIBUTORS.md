@@ -8,6 +8,7 @@ Nodeunit contributors (sorted alphabetically)
 * **[eliaslecomte](https://github.com/eliaslecomte)**
 
   * Update gradle configuration
+  * Update all Library in Android
   
 * **[kristfal](https://github.com/kristfal)**
 
