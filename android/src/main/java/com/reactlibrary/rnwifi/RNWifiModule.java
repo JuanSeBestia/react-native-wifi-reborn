@@ -205,9 +205,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 			@SuppressLint("MissingPermission")
 			final WIFI_ENCRYPTION encryption = findEncryptionByScanning(SSID);
 			// FIXME: Weird that encryption being null means that the wifi network could not be found
-			if (encryption == null) {
-				promise.reject("notInRange", String.format("Not in range of the provided SSID: %s ", SSID));
-				return;
+			if (encryption == null) { // For recently created wifi networks, we guess it is WPA2
+				encryption = WIFI_ENCRYPTION.WPA2;
 			}
 			connectTo(SSID, password, encryption, promise);
 		}
