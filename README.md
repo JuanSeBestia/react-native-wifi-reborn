@@ -135,9 +135,31 @@ The SSID of the wifi network to connect with.
 Type: `string`
 The password of the wifi network to connect with.
 
-#### isWeb
+#### isWep
 Type: `boolean`
-Used on iOS.
+Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+
+#### Errors:
+* `notInRange`: The WIFI network is not currently in range.
+* `addOrUpdateFailed`: Could not add or update the network configuration.
+* `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
+* `connectNetworkFailed`: Could not connect to network.
+
+### connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean): Promise
+
+Use this function when you want to match a known SSID prefix, but don’t have a full SSID. If the system finds multiple Wi-Fi networks whose SSID string matches the given prefix, it selects the network with the greatest signal strength.
+
+#### SSIDPrefix
+Type: `string`
+A prefix string to match the SSID of a Wi-Fi network.
+
+#### password
+Type: `string`
+The password of the wifi network to connect with.
+
+#### isWep
+Type: `boolean`
+Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
 
 #### Errors:
 * `notInRange`: The WIFI network is not currently in range.
