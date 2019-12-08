@@ -203,7 +203,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         final boolean isLocationOn = LocationUtils.isLocationOn(context);
 
         if (locationPermissionGranted && isLocationOn) {
-            @SuppressLint("MissingPermission") final WIFI_ENCRYPTION encryption = findEncryptionByScanning(SSID);
+            @SuppressLint("MissingPermission") WIFI_ENCRYPTION encryption = findEncryptionByScanning(SSID);
             // If the wifi network could not be found, we guess it is WPA2
             if (encryption == null) {
                 encryption = WIFI_ENCRYPTION.WPA2;
