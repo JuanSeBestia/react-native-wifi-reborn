@@ -327,10 +327,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 	}
 
 	//endregion
+	// Gabriel Amorim -- connManager.getNetworkInfo is deprecated
+	//https://developer.android.com/reference/android/net/ConnectivityManager.html#getNetworkInfo(int)
 
 	/**
 	 * Use this method to check if the device is currently connected to Wifi.
-	 *
+	 * 
 	 * @param connectionStatusResult
 	 */
 	@ReactMethod

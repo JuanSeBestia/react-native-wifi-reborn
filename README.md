@@ -119,20 +119,30 @@ WifiManager.getCurrentWifiSSID().then(
 );
 ```
 
-## API
+# Methods
+
 
 _The api documentation is in progress._
 
-### connectToProtectedSSID(SSID: string, password: string, isWep: boolean): Promise
+
+## Android & iOS
+
+The following methods work on both Android and iOS
+
+### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean): Promise`
 
 Returns a promise that resolves when connected or rejects with the error when it couldn't connect to the wifi network.
 
 #### SSID
+
 Type: `string`
+
 The SSID of the wifi network to connect with.
 
 #### password
+
 Type: `string`
+
 The password of the wifi network to connect with.
 
 #### isWep
@@ -161,32 +171,135 @@ The password of the wifi network to connect with.
 Type: `boolean`
 Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
 
+
 #### Errors:
+
 * `notInRange`: The WIFI network is not currently in range.
+
 * `addOrUpdateFailed`: Could not add or update the network configuration.
+
 * `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
+
 * `connectNetworkFailed`: Could not connect to network.
 
-### loadWifiList
-### isEnabled
-### setEnabled
-### connectionStatus
-### disconnect
-### getCurrentWifiSSID
-### getBSSID
-### getCurrentSignalStrength
-### getFrequency
-### getIP
-### isRemoveWifiNetwork
-### reScanAndLoadWifiList
+### `getCurrentWifiSSID(): Promise`
 
-### forceWifiUsage(useWifi: bool) [Android]
+## Only iOS
+
+The following methods work only on iOS
+
+###  `connectToSSID(ssid: string): Promise`
+
+### `disconnectFromSSID(ssid: string): Promise`
+
+## Only Android
+The following methods work only on Android
+
+### `loadWifiList(successCallback: function, errorCallback: function)` 
+
+Method to get a list of nearby WiFI networks.
+  
+#### successCallback( wifiList:  string )
+
+Type: `function`
+
+Function to be called if the attempt is successful. It contains a stringified JSONArray of wifiObjects as parameter, each object containing: 
+
+* `SSID`: The network name.
+* `BSSID`: The WiFi BSSID.
+* `capabilities`: Describes the authentication, key management, and encryption schemes supported by the access point.
+* `frequency`: The primary 20 MHz frequency (in MHz) of the channel over which the client is communicating with the access point.
+* `level`: The detected signal level in dBm, also known as the RSSI.
+* `timestamp`: timestamp in microseconds (since boot) when this result was last seen.
+
+ #### errorCallback
+
+Type: `function`
+
+Function to be called if any error occurs during the attempt. It contains a `string` as parameter with the error message.
+
+#### Usage 
+
+```javascript
+WifiManager.loadWifiList(
+	wifiList => {
+		let wifiArray =  JSON.parse(wifiList);
+		wifiArray.map((value, index) =>
+			console.log(`Wifi ${index  +  1} - ${value.SSID}`)
+		);
+	},
+	error =>  console.log(error)
+);
+/**
+Result: 
+"Wifi 1 - Name of the network"
+"Wifi 2 - Name of the network"
+"Wifi 3 - Name of the network"
+ ...
+ */
+```
+
+### `reScanAndLoadWifiList(successCallback: function, errorCallback: function)`
+
+This method is similar to `loadWifiList` but it forcefully starts the wifi scanning on android and in the callback fetches the list.
+
+#### Usage 
+
+Same as `loadWifiList`.
+
+### `isEnabled(isEnabled: function)`
+
+Method to check if WiFi is enabled.
+
+```javascript
+WifiManager.isEnabled(isEnabled => {
+	this.setState({wifiIsEnabled: isEnabled});
+});
+```
+
+### `setEnabled(enabled: boolean)`
+
+Method to set the WiFi on or off on the user's device.
+
+```javascript
+WifiManager.setEnabled(true); //set WiFi ON
+WifiManager.setEnabled(false); //set WiFi OFF
+```
+
+### `connectionStatus (connectionStatusResult: function)`
+
+Indicates whether network connectivity exists and it is possible to establish connections.
+
+#### connectionStatusResult( isConnected: boolean )
+
+Type: `function`
+
+Called when the network status is resolved. It contains a boolean argument
+
+### `disconnect`
+
+### `getBSSID`
+
+### `getCurrentSignalStrength`
+
+### `getFrequency`
+
+### `getIP`
+
+### `isRemoveWifiNetwork`
+
+### forceWifiUsage(useWifi: bool)
 
 Method to force wifi usage if the user needs to send requests via wifi if it does not have internet connection.
+
 If you want to use it, you need to add the `android.permission.WRITE_SETTINGS` permission to your AndroidManifest.xml.
 
 ```xml
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+<manifest  xmlns:android="http://schemas.android.com/apk/res/android">
+
+<uses-permission  android:name="android.permission.WRITE_SETTINGS" />
+
 </manifest>
+
 ```
