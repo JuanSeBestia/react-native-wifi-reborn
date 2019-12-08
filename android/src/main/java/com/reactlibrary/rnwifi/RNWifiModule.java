@@ -276,9 +276,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         if (wifiManager == null) {
             promise.reject("wifiManagerError", "Could not get the WifiManager (SystemService).");
         }
-        final int networkId = wifiManager.addNetwork(wifiConfiguration);
+        int networkId = wifiManager.addNetwork(wifiConfiguration);
         if (networkId == ADD_NETWORK_FAILED) {
-            promise.reject("addOrUpdateFailed", String.format("Could not add or update network configuration with SSID %s.", SSID));
+            networkId = checkForExistingNetwork(wifiConfiguration);
+            if (networkId == ADD_NETWORK_FAILED) {
+                promise.reject("addOrUpdateFailed", String.format("Could not add or update network configuration with SSID %s.", SSID));
+            }
         }
 
         // wifiManager.saveConfiguration(); is not needed as this is already done by addNetwork or removeNetwork
@@ -294,6 +297,14 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             return;
         }
         promise.reject("connectNetworkFailed", String.format("Could not connect to network with SSID: %s", SSID));
+    }
+
+    private int checkForExistingNetwork(final WifiConfiguration wifiConfiguration) {
+        for (WifiConfiguration tmp : wifi.getConfiguredNetworks())
+            if (tmp.SSID.equals(wifiConfiguration.SSID)) {
+                return tmp.networkId;
+            }
+        return -1;
     }
 
     private void stuffWifiConfigurationWithWPA2(final WifiConfiguration wifiConfiguration, final String password) {
