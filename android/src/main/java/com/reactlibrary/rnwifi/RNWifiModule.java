@@ -166,6 +166,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         }
     }
 
+<<<<<<< HEAD
     /**
      * Method to check if wifi is enabled
      *
