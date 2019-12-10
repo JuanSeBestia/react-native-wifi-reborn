@@ -13,3 +13,7 @@ Nodeunit contributors (sorted alphabetically)
 * **[kristfal](https://github.com/kristfal)**
 
   * [android] rename the default name of package
+
+* **[Rapsssito](https://github.com/Rapsssito)**
+
+  * [android] added network compatibility
