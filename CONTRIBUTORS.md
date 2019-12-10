@@ -17,3 +17,7 @@ Nodeunit contributors (sorted alphabetically)
 * **[Rapsssito](https://github.com/Rapsssito)**
 
   * [android] added network compatibility
+
+* **[gabrielrra](https://github.com/gabrielrra)**
+
+  * [docs] Update docs
