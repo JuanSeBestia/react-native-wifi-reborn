@@ -8,7 +8,16 @@ Nodeunit contributors (sorted alphabetically)
 * **[eliaslecomte](https://github.com/eliaslecomte)**
 
   * Update gradle configuration
+  * Update all Library in Android
   
 * **[kristfal](https://github.com/kristfal)**
 
   * [android] rename the default name of package
+
+* **[Rapsssito](https://github.com/Rapsssito)**
+
+  * [android] added network compatibility
+
+* **[gabrielrra](https://github.com/gabrielrra)**
+
+  * [docs] Update docs

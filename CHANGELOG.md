@@ -1,3 +1,17 @@
+## [2.2.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.0...v2.2.1) (2019-12-10)
+
+
+### Bug Fixes
+
+* **android:** Added network compatibility ([331a40f](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/331a40f2016773a87f5e4d134d4ff1fed9f62867))
+
+# [2.2.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.1.1...v2.2.0) (2019-11-19)
+
+
+### Features
+
+* **Android:** Update all library ([f4cc526](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/f4cc526ba7c7417fe883c58188dea212bb2b5d20))
+
 ## [2.1.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.1.0...v2.1.1) (2019-11-15)
 
 
