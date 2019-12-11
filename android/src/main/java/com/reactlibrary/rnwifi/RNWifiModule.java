@@ -1,7 +1,6 @@
 package com.reactlibrary.rnwifi;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -203,17 +202,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 		final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
 		final boolean isLocationOn = LocationUtils.isLocationOn(context);
 
-		if (locationPermissionGranted && isLocationOn) {
-			@SuppressLint("MissingPermission")
-			final WIFI_ENCRYPTION encryption = findEncryptionByScanning(SSID);
-			// FIXME: Weird that encryption being null means that the wifi network could not be found
-			if (encryption == null) {
-				promise.reject("notInRange", String.format("Not in range of the provided SSID: %s ", SSID));
-				return;
-			}
-			connectTo(SSID, password, encryption, promise);
-		}
-
 		WifiUtils.withContext(context).connectWith(SSID, password).onConnectionResult(new ConnectionSuccessListener() {
 			@Override
 			public void isSuccessful(boolean isSuccess) {
@@ -223,7 +211,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 					promise.reject("not connected", "could not connect");
 				}
 			}
-		});
+		}).start();
 	}
 
 	//region Helpers
