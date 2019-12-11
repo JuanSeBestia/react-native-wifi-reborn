@@ -35,5 +35,6 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
+    implementation 'com.thanosfisherman.wifiutils:wifiutils:1.4.0'
 }
   

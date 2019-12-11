@@ -31,6 +31,8 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.uimanager.IllegalViewOperationException;
 import com.reactlibrary.utils.LocationUtils;
 import com.reactlibrary.utils.PermissionUtils;
+import com.thanosfisherman.wifiutils.WifiUtils;
+import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -212,8 +214,16 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 			connectTo(SSID, password, encryption, promise);
 		}
 
-		// TODO: make the wifi encryption configurable
-		connectTo(SSID, password, WIFI_ENCRYPTION.WPA2, promise);
+		WifiUtils.withContext(context).connectWith(SSID, password).onConnectionResult(new ConnectionSuccessListener() {
+			@Override
+			public void isSuccessful(boolean isSuccess) {
+				if (isSuccess) {
+					promise.resolve("connected");
+				} else {
+					promise.reject("not connected", "could not connect");
+				}
+			}
+		});
 	}
 
 	//region Helpers
