@@ -1,3 +1,10 @@
+## [2.2.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.1...v2.2.2) (2019-12-11)
+
+
+### Bug Fixes
+
+* **Android:** Bad marge ([b6a3cf5](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/b6a3cf5acdf701857137d76af98317e20d73cb12))
+
 ## [2.2.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.0...v2.2.1) (2019-12-10)
 
 
