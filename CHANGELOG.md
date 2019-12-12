@@ -1,3 +1,10 @@
+## [2.2.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.2...v2.2.3) (2019-12-12)
+
+
+### Bug Fixes
+
+* **iOS:** getCurrentWifiSSID when is deneided or  restrited ([1c6d1fd](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/1c6d1fd0a30840695201e38c6b1db1e6833cf1bf))
+
 ## [2.2.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.1...v2.2.2) (2019-12-11)
 
 
