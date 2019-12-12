@@ -115,6 +115,19 @@ RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
 RCT_REMAP_METHOD(getCurrentWifiSSID,
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject) {
+    
+    if (@available(iOS 13, *)) {
+        // Reject when permission had rejected
+        if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied){
+            NSLog(@"RNWIFI:ERROR:Cannot detect SSID because LocationPermission is Denied ");
+            reject(@"cannot_detect_ssid", @"Cannot detect SSID because LocationPermission is Denied", nil);
+        }
+        if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted){
+            NSLog(@"RNWIFI:ERROR:Cannot detect SSID because LocationPermission is Restricted ");
+            reject(@"cannot_detect_ssid", @"Cannot detect SSID because LocationPermission is Restricted", nil);
+        }
+    }
+    
     BOOL hasLocationPermission = [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse ||
     [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways;
     if (@available(iOS 13, *) && hasLocationPermission == NO) {
