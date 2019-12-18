@@ -1,3 +1,10 @@
+## [2.2.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.3...v2.2.4) (2019-12-18)
+
+
+### Performance Improvements
+
+* **test:** test perf semantic-release ([0d42570](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/0d425709f01b84a6882d27e2698d8e92783efb43))
+
 ## [2.2.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.2...v2.2.3) (2019-12-12)
 
 
