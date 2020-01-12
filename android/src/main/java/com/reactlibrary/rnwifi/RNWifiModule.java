@@ -37,6 +37,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;
@@ -275,7 +277,9 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         final WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wifiManager == null) {
             promise.reject("wifiManagerError", "Could not get the WifiManager (SystemService).");
+            return;
         }
+
         int networkId = wifiManager.addNetwork(wifiConfiguration);
         if (networkId == ADD_NETWORK_FAILED) {
             networkId = checkForExistingNetwork(wifiConfiguration);
@@ -293,10 +297,39 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
         final boolean enableNetwork = wifiManager.enableNetwork(networkId, true);
         if (enableNetwork) {
-            promise.resolve(null);
-            return;
+            // Verify the connection
+            final IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+            final BroadcastReceiver receiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(final Context context, final Intent intent) {
+                    final NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                    if (info != null && info.isConnected()) {
+                        final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                        String ssid = wifiInfo.getSSID();
+                        // This value should be wrapped in double quotes, so we need to unwrap it.
+                        if (ssid.startsWith("\"") && ssid.endsWith("\"")) {
+                            ssid = ssid.substring(1, ssid.length() - 1);
+                        }
+                        context.unregisterReceiver(this);
+                        if (ssid.equals(SSID))
+                            promise.resolve(null);
+                        else
+                            promise.reject("connectNetworkFailed", String.format("Could not connect to network with SSID: %s", SSID));
+                    }
+                }
+            };
+            context.registerReceiver(receiver, intentFilter);
+            // Timeout if there is no other saved WiFi network reachable
+            ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+            exec.schedule(new Runnable() {
+                public void run() {
+                    promise.reject("connectNetworkFailed", String.format("Timeout connecting to network with SSID: %s", SSID));
+                }
+            }, 8, TimeUnit.SECONDS);
+        } else {
+            promise.reject("connectNetworkFailed", String.format("Could not enable network with SSID: %s", SSID));
         }
-        promise.reject("connectNetworkFailed", String.format("Could not connect to network with SSID: %s", SSID));
     }
 
     private int checkForExistingNetwork(final WifiConfiguration wifiConfiguration) {
