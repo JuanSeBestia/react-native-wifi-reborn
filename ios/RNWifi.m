@@ -53,22 +53,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(connectToSSID:(NSString*)ssid
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    
-    if (@available(iOS 11.0, *)) {
-        NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid];
-        configuration.joinOnce = true;
-        
-        [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
-            if (error != nil) {
-                reject(@"nehotspot_error", @"Error while configuring WiFi", error);
-            } else {
-                resolve(nil);
-            }
-        }];
-        
-    } else {
-        reject(@"ios_error", @"Not supported in iOS<11.0", nil);
-    }
+    [self connectToProtectedSSID:ssid withPassphrase:@"" isWEP:false resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
@@ -76,16 +61,28 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
                   isWEP:(BOOL)isWEP
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    
+    // Prevent NEHotspotConfigurationManager error when connecting to an already connected network
+    if ([ssid isEqualToString:[self getWifiSSID]]) resolve(nil);
     if (@available(iOS 11.0, *)) {
-        NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid passphrase:passphrase isWEP:isWEP];
+        NEHotspotConfiguration* configuration;
+        // Check if open network
+        if (passphrase == (id)[NSNull null] || passphrase.length == 0 ) {
+            configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid];
+        } else {
+            configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid passphrase:passphrase isWEP:isWEP];
+        }
         configuration.joinOnce = true;
         
         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
-                reject(@"nehotspot_error", @"Error while configuring WiFi", error);
+                reject(@"nehotspot_error", [error localizedDescription], error);
             } else {
-                resolve(nil);
+                // Verify SSID connection
+                if ([ssid isEqualToString:[self getWifiSSID]]){
+                    resolve(nil);
+                } else {
+                    reject(@"nehotspot_error", [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
+                }
             }
         }];
         
