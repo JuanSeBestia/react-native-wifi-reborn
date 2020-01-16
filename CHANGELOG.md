@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.4...v2.3.0) (2020-01-16)
+
+
+### Features
+
+* **iOS:** Connect to SSID prefix functions. ([#25](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/25)) ([5b52c97](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/5b52c97461753cb2fb7574964a1415ddaa23ba29))
+
 ## [2.2.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.3...v2.2.4) (2019-12-18)
 
 
