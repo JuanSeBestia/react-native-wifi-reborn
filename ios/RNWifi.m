@@ -32,7 +32,7 @@
 
 - (NSString *) getWifiSSID {
     NSString *kSSID = (NSString*) kCNNetworkInfoKeySSID;
-    
+
     NSArray *ifs = (__bridge_transfer id)CNCopySupportedInterfaces();
     for (NSString *ifnam in ifs) {
         NSDictionary *info = (__bridge_transfer id)CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam);
@@ -56,6 +56,50 @@ RCT_EXPORT_METHOD(connectToSSID:(NSString*)ssid
     [self connectToProtectedSSID:ssid withPassphrase:@"" isWEP:false resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(connectToSSIDPrefix:(NSString*)ssid
+                   resolver:(RCTPromiseResolveBlock)resolve
+                   rejecter:(RCTPromiseRejectBlock)reject) {
+
+     if (@available(iOS 13.0, *)) {
+         NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSIDPrefix:ssid];
+         configuration.joinOnce = true;
+
+         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
+             if (error != nil) {
+                 reject(@"nehotspot_error", @"Error while configuring WiFi", error);
+             } else {
+                 resolve(nil);
+             }
+         }];
+
+     } else {
+         reject(@"ios_error", @"Not supported in iOS<13.0", nil);
+     }
+ }
+
+RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssid
+                  withPassphrase:(NSString*)passphrase
+                  isWEP:(BOOL)isWEP
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+
+    if (@available(iOS 13.0, *)) {
+        NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSIDPrefix:ssid passphrase:passphrase isWEP:isWEP];
+        configuration.joinOnce = true;
+
+        [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
+            if (error != nil) {
+                reject(@"nehotspot_error", @"Error while configuring WiFi", error);
+            } else {
+                resolve(nil);
+            }
+        }];
+
+    } else {
+        reject(@"ios_error", @"Not supported in iOS<13.0", nil);
+    }
+}
+
 RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
                   withPassphrase:(NSString*)passphrase
                   isWEP:(BOOL)isWEP
@@ -71,7 +115,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
         } else {
             configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid passphrase:passphrase isWEP:isWEP];
         }
-        configuration.joinOnce = true;
+        configuration.joinOnce = false;
         
         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
@@ -85,7 +129,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
                 }
             }
         }];
-        
+
     } else {
         reject(@"ios_error", @"Not supported in iOS<11.0", nil);
     }
@@ -94,7 +138,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
 RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    
+
     if (@available(iOS 11.0, *)) {
         [[NEHotspotConfigurationManager sharedManager] getConfiguredSSIDsWithCompletionHandler:^(NSArray<NSString *> *ssids) {
             if (ssids != nil && [ssids indexOfObject:ssid] != NSNotFound) {
@@ -105,7 +149,7 @@ RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
     } else {
         reject(@"ios_error", @"Not supported in iOS<11.0", nil);
     }
-    
+
 }
 
 
