@@ -40,14 +40,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;
     private final ReactApplicationContext context;
 
-    private final static int ADD_NETWORK_FAILED = -1;
-
-    private enum WIFI_ENCRYPTION {
-        NONE,
-        WEP,
-        WPA2,
-    }
-
     RNWifiModule(ReactApplicationContext context) {
         super(context);
 
