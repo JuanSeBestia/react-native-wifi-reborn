@@ -1,6 +1,6 @@
 {
   "name": "react-native-wifi-reborn",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "A react-native implementation for viewing and connecting to Wifi networks on Android and iOS devices.",
   "main": "index.js",
   "scripts": {

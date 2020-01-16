@@ -1,3 +1,10 @@
+## [2.3.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.0...v2.3.1) (2020-01-16)
+
+
+### Bug Fixes
+
+* **iOS:** Use joinOnce as mentioned https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/2. ([#33](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/33)) ([6c71618](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/6c7161857b17866594ed49cc96b6bda49b74fb40))
+
 # [2.3.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.4...v2.3.0) (2020-01-16)
 
 
