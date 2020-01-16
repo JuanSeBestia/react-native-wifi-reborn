@@ -113,7 +113,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
         }];
 
     } else {
-        reject(@"ios_error", @"Not supported in iOS<13.0", nil);
+        reject(@"ios_error", @"Not supported in iOS<11.0", nil);
     }
 }
 
