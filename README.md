@@ -190,20 +190,22 @@ The following methods work only on iOS
 
 ###  `connectToSSID(ssid: string): Promise`
 
+###  `connectToSSIDPrefix(ssid: string): Promise`
+
 ### `disconnectFromSSID(ssid: string): Promise`
 
 ## Only Android
 The following methods work only on Android
 
-### `loadWifiList(successCallback: function, errorCallback: function)` 
+### `loadWifiList(successCallback: function, errorCallback: function)`
 
 Method to get a list of nearby WiFI networks.
-  
+
 #### successCallback( wifiList:  string )
 
 Type: `function`
 
-Function to be called if the attempt is successful. It contains a stringified JSONArray of wifiObjects as parameter, each object containing: 
+Function to be called if the attempt is successful. It contains a stringified JSONArray of wifiObjects as parameter, each object containing:
 
 * `SSID`: The network name.
 * `BSSID`: The WiFi BSSID.
@@ -218,7 +220,7 @@ Type: `function`
 
 Function to be called if any error occurs during the attempt. It contains a `string` as parameter with the error message.
 
-#### Usage 
+#### Usage
 
 ```javascript
 WifiManager.loadWifiList(
@@ -231,7 +233,7 @@ WifiManager.loadWifiList(
 	error =>  console.log(error)
 );
 /**
-Result: 
+Result:
 "Wifi 1 - Name of the network"
 "Wifi 2 - Name of the network"
 "Wifi 3 - Name of the network"
@@ -243,7 +245,7 @@ Result:
 
 This method is similar to `loadWifiList` but it forcefully starts the wifi scanning on android and in the callback fetches the list.
 
-#### Usage 
+#### Usage
 
 Same as `loadWifiList`.
 
