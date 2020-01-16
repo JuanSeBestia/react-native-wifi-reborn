@@ -153,13 +153,9 @@ Used on iOS.
 
 #### Errors:
 
-* `notInRange`: The WIFI network is not currently in range.
-
-* `addOrUpdateFailed`: Could not add or update the network configuration.
-
-* `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
-
-* `connectNetworkFailed`: Could not connect to network.
+* `location permission missing`: Location permission is not granted.
+* `location off`: Location service is turned off.
+* `failed`: Could not connect to network.
 
 ### `getCurrentWifiSSID(): Promise`
 
