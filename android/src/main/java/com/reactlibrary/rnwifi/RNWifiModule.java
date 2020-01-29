@@ -209,7 +209,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                     promise.reject("failed", "Could not connect to network");
                 }
             }
-        });
+        }).start();
     }
 
     /**
