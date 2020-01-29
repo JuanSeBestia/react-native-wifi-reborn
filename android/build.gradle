@@ -30,13 +30,12 @@ repositories {
     }
     google()
     jcenter()
-    maven { url 'https://jitpack.io' } // temporary as AndroidQ support isnt officially merged https://github.com/ThanosFisherman/WifiUtils/pull/46
 }
 
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
 
-    implementation 'com.github.eliaslecomte:WifiUtils:AndroidQ1.4.2'
+    implementation 'com.thanosfisherman.wifiutils:wifiutils:1.5.0'
 }
   
