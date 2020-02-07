@@ -1,3 +1,45 @@
+## [2.3.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.1...v2.3.2) (2020-01-21)
+
+
+### Bug Fixes
+
+* **android:** Verify connection after enabling network ([#31](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/31)) ([9fa86ee](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/9fa86ee0141535bd142f0e10ff4fd698ccda3533))
+
+## [2.3.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.0...v2.3.1) (2020-01-16)
+
+
+### Bug Fixes
+
+* **iOS:** Use joinOnce as mentioned https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/2. ([#33](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/33)) ([6c71618](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/6c7161857b17866594ed49cc96b6bda49b74fb40))
+
+# [2.3.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.4...v2.3.0) (2020-01-16)
+
+
+### Features
+
+* **iOS:** Connect to SSID prefix functions. ([#25](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/25)) ([5b52c97](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/5b52c97461753cb2fb7574964a1415ddaa23ba29))
+
+## [2.2.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.3...v2.2.4) (2019-12-18)
+
+
+### Performance Improvements
+
+* **test:** test perf semantic-release ([0d42570](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/0d425709f01b84a6882d27e2698d8e92783efb43))
+
+## [2.2.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.2...v2.2.3) (2019-12-12)
+
+
+### Bug Fixes
+
+* **iOS:** getCurrentWifiSSID when is deneided or  restrited ([1c6d1fd](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/1c6d1fd0a30840695201e38c6b1db1e6833cf1bf))
+
+## [2.2.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.1...v2.2.2) (2019-12-11)
+
+
+### Bug Fixes
+
+* **Android:** Bad marge ([b6a3cf5](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/b6a3cf5acdf701857137d76af98317e20d73cb12))
+
 ## [2.2.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.2.0...v2.2.1) (2019-12-10)
 
 
