@@ -32,7 +32,7 @@
 
 - (NSString *) getWifiSSID {
     NSString *kSSID = (NSString*) kCNNetworkInfoKeySSID;
-    
+
     NSArray *ifs = (__bridge_transfer id)CNCopySupportedInterfaces();
     for (NSString *ifnam in ifs) {
         NSDictionary *info = (__bridge_transfer id)CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam);
@@ -53,11 +53,40 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(connectToSSID:(NSString*)ssid
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    
-    if (@available(iOS 11.0, *)) {
-        NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid];
-        configuration.joinOnce = false;
-        
+    [self connectToProtectedSSID:ssid withPassphrase:@"" isWEP:false resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(connectToSSIDPrefix:(NSString*)ssid
+                   resolver:(RCTPromiseResolveBlock)resolve
+                   rejecter:(RCTPromiseRejectBlock)reject) {
+
+     if (@available(iOS 13.0, *)) {
+         NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSIDPrefix:ssid];
+         configuration.joinOnce = true;
+
+         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
+             if (error != nil) {
+                 reject(@"nehotspot_error", @"Error while configuring WiFi", error);
+             } else {
+                 resolve(nil);
+             }
+         }];
+
+     } else {
+         reject(@"ios_error", @"Not supported in iOS<13.0", nil);
+     }
+ }
+
+RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssid
+                  withPassphrase:(NSString*)passphrase
+                  isWEP:(BOOL)isWEP
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+
+    if (@available(iOS 13.0, *)) {
+        NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSIDPrefix:ssid passphrase:passphrase isWEP:isWEP];
+        configuration.joinOnce = true;
+
         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
                 reject(@"nehotspot_error", @"Error while configuring WiFi", error);
@@ -65,9 +94,9 @@ RCT_EXPORT_METHOD(connectToSSID:(NSString*)ssid
                 resolve(nil);
             }
         }];
-        
+
     } else {
-        reject(@"ios_error", @"Not supported in iOS<11.0", nil);
+        reject(@"ios_error", @"Not supported in iOS<13.0", nil);
     }
 }
 
@@ -76,19 +105,31 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
                   isWEP:(BOOL)isWEP
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    
+    // Prevent NEHotspotConfigurationManager error when connecting to an already connected network
+    if ([ssid isEqualToString:[self getWifiSSID]]) resolve(nil);
     if (@available(iOS 11.0, *)) {
-        NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid passphrase:passphrase isWEP:isWEP];
+        NEHotspotConfiguration* configuration;
+        // Check if open network
+        if (passphrase == (id)[NSNull null] || passphrase.length == 0 ) {
+            configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid];
+        } else {
+            configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid passphrase:passphrase isWEP:isWEP];
+        }
         configuration.joinOnce = false;
         
         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
-                reject(@"nehotspot_error", @"Error while configuring WiFi", error);
+                reject(@"nehotspot_error", [error localizedDescription], error);
             } else {
-                resolve(nil);
+                // Verify SSID connection
+                if ([ssid isEqualToString:[self getWifiSSID]]){
+                    resolve(nil);
+                } else {
+                    reject(@"nehotspot_error", [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
+                }
             }
         }];
-        
+
     } else {
         reject(@"ios_error", @"Not supported in iOS<11.0", nil);
     }
@@ -97,7 +138,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
 RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    
+
     if (@available(iOS 11.0, *)) {
         [[NEHotspotConfigurationManager sharedManager] getConfiguredSSIDsWithCompletionHandler:^(NSArray<NSString *> *ssids) {
             if (ssids != nil && [ssids indexOfObject:ssid] != NSNotFound) {
@@ -108,13 +149,26 @@ RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
     } else {
         reject(@"ios_error", @"Not supported in iOS<11.0", nil);
     }
-    
+
 }
 
 
 RCT_REMAP_METHOD(getCurrentWifiSSID,
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject) {
+    
+    if (@available(iOS 13, *)) {
+        // Reject when permission had rejected
+        if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied){
+            NSLog(@"RNWIFI:ERROR:Cannot detect SSID because LocationPermission is Denied ");
+            reject(@"cannot_detect_ssid", @"Cannot detect SSID because LocationPermission is Denied", nil);
+        }
+        if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted){
+            NSLog(@"RNWIFI:ERROR:Cannot detect SSID because LocationPermission is Restricted ");
+            reject(@"cannot_detect_ssid", @"Cannot detect SSID because LocationPermission is Restricted", nil);
+        }
+    }
+    
     BOOL hasLocationPermission = [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse ||
     [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways;
     if (@available(iOS 13, *) && hasLocationPermission == NO) {
