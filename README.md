@@ -150,6 +150,9 @@ Type: `boolean`
 Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
 
 #### Errors:
+* `locationPermissionNotGranted`: [Android 6+] Location permission is not granted.
+* `locationServicesOff`: [Android 6 +] Location Services are off.
+* `wifiOff`: [Android 10+] Wifi is off.
 * `notInRange`: The WIFI network is not currently in range.
 * `addOrUpdateFailed`: Could not add or update the network configuration.
 * `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.

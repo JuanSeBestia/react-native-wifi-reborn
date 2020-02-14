@@ -203,7 +203,23 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
         final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
+        if (!locationPermissionGranted) {
+            promise.reject("locationPermissionNotGranted", "Location permission is required to connect with a wifi network.");
+            return;
+        }
+
         final boolean isLocationOn = LocationUtils.isLocationOn(context);
+        if (!isLocationOn) {
+            promise.reject("locationServicesOff", "Location Services is turned off.");
+            return;
+        }
+
+        final boolean isAndroid10OrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+        final boolean isWifiEnabled = wifi.isWifiEnabled();
+        if (isAndroid10OrAbove && !isWifiEnabled) {
+            promise.reject("wifiOff", "Wifi is turned off.");
+            return;
+        }
 
         WifiUtils.withContext(context).connectWith(SSID, password).onConnectionResult(new ConnectionSuccessListener() {
             @Override
