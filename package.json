@@ -4,7 +4,7 @@
   "description": "A react-native implementation for viewing and connecting to Wifi networks on Android and iOS devices.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 0",
     "semantic-release": "semantic-release"
   },
   "keywords": [
@@ -33,5 +33,6 @@
     "@semantic-release/changelog": "^3.0.4",
     "@semantic-release/git": "^7.0.16",
     "semantic-release": "^15.13.27"
-  }
+  },
+  "types": "index.d.ts"
 }
