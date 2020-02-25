@@ -9,7 +9,7 @@ Nodeunit contributors (sorted alphabetically)
 
   * Update gradle configuration
   * Update all Library in Android
-  
+
 * **[kristfal](https://github.com/kristfal)**
 
   * [android] rename the default name of package
@@ -21,3 +21,7 @@ Nodeunit contributors (sorted alphabetically)
 * **[gabrielrra](https://github.com/gabrielrra)**
 
   * [docs] Update docs
+
+* **[thibmaek](https://github.com/thibmaek)**
+
+  * [docs] Added type declarations
