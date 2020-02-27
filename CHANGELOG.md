@@ -1,3 +1,10 @@
+## [2.3.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.2...v2.3.3) (2020-02-27)
+
+
+### Bug Fixes
+
+* **iOS:** Fix joinOnce for connectToSSIDPrefix ([#40](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/40)) ([61185a9](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/61185a960b06fe621af3c4c8c8d114036b7ff042))
+
 ## [2.3.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.1...v2.3.2) (2020-01-21)
 
 
