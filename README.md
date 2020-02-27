@@ -155,7 +155,19 @@ Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 per
 * `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
 * `connectNetworkFailed`: Could not connect to network.
 
-### connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean): Promise
+### `getCurrentWifiSSID(): Promise`
+
+## Only iOS
+
+The following methods work only on iOS
+
+###  `connectToSSID(ssid: string): Promise`
+
+###  `connectToSSIDPrefix(ssid: string): Promise`
+
+### `disconnectFromSSID(ssid: string): Promise`
+
+### `connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean): Promise`
 
 Use this function when you want to match a known SSID prefix, but don’t have a full SSID. If the system finds multiple Wi-Fi networks whose SSID string matches the given prefix, it selects the network with the greatest signal strength.
 
@@ -181,18 +193,6 @@ Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 per
 * `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
 
 * `connectNetworkFailed`: Could not connect to network.
-
-### `getCurrentWifiSSID(): Promise`
-
-## Only iOS
-
-The following methods work only on iOS
-
-###  `connectToSSID(ssid: string): Promise`
-
-###  `connectToSSIDPrefix(ssid: string): Promise`
-
-### `disconnectFromSSID(ssid: string): Promise`
 
 ## Only Android
 The following methods work only on Android
