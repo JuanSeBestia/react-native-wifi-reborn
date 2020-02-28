@@ -1,5 +1,5 @@
 {
-    "plugins": ["prettier", "jsdoc", "@typescript-eslint"],
+    "plugins": ["prettier", "@typescript-eslint"],
     "env": {
         "es6": true,
         "node": true
@@ -12,7 +12,6 @@
     "extends": [
         "eslint:recommended",
         "prettier",
-        "plugin:jsdoc/recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended"
     ],
