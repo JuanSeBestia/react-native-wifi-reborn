@@ -5,7 +5,7 @@
   "types": "lib/types/index.d.ts",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint src/ lib/ --ext .js,.jsx,.ts,.tsx",
     "test": "echo \"No test specified\" && exit 0",
     "checkjs": "tsc",
     "semantic-release": "semantic-release"
