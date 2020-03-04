@@ -1,3 +1,10 @@
+## [2.3.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.3...v2.3.4) (2020-03-04)
+
+
+### Performance Improvements
+
+* Reduce package size ([#43](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/43)) ([d108823](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/d108823989538a5d102b034f393bfada21619b75))
+
 ## [2.3.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.2...v2.3.3) (2020-02-27)
 
 
