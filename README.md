@@ -30,7 +30,7 @@ This project is based on the no longer maintained https://github.com/robwalkerco
 
 `$ npm install react-native-wifi-reborn --save`
 
-### iOS setup
+### iOS
 
 You need use enable Access WIFI Information, with correct profile
 
@@ -40,7 +40,45 @@ You need put "Privacy - Location When In Use Usage Description" or "Privacy - Lo
 
 ### Android
 
-Location permission (a runtime permission starting Android 6) is required for some methods (https://github.com/inthepocket/react-native-wifi-reborn#connecttoprotectedssidssid-string-password-string-iswep-boolean-promise). Make sure to request them at runtime: https://facebook.github.io/react-native/docs/permissionsandroid.
+#### Location permission
+
+Starting [Android 6](https://developer.android.com/about/versions/marshmallow), you need to request the app permission at runtime.
+Since you can determine the location based on the wifi networks around the user. This is at least required for [loadwifilist](https://github.com/JuanSeBestia/react-native-wifi-reborn#loadwifilist) and for [connectToProtectedSSID](https://github.com/JuanSeBestia/react-native-wifi-reborn#connecttoprotectedssidssid-string-password-string-iswep-boolean-promise).
+
+Example:
+
+```javascript
+
+import { PermissionsAndroid } from 'react-native';
+import { WifiManager } from 'react-native-wifi-reborn'
+
+async function requestLocationPermission() {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Location permission is required for scanning wifi networks',
+        message:
+          'This app needs location permission as this is required  ' +
+          'to scan for wifi networks.',
+        buttonNegative: 'DENY',
+        buttonPositive: 'ALLOW',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('You can use loadWifiList');
+      WifiManager.loadWifiList()
+    } else {
+      console.log('Camera permission denied');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+}
+
+```
+
+Documentation: https://facebook.github.io/react-native/docs/permissionsandroid.
 
 ### Autolinking (React Native 60+)
 
