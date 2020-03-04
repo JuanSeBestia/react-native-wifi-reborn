@@ -162,20 +162,49 @@ The following methods work only on iOS
 
 ###  `connectToSSID(ssid: string): Promise`
 
+###  `connectToSSIDPrefix(ssid: string): Promise`
+
 ### `disconnectFromSSID(ssid: string): Promise`
+
+### `connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean): Promise`
+
+Use this function when you want to match a known SSID prefix, but don’t have a full SSID. If the system finds multiple Wi-Fi networks whose SSID string matches the given prefix, it selects the network with the greatest signal strength.
+
+#### SSIDPrefix
+Type: `string`
+A prefix string to match the SSID of a Wi-Fi network.
+
+#### password
+Type: `string`
+The password of the wifi network to connect with.
+
+#### isWep
+Type: `boolean`
+Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+
+
+#### Errors:
+
+* `notInRange`: The WIFI network is not currently in range.
+
+* `addOrUpdateFailed`: Could not add or update the network configuration.
+
+* `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
+
+* `connectNetworkFailed`: Could not connect to network.
 
 ## Only Android
 The following methods work only on Android
 
-### `loadWifiList(successCallback: function, errorCallback: function)` 
+### `loadWifiList(successCallback: function, errorCallback: function)`
 
 Method to get a list of nearby WiFI networks.
-  
+
 #### successCallback( wifiList:  string )
 
 Type: `function`
 
-Function to be called if the attempt is successful. It contains a stringified JSONArray of wifiObjects as parameter, each object containing: 
+Function to be called if the attempt is successful. It contains a stringified JSONArray of wifiObjects as parameter, each object containing:
 
 * `SSID`: The network name.
 * `BSSID`: The WiFi BSSID.
@@ -190,7 +219,7 @@ Type: `function`
 
 Function to be called if any error occurs during the attempt. It contains a `string` as parameter with the error message.
 
-#### Usage 
+#### Usage
 
 ```javascript
 WifiManager.loadWifiList(
@@ -203,7 +232,7 @@ WifiManager.loadWifiList(
 	error =>  console.log(error)
 );
 /**
-Result: 
+Result:
 "Wifi 1 - Name of the network"
 "Wifi 2 - Name of the network"
 "Wifi 3 - Name of the network"
@@ -215,7 +244,7 @@ Result:
 
 This method is similar to `loadWifiList` but it forcefully starts the wifi scanning on android and in the callback fetches the list.
 
-#### Usage 
+#### Usage
 
 Same as `loadWifiList`.
 
