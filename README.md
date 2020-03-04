@@ -40,45 +40,31 @@ You need put "Privacy - Location When In Use Usage Description" or "Privacy - Lo
 
 ### Android
 
-#### Location permission
+#### `ACCESS_FINE_LOCATION` permission
 
-Starting [Android 6](https://developer.android.com/about/versions/marshmallow), you need to request the app permission at runtime.
-Since you can determine the location based on the wifi networks around the user. This is at least required for [loadwifilist](https://github.com/JuanSeBestia/react-native-wifi-reborn#loadwifilist) and for [connectToProtectedSSID](https://github.com/JuanSeBestia/react-native-wifi-reborn#connecttoprotectedssidssid-string-password-string-iswep-boolean-promise).
+Since [Android 6](https://developer.android.com/about/versions/marshmallow), you must request the [`ACCESS_FINE_LOCATION`](https://developer.android.com/reference/android/Manifest.permission#ACCESS_FINE_LOCATION) permission at runtime to use the device's Wi-Fi scanning and managing capabilities. In order to accomplish this, you can use the [PermissionsAndroid API](https://reactnative.dev/docs/permissionsandroid) or [React Native Permissions](https://github.com/react-native-community/react-native-permissions).
 
 Example:
-
 ```javascript
-
 import { PermissionsAndroid } from 'react-native';
-import { WifiManager } from 'react-native-wifi-reborn'
 
-async function requestLocationPermission() {
-  try {
-    const granted = await PermissionsAndroid.request(
+const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
-        title: 'Location permission is required for scanning wifi networks',
+        title: 'Location permission is required for WiFi connections',
         message:
           'This app needs location permission as this is required  ' +
           'to scan for wifi networks.',
         buttonNegative: 'DENY',
         buttonPositive: 'ALLOW',
       },
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('You can use loadWifiList');
-      WifiManager.loadWifiList()
-    } else {
-      console.log('Camera permission denied');
-    }
-  } catch (err) {
-    console.warn(err);
-  }
+);
+if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    // You can now use react-native-wifi-reborn
+} else {
+    // Permission denied
 }
-
 ```
-
-Documentation: https://facebook.github.io/react-native/docs/permissionsandroid.
 
 ### Autolinking (React Native 60+)
 
