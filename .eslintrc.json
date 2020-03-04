@@ -1,0 +1,34 @@
+{
+    "plugins": ["prettier", "@typescript-eslint"],
+    "env": {
+        "es6": true,
+        "node": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": "./tsconfig.json"
+    },
+    "extends": [
+        "eslint:recommended",
+        "prettier",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+        "prefer-const": [
+            "error",
+            {
+                "destructuring": "any",
+                "ignoreReadBeforeAssign": false
+            }
+        ],
+        "curly": ["error", "multi-line", "consistent"],
+        "no-var": "error",
+        "prefer-template": 2,
+        "require-atomic-updates": "off",
+        "prettier/prettier": ["error"],
+        "jsdoc/require-returns-description": 0,
+        "jsdoc/require-param-description": 0,
+        "jsdoc/require-returns": 0
+    }
+}

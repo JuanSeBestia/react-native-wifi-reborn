@@ -8,6 +8,12 @@ jobs:
 
       - run: npm ci
 
+      - run: npm run lint
+
+      - run: npm run checkjs
+
+      - run: npm run test
+
       - run:
           name: release
           command: npm run semantic-release || true

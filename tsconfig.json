@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": true,
+        "noEmit": true,
+        "strict": true,
+        "skipLibCheck": true,
+    },
+    "include": ["src/", "__tests__/", "__mocks__/", "lib/types/"],
+}
