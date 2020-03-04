@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.4...v2.4.0) (2020-03-04)
+
+
+### Features
+
+* Add TypeScript declaration ([#44](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/44)) ([610fc32](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/610fc32bc01959518b6d4345a3ddab2e1138f085))
+
 ## [2.3.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.3...v2.3.4) (2020-03-04)
 
 
