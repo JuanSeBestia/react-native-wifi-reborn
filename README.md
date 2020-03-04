@@ -145,21 +145,14 @@ Type: `string`
 
 The password of the wifi network to connect with.
 
-#### isWEP
-
+#### isWep
 Type: `boolean`
-
-Used on iOS.
+Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
 
 #### Errors:
-
-* `notInRange`: The WIFI network is not currently in range.
-
-* `addOrUpdateFailed`: Could not add or update the network configuration.
-
-* `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
-
-* `connectNetworkFailed`: Could not connect to network.
+* `location permission missing`: The location permission (ACCESS_FINE_LOCATION) is not granted (android 6+).
+* `location off`: The location service needs to be turned on (android 6+).
+* `failed`: Could not connect to the network. Could be due to multiple reasons; not in rang or wrong password.
 
 ### `getCurrentWifiSSID(): Promise`
 
