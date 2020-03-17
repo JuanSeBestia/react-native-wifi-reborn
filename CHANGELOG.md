@@ -1,3 +1,13 @@
+# [3.0.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.4.0...v3.0.0) (2020-03-17)
+
+
+* Merge pull request #46 from inthepocket/feature/use-wifiutils-for-android-with-semantics ([eeea1af](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/eeea1afc1e42a78ce785a42dae3ff626cea3fe33)), closes [#46](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/46)
+
+
+### BREAKING CHANGES
+
+* Use WifiUtils to connect with a wifi network
+
 # [2.4.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.4...v2.4.0) (2020-03-04)
 
 
