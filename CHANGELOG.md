@@ -1,3 +1,34 @@
+# [3.0.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.4.0...v3.0.0) (2020-03-17)
+
+
+* Merge pull request #46 from inthepocket/feature/use-wifiutils-for-android-with-semantics ([eeea1af](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/eeea1afc1e42a78ce785a42dae3ff626cea3fe33)), closes [#46](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/46)
+
+
+### BREAKING CHANGES
+
+* Use WifiUtils to connect with a wifi network
+
+# [2.4.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.4...v2.4.0) (2020-03-04)
+
+
+### Features
+
+* Add TypeScript declaration ([#44](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/44)) ([610fc32](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/610fc32bc01959518b6d4345a3ddab2e1138f085))
+
+## [2.3.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.3...v2.3.4) (2020-03-04)
+
+
+### Performance Improvements
+
+* Reduce package size ([#43](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/43)) ([d108823](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/d108823989538a5d102b034f393bfada21619b75))
+
+## [2.3.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.2...v2.3.3) (2020-02-27)
+
+
+### Bug Fixes
+
+* **iOS:** Fix joinOnce for connectToSSIDPrefix ([#40](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/40)) ([61185a9](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/61185a960b06fe621af3c4c8c8d114036b7ff042))
+
 ## [2.3.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.3.1...v2.3.2) (2020-01-21)
 
 

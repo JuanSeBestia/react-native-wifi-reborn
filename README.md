@@ -147,18 +147,26 @@ The password of the wifi network to connect with.
 
 #### isWep
 Type: `boolean`
-Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
 
 #### Errors:
-* `locationPermissionNotGranted`: [Android 6+] Location permission is not granted.
-* `locationServicesOff`: [Android 6 +] Location Services are off.
-* `wifiOff`: [Android 10+] Wifi is off.
-* `notInRange`: The WIFI network is not currently in range.
-* `addOrUpdateFailed`: Could not add or update the network configuration.
-* `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
-* `connectNetworkFailed`: Could not connect to network.
+* `location permission missing`: The location permission (ACCESS_FINE_LOCATION) is not granted (android 6+).
+* `location off`: The location service needs to be turned on (android 6+).
+* `failed`: Could not connect to the network. Could be due to multiple reasons; not in rang or wrong password.
 
-### connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean): Promise
+### `getCurrentWifiSSID(): Promise`
+
+## Only iOS
+
+The following methods work only on iOS
+
+###  `connectToSSID(ssid: string): Promise`
+
+###  `connectToSSIDPrefix(ssid: string): Promise`
+
+### `disconnectFromSSID(ssid: string): Promise`
+
+### `connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean): Promise`
 
 Use this function when you want to match a known SSID prefix, but don’t have a full SSID. If the system finds multiple Wi-Fi networks whose SSID string matches the given prefix, it selects the network with the greatest signal strength.
 
@@ -184,18 +192,6 @@ Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 per
 * `disconnectFailed`: Disconnecting from the network failed. This is done as part of the connect flow.
 
 * `connectNetworkFailed`: Could not connect to network.
-
-### `getCurrentWifiSSID(): Promise`
-
-## Only iOS
-
-The following methods work only on iOS
-
-###  `connectToSSID(ssid: string): Promise`
-
-###  `connectToSSIDPrefix(ssid: string): Promise`
-
-### `disconnectFromSSID(ssid: string): Promise`
 
 ## Only Android
 The following methods work only on Android
