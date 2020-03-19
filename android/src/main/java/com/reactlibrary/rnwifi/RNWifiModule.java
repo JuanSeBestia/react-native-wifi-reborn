@@ -10,7 +10,6 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -27,6 +26,8 @@ import com.reactlibrary.utils.LocationUtils;
 import com.reactlibrary.utils.PermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
+import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionErrorCode;
+import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -292,19 +293,20 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void isRemoveWifiNetwork(final String SSID, final Promise promise) {
-        final List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
-        final String comparableSSID = ('"' + SSID + '"'); //Add quotes because wifiConfig.SSID has them
+        WifiUtils.withContext(this.context)
+                .disconnectFrom(SSID)
+                .onDisconnectionResult(new DisconnectionSuccessListener() {
+                    @Override
+                    public void success() {
+                        promise.resolve(true);
+                    }
 
-        for (WifiConfiguration wifiConfig : mWifiConfigList) {
-            if (wifiConfig.SSID.equals(comparableSSID)) {
-                wifi.removeNetwork(wifiConfig.networkId);
-                wifi.saveConfiguration();
-                promise.resolve(true);
-                return;
-            }
-        }
-
-        promise.resolve(false);
+                    @Override
+                    public void failed(@NonNull DisconnectionErrorCode errorCode) {
+                        promise.resolve(false);
+                    }
+                })
+                .start();
     }
 
     /**

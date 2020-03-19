@@ -30,12 +30,13 @@ repositories {
     }
     google()
     jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
 
-    implementation 'com.thanosfisherman.wifiutils:wifiutils:1.5.1'
+    implementation 'com.github.eliaslecomte:WifiUtils:feature~disconnectFromWifi-SNAPSHOT'
 }
   
