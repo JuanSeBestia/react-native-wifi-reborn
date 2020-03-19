@@ -287,7 +287,6 @@ Called when the network status is resolved. It contains a boolean argument
 
 ### `getIP`
 
-### `isRemoveWifiNetwork`
 <details>
 <summary>isRemoveWifiNetwork(ssid: String): Promise<boolean></summary>
 This method will remove the wifi network configuration.
