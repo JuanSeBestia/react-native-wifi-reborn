@@ -289,18 +289,15 @@ Called when the network status is resolved. It contains a boolean argument
 
 ### `isRemoveWifiNetwork`
 
-### forceWifiUsage(useWifi: bool)
+<details>
+<summary>forceWifiUsage(useWifi: boolean): Promise</summary>
 
-Method to force wifi usage if the user needs to send requests via wifi if it does not have internet connection.
+ Use this to execute api calls to a wifi network that does not have internet access.
+ Useful for commissioning IoT devices.
+ This will route all app network requests to the network (instead of the mobile connection).
+ It is important to disable it again after using as even when the app disconnects from the wifi network it will keep on routing everything to wifi.
+</details>
 
-If you want to use it, you need to add the `android.permission.WRITE_SETTINGS` permission to your AndroidManifest.xml.
+## Conventions
 
-```xml
-
-<manifest  xmlns:android="http://schemas.android.com/apk/res/android">
-
-<uses-permission  android:name="android.permission.WRITE_SETTINGS" />
-
-</manifest>
-
-```
+* Anuglar JS Git Commit conventions are used, read more: https://gist.github.com/stephenparish/9941e89d80e2bc58a153#recognizing-unimportant-commits
