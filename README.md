@@ -297,3 +297,7 @@ Called when the network status is resolved. It contains a boolean argument
  This will route all app network requests to the network (instead of the mobile connection).
  It is important to disable it again after using as even when the app disconnects from the wifi network it will keep on routing everything to wifi.
 </details>
+
+## Conventions
+
+* Anuglar JS Git Commit conventions are used, read more: https://gist.github.com/stephenparish/9941e89d80e2bc58a153#recognizing-unimportant-commits
