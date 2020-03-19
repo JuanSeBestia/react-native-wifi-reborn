@@ -81,15 +81,26 @@ declare module 'react-native-wifi-reborn' {
     export function connectionStatus(callback: (isConnected: boolean) => void): void;
     export function disconnect(): void;
     export function isRemoveWifiNetwork(SSID: string): Promise<void>;
+
+    export enum FORCE_WIFI_USAGE_ERRORS {
+        couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
+    }
+
+    interface ForceWifiUsageError extends Error {
+        code?: FORCE_WIFI_USAGE_ERRORS;
+    }
+
     /**
-     * Force wifi usage if the user needs to send requests via WiFi
-     * if it does not have internet connection. Useful for IoT applications, when
-     * the app needs to communicate and send requests to a device that have no
-     * internet connection via WiFi.
+     * Use this to execute api calls to a wifi network that does not have internet access.
      *
-     * Receives a boolean to enable forceWifiUsage if true, and disable if false.
-     * Is important to disable it when disconnecting from IoT device.
+     * Useful for commissioning IoT devices.
+     *
+     * This will route all app network requests to the network (instead of the mobile connection).
+     * It is important to disable it again after using as even when the app disconnects from the wifi
+     * network it will keep on routing everything to wifi.
+     *
+     * @param useWifi boolean to force wifi off or on
      */
-    export function forceWifiUsage(force: boolean): Promise<void>;
+    export function forceWifiUsage(useWifi: boolean): Promise<void>;
     //#endregion
 }
