@@ -65,6 +65,7 @@ declare module 'react-native-wifi-reborn' {
         callback: (wifiList: string) => void,
         error: (err: string) => void
     ): void;
+
     /**
      * Similar to `loadWifiList` but it forcefully starts the WiFi scanning on android and in the callback fetches the list.
      */
@@ -72,22 +73,23 @@ declare module 'react-native-wifi-reborn' {
         callback: (wifiList: string) => void,
         error: (err: string) => void
     ): void;
+
     export function isEnabled(callback: (enabled: boolean) => void): void;
+
     export function setEnabled(enabled: boolean): void;
+
     /**
      * Indicates whether network connectivity exists and it is possible to establish connections.
      * @param Called when the network status is resolved.
      */
     export function connectionStatus(callback: (isConnected: boolean) => void): void;
+
     export function disconnect(): void;
+
     export function isRemoveWifiNetwork(SSID: string): Promise<void>;
 
     export enum FORCE_WIFI_USAGE_ERRORS {
         couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
-    }
-
-    interface ForceWifiUsageError extends Error {
-        code?: FORCE_WIFI_USAGE_ERRORS;
     }
 
     /**
