@@ -80,7 +80,13 @@ declare module 'react-native-wifi-reborn' {
      */
     export function connectionStatus(callback: (isConnected: boolean) => void): void;
     export function disconnect(): void;
-    export function isRemoveWifiNetwork(SSID: string): Promise<void>;
+    /**
+     * This method will remove the wifi network configuration.
+     * If you are connected to that network, it will disconnect.
+     *
+     * @param SSID wifi SSID to remove configuration for
+     */
+    export function isRemoveWifiNetwork(SSID: string): Promise<boolean>;
     /**
      * Force wifi usage if the user needs to send requests via WiFi
      * if it does not have internet connection. Useful for IoT applications, when

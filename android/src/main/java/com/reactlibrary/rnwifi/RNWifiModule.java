@@ -305,24 +305,26 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * This method will remove the wifi network as per the passed SSID from the device list
+     * This method will remove the wifi network configuration.
+     * If you are connected to that network, it will disconnect.
      *
-     * @param ssid
-     * @param callback
+     * @param SSID wifi SSID to remove configuration for
      */
     @ReactMethod
-    public void isRemoveWifiNetwork(String ssid, final Callback callback) {
-        List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
+    public void isRemoveWifiNetwork(final String SSID, final Promise promise) {
+        final List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
+        final String comparableSSID = ('"' + SSID + '"'); //Add quotes because wifiConfig.SSID has them
+
         for (WifiConfiguration wifiConfig : mWifiConfigList) {
-            String comparableSSID = ('"' + ssid + '"'); //Add quotes because wifiConfig.SSID has them
             if (wifiConfig.SSID.equals(comparableSSID)) {
                 wifi.removeNetwork(wifiConfig.networkId);
                 wifi.saveConfiguration();
-                callback.invoke(true);
+                promise.resolve(true);
                 return;
             }
         }
-        callback.invoke(false);
+
+        promise.resolve(false);
     }
 
     /**
