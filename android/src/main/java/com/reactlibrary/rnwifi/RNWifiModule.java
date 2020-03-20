@@ -294,8 +294,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void isRemoveWifiNetwork(final String SSID, final Promise promise) {
         WifiUtils.withContext(this.context)
-                .disconnectFrom(SSID)
-                .onDisconnectionResult(new DisconnectionSuccessListener() {
+                .disconnectFrom(SSID, new DisconnectionSuccessListener() {
                     @Override
                     public void success() {
                         promise.resolve(true);
@@ -305,8 +304,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                     public void failed(@NonNull DisconnectionErrorCode errorCode) {
                         promise.resolve(false);
                     }
-                })
-                .start();
+                });
     }
 
     /**
