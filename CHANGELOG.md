@@ -1,3 +1,10 @@
+## [3.1.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v3.1.0...v3.1.1) (2020-03-22)
+
+
+### Bug Fixes
+
+* add location permission explanation on the readme ([12810b8](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/12810b8d3cedf1b0bdb980a56ce2075f48e785b8))
+
 # [3.1.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v3.0.0...v3.1.0) (2020-03-22)
 
 
