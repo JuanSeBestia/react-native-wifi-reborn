@@ -1,5 +1,6 @@
 package com.reactlibrary.rnwifi;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,10 +23,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.reactlibrary.rnwifi.errors.ConnectErrorCodes;
 import com.reactlibrary.rnwifi.errors.RemoveWifiConfigurationErrorCodes;
 import com.reactlibrary.utils.LocationUtils;
 import com.reactlibrary.utils.PermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
+import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
 import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionSuccessListener;
@@ -40,6 +43,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;
     private final ReactApplicationContext context;
 
+    final long CONNECT_TIMEOUT_IN_MILLISECONDS = 45000;
+
     RNWifiModule(ReactApplicationContext context) {
         super(context);
 
@@ -49,6 +54,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     @Override
+    @NonNull
     public String getName() {
         return "WifiManager";
     }
@@ -172,26 +178,51 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
         final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
         if (!locationPermissionGranted) {
-            promise.reject("location permission missing", "Location permission is not granted");
+            promise.reject(ConnectErrorCodes.locationPermissionMissing.toString(), "Location permission is not granted");
             return;
         }
 
         final boolean isLocationOn = LocationUtils.isLocationOn(context);
         if (!isLocationOn) {
-            promise.reject("location off", "Location service is turned off");
+            promise.reject(ConnectErrorCodes.locationServicesOff.toString(), "Location service is turned off");
             return;
         }
 
-        WifiUtils.withContext(context).connectWith(SSID, password).onConnectionResult(new ConnectionSuccessListener() {
-            @Override
-            public void isSuccessful(boolean isSuccess) {
-                if (isSuccess) {
-                    promise.resolve("connected");
-                } else {
-                    promise.reject("failed", "Could not connect to network");
-                }
-            }
-        }).start();
+        WifiUtils.withContext(context)
+                .connectWith(SSID, password)
+                .setTimeout(CONNECT_TIMEOUT_IN_MILLISECONDS)
+                .onConnectionResult(new ConnectionSuccessListener() {
+                    @Override
+                    public void success() {
+                        promise.resolve("connected");
+                    }
+
+                    @SuppressLint("DefaultLocale")
+                    @Override
+                    public void failed(@NonNull ConnectionErrorCode errorCode) {
+                        switch (errorCode) {
+                            case COULD_NOT_ENABLE_WIFI: {
+                                promise.reject(ConnectErrorCodes.couldNotEnableWifi.toString(), "On Android 10, the user has to enable wifi manually.");
+                            }
+                            case COULD_NOT_SCAN: {
+                                promise.reject(ConnectErrorCodes.couldNotScan.toString(), "Starting Android 9, apps are only allowed to scan wifi networks a few times.");
+                            }
+                            case DID_NOT_FIND_NETWORK_BY_SCANNING: {
+                                promise.reject(ConnectErrorCodes.didNotFindNetworkByScanning.toString(), "Wifi network is not in range or not seen.");
+                            }
+                            case AUTHENTICATION_ERROR_OCCURRED: {
+                                promise.reject(ConnectErrorCodes.authenticationErrorOccurred.toString(), "Authentication error, wrong password or a saved wifi configuration with a different password / security type.");
+                            }
+                            case TIMEOUT_OCCURRED: {
+                                promise.reject(ConnectErrorCodes.timeoutOccurred.toString(), String.format("Could not connect in %d milliseconds ", CONNECT_TIMEOUT_IN_MILLISECONDS));
+                            }
+                            case COULD_NOT_CONNECT: {
+                                promise.reject(ConnectErrorCodes.couldNotConnect.toString(), String.format("Failed to connect with %s", SSID));
+                            }
+                        }
+                    }
+                })
+                .start();
     }
 
     /**

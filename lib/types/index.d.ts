@@ -19,9 +19,47 @@ declare module 'react-native-wifi-reborn' {
         connectNetworkFailed: boolean;
     }>;
 
+    export enum CONNECT_ERRORS {
+        /**
+         * Starting android 6, location permission needs to be granted for wifi scanning.
+         */
+        locationPermissionMissing = 'locationPermissionMissing',
+        /**
+         * Starting Android 6, location services needs to be on to scan for wifi networks.
+         */
+        locationServicesOff = 'locationServicesOff',
+        /**
+         * Starting Android 10, apps are no longer allowed to enable wifi.
+         * User has to manually do this.
+         */
+        couldNotEnableWifi = 'couldNotEnableWifi',
+        /**
+         * Starting Android 9, it's only allowed to scan 4 times per 2 minuts in a foreground app.
+         * https://developer.android.com/guide/topics/connectivity/wifi-scan
+         */
+        couldNotScan = 'couldNotScan',
+        /**
+         * If the wifi network is not in range, the security type is unknown and WifiUtils doesn't support
+         * connecting to the network.
+         */
+        didNotFindNetworkByScanning = 'didNotFindNetworkByScanning',
+        /**
+         * Authentication error occurred while trying to connect.
+         * The password could be incorrect or the user could have a saved network configuration with a
+         * different password!
+         */
+        authenticationErrorOccurred = 'authenticationErrorOccurred',
+        /**
+         * Could not connect in the timeout window.
+         */
+        timeoutOccurred = 'timeoutOccurred',
+        couldNotConnect = 'couldNotConnect',
+    }
+
     /**
      * Connects to a WiFi network. Rejects with an error if it couldn't connect.
      *
+     * @param SSID Wifi name.
      * @param password `null` for open networks.
      * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
      */

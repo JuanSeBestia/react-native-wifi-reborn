@@ -37,6 +37,6 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
 
-    implementation 'com.github.eliaslecomte:WifiUtils:feature~disconnectFromWifi-SNAPSHOT'
+    implementation 'com.github.eliaslecomte:WifiUtils:snapshot~disconnect-and-exceptions-SNAPSHOT'
 }
   
