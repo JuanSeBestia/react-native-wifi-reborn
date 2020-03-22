@@ -22,6 +22,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.reactlibrary.rnwifi.errors.RemoveWifiConfigurationErrorCodes;
 import com.reactlibrary.utils.LocationUtils;
 import com.reactlibrary.utils.PermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
@@ -302,7 +303,17 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
                     @Override
                     public void failed(@NonNull DisconnectionErrorCode errorCode) {
-                        promise.resolve(false);
+                        switch (errorCode) {
+                            case COULD_NOT_GET_WIFI_MANAGER: {
+                                promise.reject(RemoveWifiConfigurationErrorCodes.couldNotGetWifiManager.toString(), "Could not get WifiManager.");
+                            }
+                            case COULD_NOT_GET_CONNECTIVITY_MANAGER: {
+                                promise.reject(RemoveWifiConfigurationErrorCodes.couldNotGetConnectivityManager.toString(), "Could not get Connectivity Manager.");
+                            }
+                            case COULD_NOT_DISCONNECT: {
+                                promise.resolve(false);
+                            }
+                        }
                     }
                 });
     }

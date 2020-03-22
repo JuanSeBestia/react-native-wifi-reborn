@@ -85,6 +85,12 @@ declare module 'react-native-wifi-reborn' {
     export function connectionStatus(callback: (isConnected: boolean) => void): void;
 
     export function disconnect(): void;
+
+    export enum IS_REMOVE_WIFI_NETWORK_ERRORS {
+        couldNotGetWifiManager = 'couldNotGetWifiManager',
+        couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
+    }
+
     /**
      * This method will remove the wifi network configuration.
      * If you are connected to that network, it will disconnect.
