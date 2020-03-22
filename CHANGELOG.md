@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v3.0.0...v3.1.0) (2020-03-22)
+
+
+### Features
+
+* **forceWifiUsage:** remove need of the WRITE_SETTINGS. Api calls to a wifi network without internet access can perfectly be done without ([7c9daef](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/7c9daef69d0c38536d087b1489e753673a8b89fd))
+
 # [3.0.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v2.4.0...v3.0.0) (2020-03-17)
 
 
