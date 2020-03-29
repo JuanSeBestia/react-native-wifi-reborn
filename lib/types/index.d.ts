@@ -65,6 +65,7 @@ declare module 'react-native-wifi-reborn' {
         callback: (wifiList: string) => void,
         error: (err: string) => void
     ): void;
+
     /**
      * Similar to `loadWifiList` but it forcefully starts the WiFi scanning on android and in the callback fetches the list.
      */
@@ -72,14 +73,19 @@ declare module 'react-native-wifi-reborn' {
         callback: (wifiList: string) => void,
         error: (err: string) => void
     ): void;
+
     export function isEnabled(callback: (enabled: boolean) => void): void;
+
     export function setEnabled(enabled: boolean): void;
+
     /**
      * Indicates whether network connectivity exists and it is possible to establish connections.
      * @param Called when the network status is resolved.
      */
     export function connectionStatus(callback: (isConnected: boolean) => void): void;
+
     export function disconnect(): void;
+
     /**
      * This method will remove the wifi network configuration.
      * If you are connected to that network, it will disconnect.
@@ -87,15 +93,22 @@ declare module 'react-native-wifi-reborn' {
      * @param SSID wifi SSID to remove configuration for
      */
     export function isRemoveWifiNetwork(SSID: string): Promise<boolean>;
+
+    export enum FORCE_WIFI_USAGE_ERRORS {
+        couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
+    }
+
     /**
-     * Force wifi usage if the user needs to send requests via WiFi
-     * if it does not have internet connection. Useful for IoT applications, when
-     * the app needs to communicate and send requests to a device that have no
-     * internet connection via WiFi.
+     * Use this to execute api calls to a wifi network that does not have internet access.
      *
-     * Receives a boolean to enable forceWifiUsage if true, and disable if false.
-     * Is important to disable it when disconnecting from IoT device.
+     * Useful for commissioning IoT devices.
+     *
+     * This will route all app network requests to the network (instead of the mobile connection).
+     * It is important to disable it again after using as even when the app disconnects from the wifi
+     * network it will keep on routing everything to wifi.
+     *
+     * @param useWifi boolean to force wifi off or on
      */
-    export function forceWifiUsage(force: boolean): Promise<void>;
+    export function forceWifiUsage(useWifi: boolean): Promise<void>;
     //#endregion
 }
