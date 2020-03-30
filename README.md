@@ -310,10 +310,13 @@ Returns the BSSID (basic service set identifier) of the currently connected WiFi
 
 <details>
 <summary>getCurrentSignalStrength(): Promise<number></summary>
-Returns the RSSI (received signal strenght indicator) of the currenlty connected WiFi network.
+Returns the RSSI (received signal strength indicator) of the currently connected WiFi network.
 </details>
 
-### `getFrequency`
+<details>
+<summary>getFrequency(): Promise<number></summary>
+Returns the frequency of the currently connected WiFi network.
+</details>
 
 ### `getIP`
 
