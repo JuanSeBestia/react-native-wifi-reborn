@@ -13,7 +13,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -51,19 +50,16 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Method to load wifi list into string via Callback. Returns a stringified JSONArray
-     *
-     * @param successCallback
-     * @param errorCallback
+     * Returns a list of nearby WiFI networks.
      */
     @ReactMethod
-    public void loadWifiList(Callback successCallback, Callback errorCallback) {
+    public void loadWifiList(final Promise promise) {
         try {
-            List<ScanResult> results = wifi.getScanResults();
-            JSONArray wifiArray = new JSONArray();
+            final List<ScanResult> results = wifi.getScanResults();
+            final JSONArray wifiArray = new JSONArray();
 
             for (ScanResult result : results) {
-                JSONObject wifiObject = new JSONObject();
+                final JSONObject wifiObject = new JSONObject();
                 if (!result.SSID.equals("")) {
                     try {
                         wifiObject.put("SSID", result.SSID);
@@ -72,15 +68,17 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                         wifiObject.put("frequency", result.frequency);
                         wifiObject.put("level", result.level);
                         wifiObject.put("timestamp", result.timestamp);
-                    } catch (JSONException e) {
-                        errorCallback.invoke(e.getMessage());
+                    } catch (final JSONException jsonException) {
+                        promise.reject("jsonException", jsonException.getMessage());
+                        return;
                     }
                     wifiArray.put(wifiObject);
                 }
             }
-            successCallback.invoke(wifiArray.toString());
-        } catch (IllegalViewOperationException e) {
-            errorCallback.invoke(e.getMessage());
+
+            promise.resolve(wifiArray.toString());
+        } catch (final IllegalViewOperationException illegalViewOperationException) {
+            promise.reject("exception", illegalViewOperationException.getMessage());
         }
     }
 

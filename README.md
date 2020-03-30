@@ -220,49 +220,16 @@ Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 per
 ## Only Android
 The following methods work only on Android
 
-### `loadWifiList(successCallback: function, errorCallback: function)`
-
-Method to get a list of nearby WiFI networks.
-
-#### successCallback( wifiList:  string )
-
-Type: `function`
-
-Function to be called if the attempt is successful. It contains a stringified JSONArray of wifiObjects as parameter, each object containing:
-
+<details>
+<summary>loadWifiList(): Promise<Array<WifiEntry>></summary>
+Returns a list of nearby WiFI networks.
 * `SSID`: The network name.
 * `BSSID`: The WiFi BSSID.
 * `capabilities`: Describes the authentication, key management, and encryption schemes supported by the access point.
 * `frequency`: The primary 20 MHz frequency (in MHz) of the channel over which the client is communicating with the access point.
 * `level`: The detected signal level in dBm, also known as the RSSI.
 * `timestamp`: timestamp in microseconds (since boot) when this result was last seen.
-
- #### errorCallback
-
-Type: `function`
-
-Function to be called if any error occurs during the attempt. It contains a `string` as parameter with the error message.
-
-#### Usage
-
-```javascript
-WifiManager.loadWifiList(
-	wifiList => {
-		let wifiArray =  JSON.parse(wifiList);
-		wifiArray.map((value, index) =>
-			console.log(`Wifi ${index  +  1} - ${value.SSID}`)
-		);
-	},
-	error =>  console.log(error)
-);
-/**
-Result:
-"Wifi 1 - Name of the network"
-"Wifi 2 - Name of the network"
-"Wifi 3 - Name of the network"
- ...
- */
-```
+</details>
 
 <details>
 <summary>reScanAndLoadWifiList(): Promise<Array<string>></summary>

@@ -34,6 +34,7 @@ declare module 'react-native-wifi-reborn' {
     export function getCurrentWifiSSID(): Promise<string>;
 
     //#region iOS only
+
     export function connectToSSID(SSID: string): Promise<void>;
     export function connectToSSIDPrefix(SSIDPrefix: string): Promise<void>;
     export function disconnectFromSSID(SSIDPrefix: string): Promise<void>;
@@ -42,29 +43,33 @@ declare module 'react-native-wifi-reborn' {
         password: string,
         isWEP: boolean
     ): Promise<void>;
+
     //#endregion
 
     //#region Android only
+
+    export interface WifiEntry {
+        SSID: string;
+        BSSID: number;
+        capabilities: string;
+        frequency: number;
+        level: number;
+        timestamp: number;
+    }
+
     /**
      * Returns a list of nearby WiFI networks.
      *
-     * @param callback Called if the attempt is successful. It contains a stringified JSONArray of `WiFiObject` as parameter.
-     * @param error Called if any error occurs during the attempt.
      * @example
-     * WifiManager.loadWifiList(
-            wifiList => {
-                let wifiArray =  JSON.parse(wifiList);
-                wifiArray.map((value, index) =>
-                    console.log(`Wifi ${index  +  1} - ${value.SSID}`)
-                );
-            },
-            error => console.log(error)
-        );
+     * const results = await WifiManager.loadWifiList();
+        results => {
+            let wifiArray =  JSON.parse(results);
+            wifiArray.map((value, index) =>
+                console.log(`Wifi ${index  +  1} - ${value.SSID}`)
+            );
+        },
      */
-    export function loadWifiList(
-        callback: (wifiList: string) => void,
-        error: (err: string) => void
-    ): void;
+    export function loadWifiList(): Promise<Array<WifiEntry>>;
 
     /**
      * Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
@@ -129,5 +134,6 @@ declare module 'react-native-wifi-reborn' {
      * @param useWifi boolean to force wifi off or on
      */
     export function forceWifiUsage(useWifi: boolean): Promise<void>;
+
     //#endregion
 }
