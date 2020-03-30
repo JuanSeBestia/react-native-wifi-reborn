@@ -76,8 +76,6 @@ declare module 'react-native-wifi-reborn' {
 
     /**
      * Method to check if wifi is enabled.
-     *
-     * @param promise to return result
      */
     export function isEnabled(): Promise<boolean>;
 
@@ -90,6 +88,11 @@ declare module 'react-native-wifi-reborn' {
     export function connectionStatus(callback: (isConnected: boolean) => void): void;
 
     export function disconnect(): void;
+
+    /**
+     * Returns the BSSID (basic service set identifier) of the currently connected WiFi network.
+     */
+    export function getBSSID(): Promise<string>;
 
     /**
      * This method will remove the wifi network configuration.

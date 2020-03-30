@@ -138,8 +138,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
     /**
      * Method to check if wifi is enabled.
-     *
-     * @param promise to return result
      */
     @ReactMethod
     public void isEnabled(final Promise promise) {
@@ -240,18 +238,13 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * ]
-     * This method will return the basic service set identifier (BSSID) of the current access point
-     *
-     * @param callback
+     * Returns the BSSID (basic service set identifier) of the currently connected WiFi network.
      */
     @ReactMethod
-    public void getBSSID(final Callback callback) {
-        WifiInfo info = wifi.getConnectionInfo();
-
-        String bssid = info.getBSSID();
-
-        callback.invoke(bssid.toUpperCase());
+    public void getBSSID(final Promise promise) {
+        final WifiInfo info = wifi.getConnectionInfo();
+        final String bssid = info.getBSSID();
+        promise.resolve(bssid.toUpperCase());
     }
 
     /**

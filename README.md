@@ -303,7 +303,10 @@ Called when the network status is resolved. It contains a boolean argument
 
 ### `disconnect`
 
-### `getBSSID`
+<details>
+<summary>getBSSID(): Promise<string></summary>
+Returns the BSSID (basic service set identifier) of the currently connected WiFi network.
+</details>
 
 ### `getCurrentSignalStrength`
 
