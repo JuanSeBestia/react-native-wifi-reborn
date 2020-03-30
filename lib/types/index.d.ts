@@ -95,6 +95,11 @@ declare module 'react-native-wifi-reborn' {
     export function getBSSID(): Promise<string>;
 
     /**
+     * Returns the RSSI (received signal strenght indicator) of the currenlty connected WiFi network.
+     */
+    export function getCurrentSignalStrength(): Promise<number>;
+
+    /**
      * This method will remove the wifi network configuration.
      * If you are connected to that network, it will disconnect.
      *

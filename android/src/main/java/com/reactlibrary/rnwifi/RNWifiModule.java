@@ -248,14 +248,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * This method will return current wifi signal strength
-     *
-     * @param callback
+     * Returns the RSSI (received signal strenght indicator) of the currenlty connected WiFi network.
      */
     @ReactMethod
-    public void getCurrentSignalStrength(final Callback callback) {
-        int linkSpeed = wifi.getConnectionInfo().getRssi();
-        callback.invoke(linkSpeed);
+    public void getCurrentSignalStrength(final Promise promise) {
+        final int linkSpeed = wifi.getConnectionInfo().getRssi();
+        promise.resolve(linkSpeed);
     }
 
     /**

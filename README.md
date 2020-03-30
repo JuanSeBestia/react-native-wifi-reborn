@@ -308,7 +308,10 @@ Called when the network status is resolved. It contains a boolean argument
 Returns the BSSID (basic service set identifier) of the currently connected WiFi network.
 </details>
 
-### `getCurrentSignalStrength`
+<details>
+<summary>getCurrentSignalStrength(): Promise<number></summary>
+Returns the RSSI (received signal strenght indicator) of the currenlty connected WiFi network.
+</details>
 
 ### `getFrequency`
 
