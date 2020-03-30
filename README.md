@@ -264,13 +264,10 @@ Result:
  */
 ```
 
-### `reScanAndLoadWifiList(successCallback: function, errorCallback: function)`
-
-This method is similar to `loadWifiList` but it forcefully starts the wifi scanning on android and in the callback fetches the list.
-
-#### Usage
-
-Same as `loadWifiList`.
+<details>
+<summary>reScanAndLoadWifiList(): Promise<Array<string>></summary>
+Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
+</details>
 
 <details>
 <summary>isEnabled(): Promise<boolean></summary>

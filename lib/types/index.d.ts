@@ -67,12 +67,9 @@ declare module 'react-native-wifi-reborn' {
     ): void;
 
     /**
-     * Similar to `loadWifiList` but it forcefully starts the WiFi scanning on android and in the callback fetches the list.
+     * Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
      */
-    export function reScanAndLoadWifiList(
-        callback: (wifiList: string) => void,
-        error: (err: string) => void
-    ): void;
+    export function reScanAndLoadWifiList(): Promise<Array<string>>;
 
     /**
      * Method to check if wifi is enabled.

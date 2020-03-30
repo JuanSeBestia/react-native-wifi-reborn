@@ -1,8 +1,6 @@
 package com.reactlibrary.rnwifi;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -21,6 +19,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.reactlibrary.rnwifi.receivers.WifiScanResultReceiver;
 import com.reactlibrary.utils.LocationUtils;
 import com.reactlibrary.utils.PermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
@@ -299,15 +298,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * This method is similar to `loadWifiList` but it forcefully starts the wifi scanning on android and in the callback fetches the list
-     *
-     * @param successCallback
-     * @param errorCallback
+     * Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
      */
     @ReactMethod
-    public void reScanAndLoadWifiList(Callback successCallback, Callback errorCallback) {
-        WifiReceiver receiverWifi = new WifiReceiver(wifi, successCallback, errorCallback);
-        getReactApplicationContext().registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+    public void reScanAndLoadWifiList(final Promise promise) {
+        final WifiScanResultReceiver wifiScanResultReceiver = new WifiScanResultReceiver(wifi, promise);
+        getReactApplicationContext().registerReceiver(wifiScanResultReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifi.startScan();
     }
 
@@ -326,50 +322,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         sb.append(".");
         sb.append(strip[3]);
         return sb.toString();
-    }
-
-    class WifiReceiver extends BroadcastReceiver {
-
-        private final Callback successCallback;
-        private final Callback errorCallback;
-        private final WifiManager wifi;
-
-        public WifiReceiver(final WifiManager wifi, Callback successCallback, Callback errorCallback) {
-            super();
-            this.successCallback = successCallback;
-            this.errorCallback = errorCallback;
-            this.wifi = wifi;
-        }
-
-        // This method call when number of wifi connections changed
-        public void onReceive(Context c, Intent intent) {
-            c.unregisterReceiver(this);
-            try {
-                List<ScanResult> results = this.wifi.getScanResults();
-                JSONArray wifiArray = new JSONArray();
-
-                for (ScanResult result : results) {
-                    JSONObject wifiObject = new JSONObject();
-                    if (!result.SSID.equals("")) {
-                        try {
-                            wifiObject.put("SSID", result.SSID);
-                            wifiObject.put("BSSID", result.BSSID);
-                            wifiObject.put("capabilities", result.capabilities);
-                            wifiObject.put("frequency", result.frequency);
-                            wifiObject.put("level", result.level);
-                            wifiObject.put("timestamp", result.timestamp);
-                        } catch (JSONException e) {
-                            this.errorCallback.invoke(e.getMessage());
-                            return;
-                        }
-                        wifiArray.put(wifiObject);
-                    }
-                }
-                this.successCallback.invoke(wifiArray.toString());
-            } catch (IllegalViewOperationException e) {
-                this.errorCallback.invoke(e.getMessage());
-            }
-        }
     }
 
     private static String formatWithBackslashes(final String value) {
