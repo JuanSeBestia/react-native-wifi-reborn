@@ -272,15 +272,15 @@ This method is similar to `loadWifiList` but it forcefully starts the wifi scann
 
 Same as `loadWifiList`.
 
-### `isEnabled(isEnabled: function)`
-
+<details>
+<summary>isEnabled(): Promise<boolean></summary>
 Method to check if WiFi is enabled.
 
 ```javascript
-WifiManager.isEnabled(isEnabled => {
-	this.setState({wifiIsEnabled: isEnabled});
-});
+const enabled = await WifiManager.isEnabled();
+this.setState({wifiIsEnabled: enabled});
 ```
+</details>
 
 ### `setEnabled(enabled: boolean)`
 
@@ -311,7 +311,6 @@ Called when the network status is resolved. It contains a boolean argument
 
 ### `getIP`
 
-### `isRemoveWifiNetwork`
 <details>
 <summary>isRemoveWifiNetwork(ssid: String): Promise<boolean></summary>
 This method will remove the wifi network configuration.

@@ -15,8 +15,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 
-import androidx.annotation.NonNull;
-
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -33,6 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;
@@ -137,22 +137,27 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Method to check if wifi is enabled
+     * Method to check if wifi is enabled.
      *
-     * @param isEnabled
+     * @param promise to return result
      */
     @ReactMethod
-    public void isEnabled(Callback isEnabled) {
-        isEnabled.invoke(wifi.isWifiEnabled());
+    public void isEnabled(final Promise promise) {
+        if (this.wifi == null) {
+            promise.reject(IsEnabledErrorCodes.couldNotGetWifiManager.toString(), "Failed to initialize the WifiManager.");
+            return;
+        }
+
+        promise.resolve(wifi.isWifiEnabled());
     }
 
     /**
-     * Method to connect/disconnect wifi service
+     * Method to set the WiFi on or off on the user's device.
      *
      * @param enabled
      */
     @ReactMethod
-    public void setEnabled(Boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         wifi.setWifiEnabled(enabled);
     }
 

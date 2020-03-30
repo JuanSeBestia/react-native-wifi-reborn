@@ -74,7 +74,12 @@ declare module 'react-native-wifi-reborn' {
         error: (err: string) => void
     ): void;
 
-    export function isEnabled(callback: (enabled: boolean) => void): void;
+    /**
+     * Method to check if wifi is enabled.
+     *
+     * @param promise to return result
+     */
+    export function isEnabled(): Promise<boolean>;
 
     export function setEnabled(enabled: boolean): void;
 
