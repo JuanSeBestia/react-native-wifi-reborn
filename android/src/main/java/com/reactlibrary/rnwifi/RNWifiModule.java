@@ -196,19 +196,18 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Use this method to check if the device is currently connected to Wifi.
-     *
-     * @param connectionStatusResult
+     * Returns if the device is currently connected to a WiFi network.
      */
     @ReactMethod
-    public void connectionStatus(Callback connectionStatusResult) {
-        ConnectivityManager connManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (mWifi.isConnected()) {
-            connectionStatusResult.invoke(true);
-        } else {
-            connectionStatusResult.invoke(false);
+    public void connectionStatus(final Promise promise) {
+        final ConnectivityManager connectivityManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo == null) {
+            promise.resolve(false);
+            return;
         }
+
+        promise.resolve(wifiInfo.isConnected());
     }
 
     /**

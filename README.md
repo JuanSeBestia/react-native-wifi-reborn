@@ -291,15 +291,10 @@ WifiManager.setEnabled(true); //set WiFi ON
 WifiManager.setEnabled(false); //set WiFi OFF
 ```
 
-### `connectionStatus (connectionStatusResult: function)`
-
-Indicates whether network connectivity exists and it is possible to establish connections.
-
-#### connectionStatusResult( isConnected: boolean )
-
-Type: `function`
-
-Called when the network status is resolved. It contains a boolean argument
+<details>
+<summary>connectionStatus(): Promise<boolean></summary>
+Returns if the device is currently connected to a WiFi network.
+</details>
 
 ### `disconnect`
 
