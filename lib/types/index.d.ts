@@ -82,10 +82,9 @@ declare module 'react-native-wifi-reborn' {
     export function setEnabled(enabled: boolean): void;
 
     /**
-     * Indicates whether network connectivity exists and it is possible to establish connections.
-     * @param Called when the network status is resolved.
+     * Returns if the device is currently connected to a WiFi network.
      */
-    export function connectionStatus(callback: (isConnected: boolean) => void): void;
+    export function connectionStatus(): Promise<boolean>;
 
     export function disconnect(): void;
 
@@ -103,6 +102,11 @@ declare module 'react-native-wifi-reborn' {
      * Returns the frequency of the currently connected WiFi network.
      */
     export function getFrequency(): Promise<number>;
+
+    /**
+     * Returns the IP of the currently connected WiFi network.
+     */
+    export function getIP(): Promise<string>;
 
     /**
      * This method will remove the wifi network configuration.

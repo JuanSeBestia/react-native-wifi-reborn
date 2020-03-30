@@ -316,7 +316,10 @@ Returns the RSSI (received signal strength indicator) of the currently connected
 Returns the frequency of the currently connected WiFi network.
 </details>
 
-### `getIP`
+<details>
+<summary>getIP(): Promise<number></summary>
+Returns the IP of the currently connected WiFi network.
+</details>
 
 <details>
 <summary>isRemoveWifiNetwork(ssid: String): Promise<boolean></summary>

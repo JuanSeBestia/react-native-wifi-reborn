@@ -266,15 +266,13 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * This method will return current IP
-     *
-     * @param callback
+     * Returns the IP of the currently connected WiFi network.
      */
     @ReactMethod
-    public void getIP(final Callback callback) {
-        WifiInfo info = wifi.getConnectionInfo();
-        String stringIP = longToIP(info.getIpAddress());
-        callback.invoke(stringIP);
+    public void getIP(final Promise promise) {
+        final WifiInfo info = wifi.getConnectionInfo();
+        final String stringIP = longToIP(info.getIpAddress());
+        promise.resolve(stringIP);
     }
 
     /**
