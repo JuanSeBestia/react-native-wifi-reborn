@@ -211,7 +211,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Disconnect current Wifi.
+     * Disconnect currently connected WiFi network.
      */
     @ReactMethod
     public void disconnect() {

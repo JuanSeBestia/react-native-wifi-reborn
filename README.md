@@ -296,7 +296,10 @@ WifiManager.setEnabled(false); //set WiFi OFF
 Returns if the device is currently connected to a WiFi network.
 </details>
 
-### `disconnect`
+<details>
+<summary>disconnect()</summary>
+Disconnect currently connected WiFi network.
+</details>
 
 <details>
 <summary>getBSSID(): Promise<string></summary>
