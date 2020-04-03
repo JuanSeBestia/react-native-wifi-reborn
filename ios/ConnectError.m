@@ -37,8 +37,8 @@
             return @"AuthenticationErrorOccurred";
         case TimeoutOccurred:
             return @"TimeoutOccurred";
-        case CouldNotConnect:
-            return @"CouldNotConnect";
+        case UnableToConnect:
+            return @"unableToConnect";
         case Unknown:
         default:
             return @"Unknown";

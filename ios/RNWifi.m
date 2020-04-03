@@ -68,7 +68,7 @@ RCT_EXPORT_METHOD(connectToSSIDPrefix:(NSString*)ssid
 
          [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
              if (error != nil) {
-                 reject([self parseErrorCode:error.code], @"Error while configuring WiFi", error);
+                 reject([self parseError:error], @"Error while configuring WiFi", error);
              } else {
                  resolve(nil);
              }
@@ -91,7 +91,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssid
 
         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
-                reject([self parseErrorCode:error], @"Error while configuring WiFi", error);
+                reject([self parseError:error], @"Error while configuring WiFi", error);
             } else {
                 resolve(nil);
             }
@@ -121,13 +121,13 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
         
         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
-                reject([self parseErrorCode:error.code], [error localizedDescription], error);
+                reject([self parseError:error], [error localizedDescription], error);
             } else {
                 // Verify SSID connection
                 if ([ssid isEqualToString:[self getWifiSSID]]){
                     resolve(nil);
                 } else {
-                    reject([self parseErrorCode:error.code], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
+                    reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
                 }
             }
         }];
@@ -208,8 +208,13 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
     }
 }
 
-- (NSString *)parseErrorCode:(NSInteger)code {
+- (NSString *)parseError:(NSError *)error {
     if (@available(iOS 11, *)) {
+        
+        if (!error) {
+            return @"emptyError";
+        };
+        
         /*
          NEHotspotConfigurationErrorInvalid                         = 0,
          NEHotspotConfigurationErrorInvalidSSID                     = 1,
@@ -228,8 +233,8 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
          NEHotspotConfigurationErrorApplicationIsNotInForeground    = 14,
          NEHotspotConfigurationErrorInvalidSSIDPrefix               = 15
          */
-        
-        switch (code) {
+
+        switch (error.code) {
             case NEHotspotConfigurationErrorInvalid:
                 return [ConnectError code:Invalid];
             case NEHotspotConfigurationErrorInvalidSSID:

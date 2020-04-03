@@ -7,6 +7,7 @@ typedef enum {
     InvalidSSIDPrefix,
     InvalidPassphrase,
     UserDenied,
+    UnableToConnect,
     CouldNotDetectSSID,
     LocationPermissionDenied,
     LocationPermissionRestricted,
