@@ -15,6 +15,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 
+
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Callback;
@@ -288,22 +289,24 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * This method will remove the wifi network as per the passed SSID from the device list
      *
      * @param ssid
-     * @param callback
+     * @param promise true means the ssid has been removed or did not existed in configured network list
+     *                false means the ssid removed failed.
      */
     @ReactMethod
-    public void isRemoveWifiNetwork(String ssid, final Callback callback) {
+    public void isRemoveWifiNetwork(String ssid, final Promise promise) {
         List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
         for (WifiConfiguration wifiConfig : mWifiConfigList) {
             String comparableSSID = ('"' + ssid + '"'); //Add quotes because wifiConfig.SSID has them
             if (wifiConfig.SSID.equals(comparableSSID)) {
-                wifi.removeNetwork(wifiConfig.networkId);
+                boolean success = wifi.removeNetwork(wifiConfig.networkId);
                 wifi.saveConfiguration();
-                callback.invoke(true);
+                promise.resolve(success);
                 return;
             }
         }
-        callback.invoke(false);
+        promise.resolve(true);
     }
+
 
     /**
      * This method is similar to `loadWifiList` but it forcefully starts the wifi scanning on android and in the callback fetches the list
