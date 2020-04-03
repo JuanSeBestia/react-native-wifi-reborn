@@ -86,7 +86,7 @@ declare module 'react-native-wifi-reborn' {
 
     export function disconnect(): void;
 
-    export function isRemoveWifiNetwork(SSID: string): Promise<void>;
+    export function isRemoveWifiNetwork(SSID: string, callback: (isRemoveNetworkCalled: boolean) => void): void
 
     export enum FORCE_WIFI_USAGE_ERRORS {
         couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
