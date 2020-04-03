@@ -1,14 +1,25 @@
 @interface ConnectError : NSObject
 
 typedef enum {
-    LocationPermissionMissing = 0,
+    UnavailableForOSVersion,
+    Invalid,
+    InvalidSSID,
+    InvalidSSIDPrefix,
+    InvalidPassphrase,
+    UserDenied,
+    CouldNotDetectSSID,
+    LocationPermissionDenied,
+    LocationPermissionRestricted,
+    
+    LocationPermissionMissing,
     LocationServicesOff,
     CouldNotEnabledWifi,
     CouldNotScan,
     DidNotFindNetworkByScanning,
     AuthenticationErrorOccurred,
     TimeoutOccurred,
-    CouldNotConnect
+    CouldNotConnect,
+    Unknown
 } ConnectErrorCode;
 
 + (NSString*)code:(ConnectErrorCode)errorCode;

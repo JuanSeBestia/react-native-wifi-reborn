@@ -33,9 +33,9 @@ const App = () => {
         isWep,
       );
       console.log('Connected successfully!', {data});
-      setConneted({connected: true, ssid});
+      setConnected({connected: true, ssid});
     } catch (error) {
-      setConneted({connected: false, error: error.message});
+      setConnected({connected: false, error: error.message});
       console.log('Connection failed!', {error});
     }
 
@@ -67,7 +67,7 @@ const App = () => {
             </Text>
           </View>
           <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Conencted</Text>
+            <Text style={styles.sectionTitle}>Connected</Text>
             <Text style={styles.sectionDescription}>
               {JSON.stringify(connected)}
             </Text>
