@@ -42,7 +42,7 @@ declare module 'react-native-wifi-reborn' {
          * If the wifi network is not in range, the security type is unknown and WifiUtils doesn't support
          * connecting to the network.
          */
-        didNotFindNetworkByScanning = 'didNotFindNetworkByScanning',
+        didNotFindNetwork = 'didNotFindNetwork',
         /**
          * Authentication error occurred while trying to connect.
          * The password could be incorrect or the user could have a saved network configuration with a
@@ -53,7 +53,7 @@ declare module 'react-native-wifi-reborn' {
          * Could not connect in the timeout window.
          */
         timeoutOccurred = 'timeoutOccurred',
-        couldNotConnect = 'couldNotConnect',
+        unableToConnect = 'unableToConnect',
     }
 
     /**

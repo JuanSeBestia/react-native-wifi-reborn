@@ -34,5 +34,5 @@ public enum ConnectErrorCodes {
      * Could not connect in the timeout window.
      */
     timeoutOccurred,
-    couldNotConnect,
+    unableToConnect,
 }
