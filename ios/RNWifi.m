@@ -212,7 +212,7 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
     if (@available(iOS 11, *)) {
         
         if (!error) {
-            return @"emptyError";
+            return [ConnectError code:UnableToConnect];
         };
         
         /*
@@ -246,11 +246,8 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
                 return [ConnectError code:InvalidPassphrase];
             case NEHotspotConfigurationErrorUserDenied:
                 return [ConnectError code:UserDenied];
-            case NEHotspotConfigurationErrorInternal:
-                return @"internalError";
-            case NEHotspotConfigurationErrorUnknown:
             default:
-                return [ConnectError code:Unknown];
+                return [ConnectError code:UnableToConnect];
         }
     }
     return [ConnectError code:UnavailableForOSVersion];

@@ -17,29 +17,14 @@
             return @"invalidPassphrase";
         case UserDenied:
             return @"userDenied";
-        case CouldNotDetectSSID:
-            return @"couldNotDetectSSID";
         case LocationPermissionDenied:
             return @"locationPermissionDenied";
         case LocationPermissionRestricted:
             return @"locationPermissionRestricted";
-        case LocationPermissionMissing:
-            return @"LocationPermissionMissing";
-        case LocationServicesOff:
-            return @"LocationServicesOff";
-        case CouldNotEnabledWifi:
-            return @"CouldNotEnabledWifi";
-        case CouldNotScan:
-            return @"CouldNotScan";
-        case DidNotFindNetworkByScanning:
-            return @"DidNotFindNetworkByScanning";
-        case AuthenticationErrorOccurred:
-            return @"AuthenticationErrorOccurred";
-        case TimeoutOccurred:
-            return @"TimeoutOccurred";
+        case DidNotFindNetwork:
+            return @"didNotFindNetwork";
         case UnableToConnect:
             return @"unableToConnect";
-        case Unknown:
         default:
             return @"Unknown";
     }

@@ -8,18 +8,9 @@ typedef enum {
     InvalidPassphrase,
     UserDenied,
     UnableToConnect,
-    CouldNotDetectSSID,
     LocationPermissionDenied,
     LocationPermissionRestricted,
-    
-    LocationPermissionMissing,
-    LocationServicesOff,
-    CouldNotEnabledWifi,
-    CouldNotScan,
-    DidNotFindNetworkByScanning,
-    AuthenticationErrorOccurred,
-    TimeoutOccurred,
-    CouldNotConnect,
+    DidNotFindNetwork,
     Unknown
 } ConnectErrorCode;
 

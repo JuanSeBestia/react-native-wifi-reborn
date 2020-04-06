@@ -21,6 +21,42 @@ declare module 'react-native-wifi-reborn' {
 
     export enum CONNECT_ERRORS {
         /**
+         * Starting from iOS 11, NEHotspotConfigurationError is available
+         */
+        unavailableForOSVersion = 'unavailableForOSVersion',
+        /**
+         * If an unknown error is occurred (iOS)
+         */
+        invalid = 'invalid',
+        /**
+         * If the SSID is invalid
+         */
+        invalidSSID = 'invalidSSID',
+        /**
+         * If the SSID prefix is invalid
+         */
+        invalidSSIDPrefix = 'invalidSSIDPrefix',
+        /**
+         * If the passphrase is invalid
+         */
+        invalidPassphrase = 'invalidPassphrase',
+        /**
+         * If the user canceled the request to join the asked network
+         */
+        userDenied = 'userDenied',
+        /**
+         * Starting from iOS 13, location permission is denied (iOS)
+         */
+        locationPermissionDenied = 'locationPermissionDenied',
+        /**
+         * When an unknown error occurred
+         */
+        unableToConnect = 'unableToConnect',
+        /**
+         * Starting from iOS 13, location permission is restricted (iOS)
+         */
+        locationPermissionRestricted = 'locationPermissionRestricted',
+        /**
          * Starting android 6, location permission needs to be granted for wifi scanning.
          */
         locationPermissionMissing = 'locationPermissionMissing',
