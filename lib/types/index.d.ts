@@ -93,7 +93,6 @@ declare module 'react-native-wifi-reborn' {
          * Could not connect in the timeout window.
          */
         timeoutOccurred = 'timeoutOccurred',
-        unableToConnect = 'unableToConnect',
     }
 
     /**
