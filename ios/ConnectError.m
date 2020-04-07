@@ -23,6 +23,8 @@
             return @"locationPermissionRestricted";
         case DidNotFindNetwork:
             return @"didNotFindNetwork";
+        case CouldNotDetectSSID:
+            return @"couldNotDetectSSID";
         case UnableToConnect:
             return @"unableToConnect";
         default:

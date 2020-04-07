@@ -11,6 +11,7 @@ typedef enum {
     LocationPermissionDenied,
     LocationPermissionRestricted,
     DidNotFindNetwork,
+    CouldNotDetectSSID,
     Unknown
 } ConnectErrorCode;
 

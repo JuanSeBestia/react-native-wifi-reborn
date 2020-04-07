@@ -75,6 +75,10 @@ declare module 'react-native-wifi-reborn' {
          */
         couldNotScan = 'couldNotScan',
         /**
+         * If the SSID couldn't be detected
+         */
+        couldNotDetectSSID = 'couldNotDetectSSID',
+        /**
          * If the wifi network is not in range, the security type is unknown and WifiUtils doesn't support
          * connecting to the network.
          */
