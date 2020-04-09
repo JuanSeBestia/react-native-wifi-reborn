@@ -23,7 +23,7 @@ public enum ConnectErrorCodes {
      * If the wifi network is not in range, the security type is unknown and WifiUtils doesn't support
      * connecting to the network.
      */
-    didNotFindNetworkByScanning,
+    didNotFindNetwork,
     /**
      * Authentication error occurred while trying to connect.
      * The password could be incorrect or the user could have a saved network configuration with a

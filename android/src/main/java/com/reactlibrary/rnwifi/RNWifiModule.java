@@ -208,7 +208,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                                 promise.reject(ConnectErrorCodes.couldNotScan.toString(), "Starting Android 9, apps are only allowed to scan wifi networks a few times.");
                             }
                             case DID_NOT_FIND_NETWORK_BY_SCANNING: {
-                                promise.reject(ConnectErrorCodes.didNotFindNetworkByScanning.toString(), "Wifi network is not in range or not seen.");
+                                promise.reject(ConnectErrorCodes.didNotFindNetwork.toString(), "Wifi network is not in range or not seen.");
                             }
                             case AUTHENTICATION_ERROR_OCCURRED: {
                                 promise.reject(ConnectErrorCodes.authenticationErrorOccurred.toString(), "Authentication error, wrong password or a saved wifi configuration with a different password / security type.");
