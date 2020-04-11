@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native';
 
 const { WifiManager } = NativeModules;
 
-export const connectErrors = {
+export const CONNECT_ERRORS = {
     unavailableForOSVersion: 'unavailableForOSVersion',
     invalid: 'invalid',
     invalidSSID: 'invalidSSID',
