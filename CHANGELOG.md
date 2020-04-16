@@ -1,3 +1,10 @@
+## [3.1.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v3.1.1...v3.1.2) (2020-04-16)
+
+
+### Bug Fixes
+
+* Add null type to password on connectToProtectedSSID ([#60](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/60)) ([9ad28cc](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/9ad28cc3642d3b2abf62978e8ed552cf13151f23))
+
 ## [3.1.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v3.1.0...v3.1.1) (2020-03-22)
 
 
