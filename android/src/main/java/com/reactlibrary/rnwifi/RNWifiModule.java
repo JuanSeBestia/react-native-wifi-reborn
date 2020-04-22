@@ -5,18 +5,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.DhcpInfo;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
+import android.net.NetworkSpecifier;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSpecifier;
 import android.os.Build;
-
+import android.net.wifi.WifiNetworkSuggestion;
+import android.os.PatternMatcher;
+import android.text.format.Formatter;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
@@ -33,11 +40,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;
     private final ReactApplicationContext context;
+    private final String TAG= "RNWifi";
+    private ConnectivityManager.NetworkCallback networkCallback = null;
 
     RNWifiModule(ReactApplicationContext context) {
         super(context);
@@ -157,6 +169,99 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         wifi.setWifiEnabled(enabled);
     }
 
+    public void verifyNetworkSwitched(final String SSID, final Promise promise){
+      Log.d(TAG, "verifyNetworkSwitched");
+
+      // Timeout if there is no other saved WiFi network reachable
+      ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+
+      // Verify the connection
+      final IntentFilter intentFilter = new IntentFilter();
+      intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+      final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+          final NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+          if (info != null && info.isConnected()) {
+            final WifiInfo wifiInfo = wifi.getConnectionInfo();
+            String ssid = wifiInfo.getSSID();
+            // This value should be wrapped in double quotes, so we need to unwrap it.
+            if (ssid.startsWith("\"") && ssid.endsWith("\"")) {
+              ssid = ssid.substring(1, ssid.length() - 1);
+            }
+            Log.d(TAG, "connect to "+ssid);
+
+            context.unregisterReceiver(this);
+            exec.shutdownNow();
+            if (ssid.equals(SSID)) {
+              final String routerIP = Formatter.formatIpAddress(wifi.getDhcpInfo().gateway);
+              final String localIP = Formatter.formatIpAddress(wifi.getDhcpInfo().ipAddress);
+              Log.d(TAG, String.format("Network %s ip %s router %s", SSID, localIP,routerIP));
+              promise.resolve(null);
+            }
+            else {
+              promise.reject("connectNetworkFailed", String.format("Could not connect to network with SSID: %s", SSID));
+            }
+          }
+        }
+      };
+      exec.schedule(new Runnable() {
+        public void run() {
+          Log.d(TAG, "timeout");
+          context.unregisterReceiver(receiver);//make sure promise only resolve once
+          promise.reject("connectNetworkFailed", String.format("Timeout connecting to network with SSID: %s", SSID));
+        }
+      }, 10, TimeUnit.SECONDS);
+      context.registerReceiver(receiver, intentFilter);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void androidQConnectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
+      Log.d(TAG, String.format("call androidQConnectToProtectedSSID with %s %s", SSID, password));
+
+      final NetworkSpecifier specifier =
+        new WifiNetworkSpecifier.Builder().setSsid(SSID).setWpa2Passphrase(password)
+          .build();
+
+      final NetworkRequest request =
+        new NetworkRequest.Builder()
+          .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+          .setNetworkSpecifier(specifier)
+          .build();
+
+      final ConnectivityManager connectivityManager = (ConnectivityManager)
+        context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+      if(connectivityManager == null){
+        Log.d(TAG, "Can not get ConnectivityManager");
+        promise.reject("failed", "Can not get ConnectivityManager");
+        return;
+      }
+
+      networkCallback = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(@NonNull Network network) {
+          super.onAvailable(network);
+
+          Log.d(TAG, String.format("AndroidQ+ request to wifi %s",network.toString()));
+          boolean binded = connectivityManager.bindProcessToNetwork(network);
+          Log.d(TAG, String.format("AndroidQ+ bind to wifi %b", binded));
+
+          verifyNetworkSwitched(SSID, promise);
+        }
+
+        @Override
+        public void onUnavailable() {
+          super.onUnavailable();
+
+          Log.d(TAG, "AndroidQ+ could not connect to wifi");
+          promise.reject("failed", "AndroidQ+ could not connect to wifi");
+
+        }
+      };
+      connectivityManager.requestNetwork(request, networkCallback);
+    }
+
     /**
      * Use this to connect with a wifi network.
      * Example:  wifi.findAndConnect(ssid, password, false);
@@ -180,7 +285,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             promise.reject("location off", "Location service is turned off");
             return;
         }
-
+        if(isAndroid10OrLater()){
+          Log.d(TAG,"androidQConnectToProtectedSSID");
+          androidQConnectToProtectedSSID(SSID,password,isWep,promise);
+          return;
+        }
+        WifiUtils.enableLog(true);
         WifiUtils.withContext(context).connectWith(SSID, password).onConnectionResult(new ConnectionSuccessListener() {
             @Override
             public void isSuccessful(boolean isSuccess) {
@@ -191,6 +301,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                 }
             }
         }).start();
+
     }
 
     /**
@@ -214,7 +325,20 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void disconnect() {
+      if(isAndroid10OrLater()){
+        ConnectivityManager connManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connManager!=null) {
+          if(networkCallback!=null) {
+            Log.d(TAG,"unregisterNetworkCallback");
+            connManager.unregisterNetworkCallback(networkCallback);
+            networkCallback = null;
+          }
+          Log.d(TAG,"bindProcessToNetwork to null");
+          connManager.bindProcessToNetwork(null);
+        }
+      }else{
         wifi.disconnect();
+      }
     }
 
     /**
@@ -397,7 +521,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * @return true if the current sdk is above or equal to Android Q
      */
     private static boolean isAndroid10OrLater() {
-        return false; // TODO: Compatibility with Android 10
-        // return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
     }
 }
