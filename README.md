@@ -220,9 +220,8 @@ Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 per
 ## Only Android
 The following methods work only on Android
 
-<details>
-<summary>
-loadWifiList(): `Promise<Array<WifiEntry>>`</summary>
+### loadWifiList(): Promise<Array<WifiEntry>>
+
 Returns a list of nearby WiFI networks.
 * `SSID`: The network name.
 * `BSSID`: The WiFi BSSID.
@@ -230,22 +229,17 @@ Returns a list of nearby WiFI networks.
 * `frequency`: The primary 20 MHz frequency (in MHz) of the channel over which the client is communicating with the access point.
 * `level`: The detected signal level in dBm, also known as the RSSI.
 * `timestamp`: timestamp in microseconds (since boot) when this result was last seen.
-</details>
 
-<details>
-<summary>reScanAndLoadWifiList(): Promise<Array<string>></summary>
+### reScanAndLoadWifiList(): Promise<Array<string>>
 Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
-</details>
 
-<details>
-<summary>isEnabled(): Promise<boolean></summary>
+### isEnabled(): Promise<boolean>
 Method to check if WiFi is enabled.
 
 ```javascript
 const enabled = await WifiManager.isEnabled();
 this.setState({wifiIsEnabled: enabled});
 ```
-</details>
 
 ### `setEnabled(enabled: boolean)`
 
@@ -256,50 +250,36 @@ WifiManager.setEnabled(true); //set WiFi ON
 WifiManager.setEnabled(false); //set WiFi OFF
 ```
 
-<details>
-<summary>connectionStatus(): Promise<boolean></summary>
+### connectionStatus(): Promise<boolean>
+
 Returns if the device is currently connected to a WiFi network.
-</details>
 
-<details>
-<summary>disconnect()</summary>
+### disconnect()
 Disconnect currently connected WiFi network.
-</details>
 
-<details>
-<summary>getBSSID(): Promise<string></summary>
+### getBSSID(): Promise<string>
 Returns the BSSID (basic service set identifier) of the currently connected WiFi network.
-</details>
 
-<details>
-<summary>getCurrentSignalStrength(): Promise<number></summary>
+### getCurrentSignalStrength(): Promise<number>
 Returns the RSSI (received signal strength indicator) of the currently connected WiFi network.
-</details>
 
-<details>
-<summary>getFrequency(): Promise<number></summary>
+
+### getFrequency(): Promise<number>
 Returns the frequency of the currently connected WiFi network.
-</details>
 
-<details>
-<summary>getIP(): Promise<number></summary>
+### getIP(): Promise<number>
 Returns the IP of the currently connected WiFi network.
-</details>
 
-<details>
-<summary>isRemoveWifiNetwork(ssid: String): Promise<boolean></summary>
+### isRemoveWifiNetwork(ssid: String): Promise<boolean>
 This method will remove the wifi network configuration.
 If you are connected to that network, it will disconnect.
-</details>
 
-<details>
-<summary>forceWifiUsage(useWifi: boolean): Promise</summary>
+### forceWifiUsage(useWifi: boolean): Promise
 
  Use this to execute api calls to a wifi network that does not have internet access.
  Useful for commissioning IoT devices.
  This will route all app network requests to the network (instead of the mobile connection).
  It is important to disable it again after using as even when the app disconnects from the wifi network it will keep on routing everything to wifi.
-</details>
 
 ## Conventions
 
