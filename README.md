@@ -221,7 +221,8 @@ Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 per
 The following methods work only on Android
 
 <details>
-<summary>loadWifiList(): Promise<Array<WifiEntry>></summary>
+<summary>
+loadWifiList(): `Promise<Array<WifiEntry>>`</summary>
 Returns a list of nearby WiFI networks.
 * `SSID`: The network name.
 * `BSSID`: The WiFi BSSID.
