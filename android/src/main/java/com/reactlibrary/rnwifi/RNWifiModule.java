@@ -285,14 +285,13 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
         for (WifiConfiguration wifiConfig : mWifiConfigList) {
             if (wifiConfig.SSID.equals(comparableSSID)) {
-                wifi.removeNetwork(wifiConfig.networkId);
+                promise.resolve(wifi.removeNetwork(wifiConfig.networkId));
                 wifi.saveConfiguration();
-                promise.resolve(true);
                 return;
             }
         }
 
-        promise.resolve(false);
+        promise.resolve(true);
     }
 
     /**
