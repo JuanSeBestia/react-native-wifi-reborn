@@ -220,7 +220,7 @@ Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 per
 ## Only Android
 The following methods work only on Android
 
-### loadWifiList(): Promise<Array<WifiEntry>>
+### `loadWifiList(): Promise<Array<WifiEntry>>`
 
 Returns a list of nearby WiFI networks.
 * `SSID`: The network name.
@@ -230,10 +230,10 @@ Returns a list of nearby WiFI networks.
 * `level`: The detected signal level in dBm, also known as the RSSI.
 * `timestamp`: timestamp in microseconds (since boot) when this result was last seen.
 
-### reScanAndLoadWifiList(): Promise<Array<string>>
+### `reScanAndLoadWifiList(): Promise<Array<string>>`
 Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
 
-### isEnabled(): Promise<boolean>
+### `isEnabled(): Promise<boolean>`
 Method to check if WiFi is enabled.
 
 ```javascript
@@ -250,31 +250,31 @@ WifiManager.setEnabled(true); //set WiFi ON
 WifiManager.setEnabled(false); //set WiFi OFF
 ```
 
-### connectionStatus(): Promise<boolean>
+### `connectionStatus(): Promise<boolean>`
 
 Returns if the device is currently connected to a WiFi network.
 
-### disconnect()
+### `disconnect()`
 Disconnect currently connected WiFi network.
 
-### getBSSID(): Promise<string>
+### `getBSSID(): Promise<string>`
 Returns the BSSID (basic service set identifier) of the currently connected WiFi network.
 
-### getCurrentSignalStrength(): Promise<number>
+### `getCurrentSignalStrength(): Promise<number>`
 Returns the RSSI (received signal strength indicator) of the currently connected WiFi network.
 
 
-### getFrequency(): Promise<number>
+### `getFrequency(): Promise<number>`
 Returns the frequency of the currently connected WiFi network.
 
-### getIP(): Promise<number>
+### `getIP(): Promise<number>`
 Returns the IP of the currently connected WiFi network.
 
-### isRemoveWifiNetwork(ssid: String): Promise<boolean>
+### `isRemoveWifiNetwork(ssid: String): Promise<boolean>`
 This method will remove the wifi network configuration.
 If you are connected to that network, it will disconnect.
 
-### forceWifiUsage(useWifi: boolean): Promise
+### `forceWifiUsage(useWifi: boolean): Promise`
 
  Use this to execute api calls to a wifi network that does not have internet access.
  Useful for commissioning IoT devices.
