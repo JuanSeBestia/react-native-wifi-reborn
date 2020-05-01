@@ -1,3 +1,24 @@
+# [4.0.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v3.1.2...v4.0.0) (2020-05-01)
+
+
+* Merge pull request #56 from inthepocket/feature/android-use-promises ([83e30cd](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/83e30cd749f9743771484a4d064bdf150780f538)), closes [#56](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/56)
+
+
+### Features
+
+* **promise:** change isEnabled from callback to promise. ([5631fe8](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/5631fe8e9982701cc5d9771b859d99e7b902584e))
+* **promise:** return the current signal strength as a promise ([7ef9a40](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/7ef9a405ec58d9fae0f0ffe9e667063ebbac225a))
+* **promise:** use a promise instead of callsbacks for isRemoveWifiNetwork ([abb3be2](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/abb3be272bc4d63fe8e0d35c079638b5e4fdac50))
+* **promise:** use a promise to resolve the frequency of the currently connected WiFi network ([79dc3bf](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/79dc3bf94cc2b9c7e148f25b1679f1cffb3e1a7e))
+* **promise:** use a promise to return results for reScanAndLoadWifiList() ([dcdeb0c](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/dcdeb0c8ce853483cf912b57b405b71ddae521ea))
+* **promise:** use a promise to return the bssid of the currenlty connected network ([8d39c67](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/8d39c67d69387061ab7833754775dc9cffbe6683))
+* **promise:** use a promise to return the loadWifiList results ([e0fe2b9](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/e0fe2b9c0653b1a6e180f9f7b8676cc6441084f8))
+
+
+### BREAKING CHANGES
+
+* Use promises instead of callbacks
+
 ## [3.1.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v3.1.1...v3.1.2) (2020-04-16)
 
 
