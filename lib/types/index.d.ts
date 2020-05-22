@@ -27,13 +27,14 @@ declare module 'react-native-wifi-reborn' {
      */
     export function connectToProtectedSSID(
         SSID: string,
-        password: string,
+        password: string | null,
         isWEP: boolean
     ): Promise<void>;
 
     export function getCurrentWifiSSID(): Promise<string>;
 
     //#region iOS only
+
     export function connectToSSID(SSID: string): Promise<void>;
     export function connectToSSIDPrefix(SSIDPrefix: string): Promise<void>;
     export function disconnectFromSSID(SSIDPrefix: string): Promise<void>;
@@ -42,54 +43,97 @@ declare module 'react-native-wifi-reborn' {
         password: string,
         isWEP: boolean
     ): Promise<void>;
+
     //#endregion
 
     //#region Android only
+
+    export interface WifiEntry {
+        SSID: string;
+        BSSID: number;
+        capabilities: string;
+        frequency: number;
+        level: number;
+        timestamp: number;
+    }
+
     /**
      * Returns a list of nearby WiFI networks.
      *
-     * @param callback Called if the attempt is successful. It contains a stringified JSONArray of `WiFiObject` as parameter.
-     * @param error Called if any error occurs during the attempt.
      * @example
-     * WifiManager.loadWifiList(
-            wifiList => {
-                let wifiArray =  JSON.parse(wifiList);
-                wifiArray.map((value, index) =>
-                    console.log(`Wifi ${index  +  1} - ${value.SSID}`)
-                );
-            },
-            error => console.log(error)
-        );
+     * const results = await WifiManager.loadWifiList();
+        results => {
+            let wifiArray =  JSON.parse(results);
+            wifiArray.map((value, index) =>
+                console.log(`Wifi ${index  +  1} - ${value.SSID}`)
+            );
+        },
      */
-    export function loadWifiList(
-        callback: (wifiList: string) => void,
-        error: (err: string) => void
-    ): void;
+    export function loadWifiList(): Promise<Array<WifiEntry>>;
+
     /**
-     * Similar to `loadWifiList` but it forcefully starts the WiFi scanning on android and in the callback fetches the list.
+     * Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
      */
-    export function reScanAndLoadWifiList(
-        callback: (wifiList: string) => void,
-        error: (err: string) => void
-    ): void;
-    export function isEnabled(callback: (enabled: boolean) => void): void;
+    export function reScanAndLoadWifiList(): Promise<Array<string>>;
+
+    /**
+     * Method to check if wifi is enabled.
+     */
+    export function isEnabled(): Promise<boolean>;
+
     export function setEnabled(enabled: boolean): void;
+
     /**
-     * Indicates whether network connectivity exists and it is possible to establish connections.
-     * @param Called when the network status is resolved.
+     * Returns if the device is currently connected to a WiFi network.
      */
-    export function connectionStatus(callback: (isConnected: boolean) => void): void;
+    export function connectionStatus(): Promise<boolean>;
+
     export function disconnect(): void;
-    export function isRemoveWifiNetwork(SSID: string): Promise<void>;
+
     /**
-     * Force wifi usage if the user needs to send requests via WiFi
-     * if it does not have internet connection. Useful for IoT applications, when
-     * the app needs to communicate and send requests to a device that have no
-     * internet connection via WiFi.
-     *
-     * Receives a boolean to enable forceWifiUsage if true, and disable if false.
-     * Is important to disable it when disconnecting from IoT device.
+     * Returns the BSSID (basic service set identifier) of the currently connected WiFi network.
      */
-    export function forceWifiUsage(force: boolean): Promise<void>;
+    export function getBSSID(): Promise<string>;
+
+    /**
+     * Returns the RSSI (received signal strength indicator) of the currently connected WiFi network.
+     */
+    export function getCurrentSignalStrength(): Promise<number>;
+
+    /**
+     * Returns the frequency of the currently connected WiFi network.
+     */
+    export function getFrequency(): Promise<number>;
+
+    /**
+     * Returns the IP of the currently connected WiFi network.
+     */
+    export function getIP(): Promise<string>;
+
+    /**
+     * This method will remove the wifi network configuration.
+     * If you are connected to that network, it will disconnect.
+     *
+     * @param SSID wifi SSID to remove configuration for
+     */
+    export function isRemoveWifiNetwork(SSID: string): Promise<boolean>;
+
+    export enum FORCE_WIFI_USAGE_ERRORS {
+        couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
+    }
+
+    /**
+     * Use this to execute api calls to a wifi network that does not have internet access.
+     *
+     * Useful for commissioning IoT devices.
+     *
+     * This will route all app network requests to the network (instead of the mobile connection).
+     * It is important to disable it again after using as even when the app disconnects from the wifi
+     * network it will keep on routing everything to wifi.
+     *
+     * @param useWifi boolean to force wifi off or on
+     */
+    export function forceWifiUsage(useWifi: boolean): Promise<void>;
+
     //#endregion
 }
