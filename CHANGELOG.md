@@ -1,3 +1,10 @@
+## [4.0.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.0.1...v4.0.2) (2020-05-23)
+
+
+### Bug Fixes
+
+* **iOS:** Consistent joinOnce=false configuration ([#72](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/72)) ([50cfc20](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/50cfc2008889b5d3f8c678f26839dd5bbddee440))
+
 ## [4.0.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.0.0...v4.0.1) (2020-05-23)
 
 
