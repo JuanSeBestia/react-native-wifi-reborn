@@ -22,6 +22,7 @@ import com.reactlibrary.rnwifi.receivers.WifiScanResultReceiver;
 import com.reactlibrary.utils.LocationUtils;
 import com.reactlibrary.utils.PermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
+import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
 
 import org.json.JSONArray;
@@ -182,12 +183,13 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
         WifiUtils.withContext(context).connectWith(SSID, password).onConnectionResult(new ConnectionSuccessListener() {
             @Override
-            public void isSuccessful(boolean isSuccess) {
-                if (isSuccess) {
-                    promise.resolve("connected");
-                } else {
-                    promise.reject("failed", "Could not connect to network");
-                }
+            public void success() {
+                promise.resolve("connected");
+            }
+
+            @Override
+            public void failed(@NonNull ConnectionErrorCode errorCode) {
+                promise.reject("failed", "Could not connect to network");
             }
         }).start();
     }
