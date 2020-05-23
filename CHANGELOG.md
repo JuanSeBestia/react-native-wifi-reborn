@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.0.0...v4.0.1) (2020-05-23)
+
+
+### Bug Fixes
+
+* Fix Android 10 no-internet support ([#82](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/82)) ([45d626c](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/45d626c277fa79b13838e642eb3afb6fc86b9d91))
+
 # [4.0.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v3.1.2...v4.0.0) (2020-05-01)
 
 
