@@ -18,6 +18,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.reactlibrary.rnwifi.errors.LoadWifiListErrorCodes;
 import com.reactlibrary.rnwifi.receivers.WifiScanResultReceiver;
 import com.reactlibrary.utils.LocationUtils;
 import com.reactlibrary.utils.PermissionUtils;
@@ -45,6 +46,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         this.context = context;
     }
 
+    @NonNull
     @Override
     public String getName() {
         return "WifiManager";
@@ -55,6 +57,18 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void loadWifiList(final Promise promise) {
+        final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
+        if (!locationPermissionGranted) {
+            promise.reject(LoadWifiListErrorCodes.locationPermissionMissing.toString(), "Location permission is not granted");
+            return;
+        }
+
+        final boolean isLocationOn = LocationUtils.isLocationOn(context);
+        if (!isLocationOn) {
+            promise.reject(LoadWifiListErrorCodes.locationServicesOff.toString(), "Location service is turned off");
+            return;
+        }
+
         try {
             final List<ScanResult> results = wifi.getScanResults();
             final JSONArray wifiArray = new JSONArray();
@@ -70,7 +84,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                         wifiObject.put("level", result.level);
                         wifiObject.put("timestamp", result.timestamp);
                     } catch (final JSONException jsonException) {
-                        promise.reject("jsonException", jsonException.getMessage());
+                        promise.reject(LoadWifiListErrorCodes.jsonParsingException.toString(), jsonException.getMessage());
                         return;
                     }
                     wifiArray.put(wifiObject);
@@ -79,7 +93,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
             promise.resolve(wifiArray.toString());
         } catch (final IllegalViewOperationException illegalViewOperationException) {
-            promise.reject("exception", illegalViewOperationException.getMessage());
+            promise.reject(LoadWifiListErrorCodes.illegalViewOperationException.toString(), illegalViewOperationException.getMessage());
         }
     }
 

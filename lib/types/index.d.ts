@@ -57,6 +57,25 @@ declare module 'react-native-wifi-reborn' {
         timestamp: number;
     }
 
+    export enum LOAD_WIFI_LIST_ERRORS {
+        /**
+         * Starting android 6, location permission needs to be granted for wifi scanning.
+         */
+        locationPermissionMissing = 'locationPermissionMissing',
+        /**
+         * Starting Android 6, location services needs to be on to scan for wifi networks.
+         */
+        locationServicesOff = 'locationServicesOff',
+        /**
+         * Json parsing exception while parsing the result.
+         */
+        jsonParsingException = 'jsonParsingException',
+        /**
+         * An exception caused by JS requesting the UI manager to perform an illegal view operation.
+         */
+        illegalViewOperationException = 'illegalViewOperationException',
+    }
+
     /**
      * Returns a list of nearby WiFI networks.
      *
