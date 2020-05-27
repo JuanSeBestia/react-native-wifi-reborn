@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.0.2...v4.1.0) (2020-05-27)
+
+
+### Features
+
+* Add loadWifiList meaningfull Exceptions ([#81](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/81)) ([cc8f7c1](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/cc8f7c13438a1782258c9500135e8a2edb17928c))
+
 ## [4.0.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.0.1...v4.0.2) (2020-05-23)
 
 
