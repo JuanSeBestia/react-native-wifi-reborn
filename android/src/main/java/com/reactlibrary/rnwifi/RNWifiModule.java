@@ -18,6 +18,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.reactlibrary.rnwifi.errors.IsRemoveWifiNetworkErrorCodes;
 import com.reactlibrary.rnwifi.errors.LoadWifiListErrorCodes;
 import com.reactlibrary.rnwifi.receivers.WifiScanResultReceiver;
 import com.reactlibrary.utils.LocationUtils;
@@ -59,7 +60,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     public void loadWifiList(final Promise promise) {
         final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
         if (!locationPermissionGranted) {
-            promise.reject(LoadWifiListErrorCodes.locationPermissionMissing.toString(), "Location permission is not granted");
+            promise.reject(LoadWifiListErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
             return;
         }
 
@@ -185,7 +186,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
         final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
         if (!locationPermissionGranted) {
-            promise.reject("location permission missing", "Location permission is not granted");
+            promise.reject("location permission missing", "Location permission (ACCESS_FINE_LOCATION) is not granted");
             return;
         }
 
@@ -301,6 +302,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             promise.reject(IsRemoveWifiNetworkErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
             return;
         }
+
         final List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
         final String comparableSSID = ('"' + SSID + '"'); //Add quotes because wifiConfig.SSID has them
 

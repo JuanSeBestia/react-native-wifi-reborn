@@ -30,7 +30,7 @@ public final class PermissionUtils {
      */
     public static boolean isLocationPermissionGranted(@NonNull final Context context) throws InvalidParameterException {
         return (!isMarshmallowOrLater()
-                || (isPermissionGranted(context, Manifest.permission.ACCESS_COARSE_LOCATION) || isPermissionGranted(context, Manifest.permission.ACCESS_FINE_LOCATION)));
+                || isPermissionGranted(context, Manifest.permission.ACCESS_FINE_LOCATION));
     }
 
     /**
