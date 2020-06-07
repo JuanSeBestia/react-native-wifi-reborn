@@ -129,6 +129,13 @@ declare module 'react-native-wifi-reborn' {
      */
     export function getIP(): Promise<string>;
 
+    export const IS_REMOVE_WIFI_NETWORK_ERRORS = {
+        /**
+         * Starting android 6, location permission needs to be granted for wifi scanning.
+         */
+        locationPermissionMissing = 'locationPermissionMissing',
+    };
+
     /**
      * This method will remove the wifi network configuration.
      * If you are connected to that network, it will disconnect.

@@ -296,6 +296,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void isRemoveWifiNetwork(final String SSID, final Promise promise) {
+        final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
+        if (!locationPermissionGranted) {
+            promise.reject(IsRemoveWifiNetworkErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
+            return;
+        }
         final List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
         final String comparableSSID = ('"' + SSID + '"'); //Add quotes because wifiConfig.SSID has them
 

@@ -280,6 +280,9 @@ Returns the IP of the currently connected WiFi network.
 This method will remove the wifi network configuration.
 If you are connected to that network, it will disconnect.
 
+#### Errors:
+* `locationPermissionMissing`: Starting android 6, location permission needs to be granted for wifi 
+
 ### `forceWifiUsage(useWifi: boolean): Promise`
 
  Use this to execute api calls to a wifi network that does not have internet access.
