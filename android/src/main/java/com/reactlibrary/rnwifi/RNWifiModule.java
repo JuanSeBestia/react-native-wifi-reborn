@@ -165,7 +165,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     /**
      * Method to set the WiFi on or off on the user's device.
      *
-     * @param enabled
+     * @param enabled to enable/disable wifi
      */
     @ReactMethod
     public void setEnabled(final boolean enabled) {
@@ -215,6 +215,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void connectionStatus(final Promise promise) {
         final ConnectivityManager connectivityManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager == null) {
+            promise.resolve(false);
+            return;
+        }
+
         NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (wifiInfo == null) {
             promise.resolve(false);
@@ -235,7 +240,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     /**
      * This method will return current SSID
      *
-     * @param promise
+     * @param promise to send error/result feedback
      */
     @ReactMethod
     public void getCurrentWifiSSID(final Promise promise) {
