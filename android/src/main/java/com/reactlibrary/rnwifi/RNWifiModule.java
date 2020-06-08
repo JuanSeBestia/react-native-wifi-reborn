@@ -18,6 +18,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.reactlibrary.rnwifi.errors.IsRemoveWifiNetworkErrorCodes;
 import com.reactlibrary.rnwifi.errors.LoadWifiListErrorCodes;
 import com.reactlibrary.rnwifi.receivers.WifiScanResultReceiver;
 import com.reactlibrary.utils.LocationUtils;
@@ -59,7 +60,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     public void loadWifiList(final Promise promise) {
         final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
         if (!locationPermissionGranted) {
-            promise.reject(LoadWifiListErrorCodes.locationPermissionMissing.toString(), "Location permission is not granted");
+            promise.reject(LoadWifiListErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
             return;
         }
 
@@ -164,7 +165,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     /**
      * Method to set the WiFi on or off on the user's device.
      *
-     * @param enabled
+     * @param enabled to enable/disable wifi
      */
     @ReactMethod
     public void setEnabled(final boolean enabled) {
@@ -185,7 +186,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
         final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
         if (!locationPermissionGranted) {
-            promise.reject("location permission missing", "Location permission is not granted");
+            promise.reject("location permission missing", "Location permission (ACCESS_FINE_LOCATION) is not granted");
             return;
         }
 
@@ -214,6 +215,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void connectionStatus(final Promise promise) {
         final ConnectivityManager connectivityManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager == null) {
+            promise.resolve(false);
+            return;
+        }
+
         NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (wifiInfo == null) {
             promise.resolve(false);
@@ -234,7 +240,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     /**
      * This method will return current SSID
      *
-     * @param promise
+     * @param promise to send error/result feedback
      */
     @ReactMethod
     public void getCurrentWifiSSID(final Promise promise) {
@@ -296,6 +302,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void isRemoveWifiNetwork(final String SSID, final Promise promise) {
+        final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
+        if (!locationPermissionGranted) {
+            promise.reject(IsRemoveWifiNetworkErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
+            return;
+        }
+
         final List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
         final String comparableSSID = ('"' + SSID + '"'); //Add quotes because wifiConfig.SSID has them
 
