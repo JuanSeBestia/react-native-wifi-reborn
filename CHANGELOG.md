@@ -1,3 +1,10 @@
+# [4.2.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.1.0...v4.2.0) (2020-06-08)
+
+
+### Features
+
+* Add isRemoveWifiNetwork() method ([#88](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/88)) ([aa195f1](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/aa195f1df9893b2cf82df30ffcb1dd2e47e5f19e)), closes [#77](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/77)
+
 # [4.1.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.0.2...v4.1.0) (2020-05-27)
 
 
