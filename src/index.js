@@ -22,4 +22,13 @@ export const CONNECT_ERRORS = {
     timeoutOccurred: 'timeoutOccurred',
 };
 
+export const IS_REMOVE_WIFI_NETWORK_ERRORS = {
+    couldNotGetWifiManager: 'couldNotGetWifiManager',
+    couldNotGetConnectivityManager: 'couldNotGetConnectivityManager',
+};
+
+export const FORCE_WIFI_USAGE_ERRORS = {
+    couldNotGetConnectivityManager: 'couldNotGetConnectivityManager',
+};
+
 export default WifiManager;
