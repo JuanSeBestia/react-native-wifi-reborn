@@ -30,7 +30,7 @@ This project is based on the no longer maintained https://github.com/robwalkerco
 
 `$ npm install react-native-wifi-reborn --save`
 
-### iOS setup
+### iOS
 
 You need use enable Access WIFI Information, with correct profile
 
@@ -40,7 +40,31 @@ You need put "Privacy - Location When In Use Usage Description" or "Privacy - Lo
 
 ### Android
 
-Location permission (a runtime permission starting Android 6) is required for some methods (https://github.com/inthepocket/react-native-wifi-reborn#connecttoprotectedssidssid-string-password-string-iswep-boolean-promise). Make sure to request them at runtime: https://facebook.github.io/react-native/docs/permissionsandroid.
+#### `ACCESS_FINE_LOCATION` permission
+
+Since [Android 6](https://developer.android.com/about/versions/marshmallow), you must request the [`ACCESS_FINE_LOCATION`](https://developer.android.com/reference/android/Manifest.permission#ACCESS_FINE_LOCATION) permission at runtime to use the device's Wi-Fi scanning and managing capabilities. In order to accomplish this, you can use the [PermissionsAndroid API](https://reactnative.dev/docs/permissionsandroid) or [React Native Permissions](https://github.com/react-native-community/react-native-permissions).
+
+Example:
+```javascript
+import { PermissionsAndroid } from 'react-native';
+
+const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Location permission is required for WiFi connections',
+        message:
+          'This app needs location permission as this is required  ' +
+          'to scan for wifi networks.',
+        buttonNegative: 'DENY',
+        buttonPositive: 'ALLOW',
+      },
+);
+if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    // You can now use react-native-wifi-reborn
+} else {
+    // Permission denied
+}
+```
 
 ### Autolinking (React Native 60+)
 
@@ -196,16 +220,9 @@ Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 per
 ## Only Android
 The following methods work only on Android
 
-### `loadWifiList(successCallback: function, errorCallback: function)`
+### `loadWifiList(): Promise<Array<WifiEntry>>`
 
-Method to get a list of nearby WiFI networks.
-
-#### successCallback( wifiList:  string )
-
-Type: `function`
-
-Function to be called if the attempt is successful. It contains a stringified JSONArray of wifiObjects as parameter, each object containing:
-
+Returns a list of nearby WiFI networks.
 * `SSID`: The network name.
 * `BSSID`: The WiFi BSSID.
 * `capabilities`: Describes the authentication, key management, and encryption schemes supported by the access point.
@@ -213,49 +230,15 @@ Function to be called if the attempt is successful. It contains a stringified JS
 * `level`: The detected signal level in dBm, also known as the RSSI.
 * `timestamp`: timestamp in microseconds (since boot) when this result was last seen.
 
- #### errorCallback
+### `reScanAndLoadWifiList(): Promise<Array<string>>`
+Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
 
-Type: `function`
-
-Function to be called if any error occurs during the attempt. It contains a `string` as parameter with the error message.
-
-#### Usage
-
-```javascript
-WifiManager.loadWifiList(
-	wifiList => {
-		let wifiArray =  JSON.parse(wifiList);
-		wifiArray.map((value, index) =>
-			console.log(`Wifi ${index  +  1} - ${value.SSID}`)
-		);
-	},
-	error =>  console.log(error)
-);
-/**
-Result:
-"Wifi 1 - Name of the network"
-"Wifi 2 - Name of the network"
-"Wifi 3 - Name of the network"
- ...
- */
-```
-
-### `reScanAndLoadWifiList(successCallback: function, errorCallback: function)`
-
-This method is similar to `loadWifiList` but it forcefully starts the wifi scanning on android and in the callback fetches the list.
-
-#### Usage
-
-Same as `loadWifiList`.
-
-### `isEnabled(isEnabled: function)`
-
+### `isEnabled(): Promise<boolean>`
 Method to check if WiFi is enabled.
 
 ```javascript
-WifiManager.isEnabled(isEnabled => {
-	this.setState({wifiIsEnabled: isEnabled});
-});
+const enabled = await WifiManager.isEnabled();
+this.setState({wifiIsEnabled: enabled});
 ```
 
 ### `setEnabled(enabled: boolean)`
@@ -267,40 +250,36 @@ WifiManager.setEnabled(true); //set WiFi ON
 WifiManager.setEnabled(false); //set WiFi OFF
 ```
 
-### `connectionStatus (connectionStatusResult: function)`
+### `connectionStatus(): Promise<boolean>`
 
-Indicates whether network connectivity exists and it is possible to establish connections.
+Returns if the device is currently connected to a WiFi network.
 
-#### connectionStatusResult( isConnected: boolean )
+### `disconnect()`
+Disconnect currently connected WiFi network.
 
-Type: `function`
+### `getBSSID(): Promise<string>`
+Returns the BSSID (basic service set identifier) of the currently connected WiFi network.
 
-Called when the network status is resolved. It contains a boolean argument
+### `getCurrentSignalStrength(): Promise<number>`
+Returns the RSSI (received signal strength indicator) of the currently connected WiFi network.
 
-### `disconnect`
 
-### `getBSSID`
+### `getFrequency(): Promise<number>`
+Returns the frequency of the currently connected WiFi network.
 
-### `getCurrentSignalStrength`
+### `getIP(): Promise<number>`
+Returns the IP of the currently connected WiFi network.
 
-### `getFrequency`
-
-### `getIP`
-
-<details>
-<summary>isRemoveWifiNetwork(ssid: String): Promise<boolean></summary>
+### `isRemoveWifiNetwork(ssid: String): Promise<boolean>`
 This method will remove the wifi network configuration.
 If you are connected to that network, it will disconnect.
-</details>
 
-<details>
-<summary>forceWifiUsage(useWifi: boolean): Promise</summary>
+### `forceWifiUsage(useWifi: boolean): Promise`
 
  Use this to execute api calls to a wifi network that does not have internet access.
  Useful for commissioning IoT devices.
  This will route all app network requests to the network (instead of the mobile connection).
  It is important to disable it again after using as even when the app disconnects from the wifi network it will keep on routing everything to wifi.
-</details>
 
 ## Conventions
 

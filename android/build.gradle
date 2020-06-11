@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.1'
+        classpath 'com.android.tools.build:gradle:4.0.0'
     }
 }
 
@@ -37,6 +37,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'
 
-    implementation 'com.github.eliaslecomte:WifiUtils:2210586'
+
+    implementation 'com.github.eliaslecomte:WifiUtils:091ace5'
 }
   

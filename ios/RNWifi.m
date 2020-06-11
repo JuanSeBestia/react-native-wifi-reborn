@@ -87,7 +87,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssid
 
     if (@available(iOS 13.0, *)) {
         NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSIDPrefix:ssid passphrase:passphrase isWEP:isWEP];
-        configuration.joinOnce = true;
+        configuration.joinOnce = false;
 
         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
@@ -118,7 +118,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
             configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid passphrase:passphrase isWEP:isWEP];
         }
         configuration.joinOnce = false;
-        
+
         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
                 reject([self parseError:error], [error localizedDescription], error);
@@ -158,7 +158,7 @@ RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
 RCT_REMAP_METHOD(getCurrentWifiSSID,
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject) {
-    
+
     if (@available(iOS 13, *)) {
         // Reject when permission had rejected
         if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied){
@@ -170,7 +170,7 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
             reject([ConnectError code:LocationPermissionRestricted], @"Cannot detect SSID because LocationPermission is Restricted", nil);
         }
     }
-    
+
     BOOL hasLocationPermission = [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse ||
     [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways;
     if (@available(iOS 13, *) && hasLocationPermission == NO) {

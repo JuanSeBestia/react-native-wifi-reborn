@@ -8,16 +8,23 @@ Nodeunit contributors (sorted alphabetically)
 * **[eliaslecomte](https://github.com/eliaslecomte)**
 
   * Update gradle configuration
-  * Update all Library in Android
-  
+  * Update Android library
+  * Use [WifiUtils](https://github.com/ThanosFisherman/WifiUtils/)
+  * Use promises over callbacks
+  * Return meaningful exceptions
+
 * **[kristfal](https://github.com/kristfal)**
 
-  * [android] rename the default name of package
+  * [android] Rename the default name of package
 
 * **[Rapsssito](https://github.com/Rapsssito)**
 
-  * [android] added network compatibility
+  * [android] Added network compatibility
 
 * **[gabrielrra](https://github.com/gabrielrra)**
 
   * [docs] Update docs
+
+* **[thibmaek](https://github.com/thibmaek)**
+
+  * [docs] Added type declarations
