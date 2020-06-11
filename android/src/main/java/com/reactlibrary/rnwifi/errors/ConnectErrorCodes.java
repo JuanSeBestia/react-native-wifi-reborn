@@ -34,5 +34,9 @@ public enum ConnectErrorCodes {
      * Could not connect in the timeout window.
      */
     timeoutOccurred,
+    /**
+     * On Android 10, the user cancelled connecting (via System UI).
+     */
+    userDenied,
     unableToConnect,
 }

@@ -216,6 +216,10 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                             case TIMEOUT_OCCURRED: {
                                 promise.reject(ConnectErrorCodes.timeoutOccurred.toString(), String.format("Could not connect in %d milliseconds ", CONNECT_TIMEOUT_IN_MILLISECONDS));
                             }
+                            case USER_CANCELLED: {
+                                promise.reject(ConnectErrorCodes.userDenied.toString(), "On Android 10, the user cancelled connecting (via System UI).");
+                            }
+                            default:
                             case COULD_NOT_CONNECT: {
                                 promise.reject(ConnectErrorCodes.unableToConnect.toString(), String.format("Failed to connect with %s", SSID));
                             }
