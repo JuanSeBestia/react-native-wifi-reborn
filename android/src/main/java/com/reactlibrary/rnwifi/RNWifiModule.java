@@ -30,6 +30,8 @@ import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
 import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionSuccessListener;
+import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
+import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -248,8 +250,28 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * Disconnect currently connected WiFi network.
      */
     @ReactMethod
-    public void disconnect() {
-        wifi.disconnect();
+    public void disconnect(final Promise promise) {
+        WifiUtils.withContext(this.context).disconnect(new DisconnectionSuccessListener() {
+            @Override
+            public void success() {
+                promise.resolve(true);
+            }
+
+            @Override
+            public void failed(@NonNull DisconnectionErrorCode errorCode) {
+                switch (errorCode) {
+                    case COULD_NOT_GET_WIFI_MANAGER: {
+                        promise.reject(RemoveWifiConfigurationErrorCodes.couldNotGetWifiManager.toString(), "Could not get WifiManager.");
+                    }
+                    case COULD_NOT_GET_CONNECTIVITY_MANAGER: {
+                        promise.reject(RemoveWifiConfigurationErrorCodes.couldNotGetConnectivityManager.toString(), "Could not get Connectivity Manager.");
+                    }
+                    case COULD_NOT_DISCONNECT: {
+                        promise.resolve(false);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -318,14 +340,14 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void isRemoveWifiNetwork(final String SSID, final Promise promise) {
         WifiUtils.withContext(this.context)
-                .disconnectFrom(SSID, new DisconnectionSuccessListener() {
+                .remove(SSID, new RemoveSuccessListener() {
                     @Override
                     public void success() {
                         promise.resolve(true);
                     }
 
                     @Override
-                    public void failed(@NonNull DisconnectionErrorCode errorCode) {
+                    public void failed(@NonNull RemoveErrorCode errorCode) {
                         switch (errorCode) {
                             case COULD_NOT_GET_WIFI_MANAGER: {
                                 promise.reject(RemoveWifiConfigurationErrorCodes.couldNotGetWifiManager.toString(), "Could not get WifiManager.");
@@ -333,7 +355,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                             case COULD_NOT_GET_CONNECTIVITY_MANAGER: {
                                 promise.reject(RemoveWifiConfigurationErrorCodes.couldNotGetConnectivityManager.toString(), "Could not get Connectivity Manager.");
                             }
-                            case COULD_NOT_DISCONNECT: {
+                            case COULD_NOT_REMOVE: {
                                 promise.resolve(false);
                             }
                         }
