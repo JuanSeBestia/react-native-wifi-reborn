@@ -87,8 +87,9 @@ declare module 'react-native-wifi-reborn' {
                 console.log(`Wifi ${index  +  1} - ${value.SSID}`)
             );
         },
+     * @returns A promise to a string that can be parsed to Array<WifiEntry>
      */
-    export function loadWifiList(): Promise<Array<WifiEntry>>;
+    export function loadWifiList(): Promise<string>;
 
     /**
      * Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
