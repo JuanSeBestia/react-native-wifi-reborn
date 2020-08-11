@@ -107,7 +107,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
                   rejecter:(RCTPromiseRejectBlock)reject) {
     // Prevent NEHotspotConfigurationManager error when connecting to an already connected network
     if ([ssid isEqualToString:[self getWifiSSID]]){
-        resolve(nil);
+        reject(@"nehotspot_error", @"You are trying to connect to a network you are already connected to", nil);
         return;
     }
     if (@available(iOS 11.0, *)) {
