@@ -7,6 +7,7 @@
  */
 
 import React, {useState, useEffect} from 'react';
+import { PermissionsAndroid, Button } from 'react-native';
 import {
   SafeAreaView,
   StyleSheet,
@@ -23,22 +24,8 @@ const App = () => {
   const [connected, setConnected] = useState({connected: false, ssid: 'S4N'});
   const [ssid, setSsid] = useState('');
   const password ="tanenbaum-1981";
-  const isWep = false;
 
-  const wifi = async () => {
-    try {
-      const data = await WifiManager.connectToProtectedSSID(
-        ssid,
-        password,
-        isWep,
-      );
-      console.log('Connected successfully!', {data});
-      setConnected({connected: true, ssid});
-    } catch (error) {
-      setConnected({connected: false, error: error.message});
-      console.log('Connection failed!', {error});
-    }
-
+  const initWifi = async () => {
     try {
       const ssid = await WifiManager.getCurrentWifiSSID();
       setSsid(ssid);
@@ -47,9 +34,58 @@ const App = () => {
       setSsid('Cannot get current SSID!' + error.message);
       console.log('Cannot get current SSID!', {error});
     }
+  }
+
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: "React Native Wifi Reborn App Permission",
+          message:
+            "Location permission is required to connect with or scan for Wifi networks. ",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        initWifi();
+      } else {
+        console.log("Location permission denied");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
   };
+
+  const connectWithWifi = async () => {
+    try {
+      const data = await WifiManager.connectToProtectedSSID(
+        ssid,
+        password,
+        false,
+      );
+      console.log('Connected successfully!', {data});
+      setConnected({connected: true, ssid});
+    } catch (error) {
+      setConnected({connected: false, error: error.message});
+      console.log('Connection failed!', {error});
+    }
+  };
+
+  const scanExample = async () => {
+    try {
+      const data = await WifiManager.reScanAndLoadWifiList()
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
   useEffect(() => {
-    wifi();
+    requestLocationPermission();
   }, []);
 
   return (
@@ -72,6 +108,7 @@ const App = () => {
               {JSON.stringify(connected)}
             </Text>
           </View>
+          <Button onPress={connectWithWifi} title="Connect" />
           <View style={styles.body}></View>
         </ScrollView>
       </SafeAreaView>

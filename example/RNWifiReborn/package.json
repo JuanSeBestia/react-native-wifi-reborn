@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "16.9.0",
     "react-native": "0.61.3",
-    "react-native-wifi-reborn": "^2.1.2"
+    "react-native-wifi-reborn": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
