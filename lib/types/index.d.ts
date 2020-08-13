@@ -57,6 +57,25 @@ declare module 'react-native-wifi-reborn' {
         timestamp: number;
     }
 
+    export enum LOAD_WIFI_LIST_ERRORS {
+        /**
+         * Starting android 6, location permission needs to be granted for wifi scanning.
+         */
+        locationPermissionMissing = 'locationPermissionMissing',
+        /**
+         * Starting Android 6, location services needs to be on to scan for wifi networks.
+         */
+        locationServicesOff = 'locationServicesOff',
+        /**
+         * Json parsing exception while parsing the result.
+         */
+        jsonParsingException = 'jsonParsingException',
+        /**
+         * An exception caused by JS requesting the UI manager to perform an illegal view operation.
+         */
+        illegalViewOperationException = 'illegalViewOperationException',
+    }
+
     /**
      * Returns a list of nearby WiFI networks.
      *
@@ -109,6 +128,13 @@ declare module 'react-native-wifi-reborn' {
      * Returns the IP of the currently connected WiFi network.
      */
     export function getIP(): Promise<string>;
+
+    export const IS_REMOVE_WIFI_NETWORK_ERRORS = {
+        /**
+         * Starting android 6, location permission needs to be granted for wifi scanning.
+         */
+        locationPermissionMissing = 'locationPermissionMissing',
+    };
 
     /**
      * This method will remove the wifi network configuration.

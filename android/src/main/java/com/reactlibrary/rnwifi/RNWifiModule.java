@@ -18,10 +18,13 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.reactlibrary.rnwifi.errors.IsRemoveWifiNetworkErrorCodes;
+import com.reactlibrary.rnwifi.errors.LoadWifiListErrorCodes;
 import com.reactlibrary.rnwifi.receivers.WifiScanResultReceiver;
 import com.reactlibrary.utils.LocationUtils;
 import com.reactlibrary.utils.PermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
+import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
 
 import org.json.JSONArray;
@@ -44,6 +47,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         this.context = context;
     }
 
+    @NonNull
     @Override
     public String getName() {
         return "WifiManager";
@@ -54,6 +58,18 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void loadWifiList(final Promise promise) {
+        final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
+        if (!locationPermissionGranted) {
+            promise.reject(LoadWifiListErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
+            return;
+        }
+
+        final boolean isLocationOn = LocationUtils.isLocationOn(context);
+        if (!isLocationOn) {
+            promise.reject(LoadWifiListErrorCodes.locationServicesOff.toString(), "Location service is turned off");
+            return;
+        }
+
         try {
             final List<ScanResult> results = wifi.getScanResults();
             final JSONArray wifiArray = new JSONArray();
@@ -69,7 +85,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                         wifiObject.put("level", result.level);
                         wifiObject.put("timestamp", result.timestamp);
                     } catch (final JSONException jsonException) {
-                        promise.reject("jsonException", jsonException.getMessage());
+                        promise.reject(LoadWifiListErrorCodes.jsonParsingException.toString(), jsonException.getMessage());
                         return;
                     }
                     wifiArray.put(wifiObject);
@@ -78,7 +94,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
             promise.resolve(wifiArray.toString());
         } catch (final IllegalViewOperationException illegalViewOperationException) {
-            promise.reject("exception", illegalViewOperationException.getMessage());
+            promise.reject(LoadWifiListErrorCodes.illegalViewOperationException.toString(), illegalViewOperationException.getMessage());
         }
     }
 
@@ -149,7 +165,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     /**
      * Method to set the WiFi on or off on the user's device.
      *
-     * @param enabled
+     * @param enabled to enable/disable wifi
      */
     @ReactMethod
     public void setEnabled(final boolean enabled) {
@@ -170,7 +186,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
         final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
         if (!locationPermissionGranted) {
-            promise.reject("location permission missing", "Location permission is not granted");
+            promise.reject("location permission missing", "Location permission (ACCESS_FINE_LOCATION) is not granted");
             return;
         }
 
@@ -182,12 +198,13 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
         WifiUtils.withContext(context).connectWith(SSID, password).onConnectionResult(new ConnectionSuccessListener() {
             @Override
-            public void isSuccessful(boolean isSuccess) {
-                if (isSuccess) {
-                    promise.resolve("connected");
-                } else {
-                    promise.reject("failed", "Could not connect to network");
-                }
+            public void success() {
+                promise.resolve("connected");
+            }
+
+            @Override
+            public void failed(@NonNull ConnectionErrorCode errorCode) {
+                promise.reject("failed", "Could not connect to network");
             }
         }).start();
     }
@@ -198,6 +215,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void connectionStatus(final Promise promise) {
         final ConnectivityManager connectivityManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager == null) {
+            promise.resolve(false);
+            return;
+        }
+
         NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (wifiInfo == null) {
             promise.resolve(false);
@@ -218,7 +240,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     /**
      * This method will return current SSID
      *
-     * @param promise
+     * @param promise to send error/result feedback
      */
     @ReactMethod
     public void getCurrentWifiSSID(final Promise promise) {
@@ -280,6 +302,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void isRemoveWifiNetwork(final String SSID, final Promise promise) {
+        final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
+        if (!locationPermissionGranted) {
+            promise.reject(IsRemoveWifiNetworkErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
+            return;
+        }
+
         final List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
         final String comparableSSID = ('"' + SSID + '"'); //Add quotes because wifiConfig.SSID has them
 
