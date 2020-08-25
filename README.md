@@ -32,7 +32,7 @@ This project is based on the no longer maintained https://github.com/robwalkerco
 
 ### iOS
 
-You need use enable Access WIFI Information, with correct profile
+You need use enable `Access WIFI Information`, with correct profile. `Hotspot Configuration` is required in order to connect to networks.
 
 #### iOS 13
 
