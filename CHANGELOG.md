@@ -1,3 +1,10 @@
+## [4.2.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.2.0...v4.2.1) (2020-08-25)
+
+
+### Bug Fixes
+
+* loadWifiList and reScanAndLoadWifiList not returning a JSON array but a string ([#104](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/104)) ([9dce618](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/9dce6189eb3176fe2288ba8f85dbaf746aa3b4e6))
+
 # [4.2.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.1.0...v4.2.0) (2020-06-08)
 
 
