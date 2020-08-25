@@ -13,11 +13,13 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.uimanager.IllegalViewOperationException;
+import com.facebook.react.bridge.WritableArray;
 import com.reactlibrary.rnwifi.errors.IsRemoveWifiNetworkErrorCodes;
 import com.reactlibrary.rnwifi.errors.LoadWifiListErrorCodes;
 import com.reactlibrary.rnwifi.receivers.WifiScanResultReceiver;
@@ -27,13 +29,9 @@ import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
 
-import androidx.annotation.NonNull;
+import static com.reactlibrary.mappers.WifiScanResultsMapper.mapWifiScanResults;
 
 public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;
@@ -71,30 +69,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         }
 
         try {
-            final List<ScanResult> results = wifi.getScanResults();
-            final JSONArray wifiArray = new JSONArray();
-
-            for (ScanResult result : results) {
-                final JSONObject wifiObject = new JSONObject();
-                if (!result.SSID.equals("")) {
-                    try {
-                        wifiObject.put("SSID", result.SSID);
-                        wifiObject.put("BSSID", result.BSSID);
-                        wifiObject.put("capabilities", result.capabilities);
-                        wifiObject.put("frequency", result.frequency);
-                        wifiObject.put("level", result.level);
-                        wifiObject.put("timestamp", result.timestamp);
-                    } catch (final JSONException jsonException) {
-                        promise.reject(LoadWifiListErrorCodes.jsonParsingException.toString(), jsonException.getMessage());
-                        return;
-                    }
-                    wifiArray.put(wifiObject);
-                }
-            }
-
-            promise.resolve(wifiArray.toString());
-        } catch (final IllegalViewOperationException illegalViewOperationException) {
-            promise.reject(LoadWifiListErrorCodes.illegalViewOperationException.toString(), illegalViewOperationException.getMessage());
+            final List<ScanResult> scanResults = wifi.getScanResults();
+            final WritableArray results = mapWifiScanResults(scanResults);
+            promise.resolve(results);
+        } catch (final Exception exception) {
+            promise.reject(LoadWifiListErrorCodes.exception.toString(), exception.getMessage());
         }
     }
 
