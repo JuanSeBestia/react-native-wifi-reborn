@@ -1,3 +1,24 @@
+## [4.2.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.2.0...v4.2.1) (2020-08-25)
+
+
+### Bug Fixes
+
+* loadWifiList and reScanAndLoadWifiList not returning a JSON array but a string ([#104](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/104)) ([9dce618](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/9dce6189eb3176fe2288ba8f85dbaf746aa3b4e6))
+
+# [4.2.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.1.0...v4.2.0) (2020-06-08)
+
+
+### Features
+
+* Add isRemoveWifiNetwork() method ([#88](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/88)) ([aa195f1](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/aa195f1df9893b2cf82df30ffcb1dd2e47e5f19e)), closes [#77](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/77)
+
+# [4.1.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.0.2...v4.1.0) (2020-05-27)
+
+
+### Features
+
+* Add loadWifiList meaningfull Exceptions ([#81](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/81)) ([cc8f7c1](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/cc8f7c13438a1782258c9500135e8a2edb17928c))
+
 ## [4.0.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.0.1...v4.0.2) (2020-05-23)
 
 

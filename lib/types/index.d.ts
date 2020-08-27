@@ -134,6 +134,25 @@ declare module 'react-native-wifi-reborn' {
         timestamp: number;
     }
 
+    export enum LOAD_WIFI_LIST_ERRORS {
+        /**
+         * Starting android 6, location permission needs to be granted for wifi scanning.
+         */
+        locationPermissionMissing = 'locationPermissionMissing',
+        /**
+         * Starting Android 6, location services needs to be on to scan for wifi networks.
+         */
+        locationServicesOff = 'locationServicesOff',
+        /**
+         * Json parsing exception while parsing the result.
+         */
+        jsonParsingException = 'jsonParsingException',
+        /**
+         * An exception caused by JS requesting the UI manager to perform an illegal view operation.
+         */
+        illegalViewOperationException = 'illegalViewOperationException',
+    }
+
     /**
      * Returns a list of nearby WiFI networks.
      *
@@ -165,12 +184,20 @@ declare module 'react-native-wifi-reborn' {
      */
     export function connectionStatus(): Promise<boolean>;
 
-    export function disconnect(): void;
-
-    export enum IS_REMOVE_WIFI_NETWORK_ERRORS {
+    export const DISCONNECT_ERRORS = {
+        /**
+         * Could not get the WifiManager.
+         * https://developer.android.com/reference/android/net/wifi/WifiManager?hl=en
+         */
         couldNotGetWifiManager = 'couldNotGetWifiManager',
+        /**
+         * Could not get the ConnectivityManager.
+         * https://developer.android.com/reference/android/net/ConnectivityManager?hl=en
+         */
         couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
-    }
+    };
+
+    export function disconnect(): Promise<boolean>;
 
     /**
      * Returns the BSSID (basic service set identifier) of the currently connected WiFi network.
@@ -191,6 +218,15 @@ declare module 'react-native-wifi-reborn' {
      * Returns the IP of the currently connected WiFi network.
      */
     export function getIP(): Promise<string>;
+
+    export const IS_REMOVE_WIFI_NETWORK_ERRORS = {
+        /**
+         * Starting android 6, location permission needs to be granted for wifi scanning.
+         */
+        locationPermissionMissing = 'locationPermissionMissing',
+        couldNotGetWifiManager = 'couldNotGetWifiManager',
+        couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
+    };
 
     /**
      * This method will remove the wifi network configuration.

@@ -6,16 +6,14 @@ import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
-import com.facebook.react.bridge.Promise;
-import com.facebook.react.uimanager.IllegalViewOperationException;
+import androidx.annotation.NonNull;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.WritableArray;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
+import static com.reactlibrary.mappers.WifiScanResultsMapper.mapWifiScanResults;
 
 public class WifiScanResultReceiver extends BroadcastReceiver {
     private final WifiManager wifiManager;
@@ -31,30 +29,11 @@ public class WifiScanResultReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, final Intent intent) {
         context.unregisterReceiver(this);
         try {
-            final List<ScanResult> results = this.wifiManager.getScanResults();
-            final JSONArray wifiArray = new JSONArray();
-
-            for (ScanResult result : results) {
-                JSONObject wifiObject = new JSONObject();
-                if (!result.SSID.equals("")) {
-                    try {
-                        wifiObject.put("SSID", result.SSID);
-                        wifiObject.put("BSSID", result.BSSID);
-                        wifiObject.put("capabilities", result.capabilities);
-                        wifiObject.put("frequency", result.frequency);
-                        wifiObject.put("level", result.level);
-                        wifiObject.put("timestamp", result.timestamp);
-                    } catch (final JSONException jsonException) {
-                        promise.reject("jsonException", jsonException.getMessage());
-                        return;
-                    }
-                    wifiArray.put(wifiObject);
-                }
-            }
-            promise.resolve(wifiArray.toString());
-        } catch (IllegalViewOperationException illegalViewOperationException) {
-            promise.reject("exception", illegalViewOperationException.getMessage());
+            final List<ScanResult> scanResults = this.wifiManager.getScanResults();
+            final WritableArray results = mapWifiScanResults(scanResults);
+            promise.resolve(results);
+        } catch (Exception exception) {
+            promise.reject("exception", exception.getMessage());
         }
-    }
-
+     }
 }

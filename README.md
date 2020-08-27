@@ -230,7 +230,12 @@ Returns a list of nearby WiFI networks.
 * `level`: The detected signal level in dBm, also known as the RSSI.
 * `timestamp`: timestamp in microseconds (since boot) when this result was last seen.
 
-### `reScanAndLoadWifiList(): Promise<Array<string>>`
+#### Errors:
+* `locationPermissionMissing`: Starting android 6, location permission needs to be granted for wifi 
+* `locationServicesOff`: Starting Android 6, location services needs to be on to scan for wifi networks.
+* `exception`: Any other caught exception.
+
+### `reScanAndLoadWifiList(): Promise<Array<WifiEntry>>`
 Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
 
 ### `isEnabled(): Promise<boolean>`
@@ -273,6 +278,9 @@ Returns the IP of the currently connected WiFi network.
 ### `isRemoveWifiNetwork(ssid: String): Promise<boolean>`
 This method will remove the wifi network configuration.
 If you are connected to that network, it will disconnect.
+
+#### Errors:
+* `locationPermissionMissing`: Starting android 6, location permission needs to be granted for wifi 
 
 ### `forceWifiUsage(useWifi: boolean): Promise`
 

@@ -36,6 +36,9 @@ build/
 .gradle
 local.properties
 *.iml
+.classpath
+.project
+org.eclipse.buildship.core.prefs
 
 # BUCK
 buck-out/

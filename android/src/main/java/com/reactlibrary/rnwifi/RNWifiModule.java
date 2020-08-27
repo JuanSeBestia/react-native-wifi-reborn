@@ -19,9 +19,11 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.uimanager.IllegalViewOperationException;
 import com.reactlibrary.rnwifi.errors.ConnectErrorCodes;
-import com.reactlibrary.rnwifi.errors.RemoveWifiConfigurationErrorCodes;
+import com.reactlibrary.rnwifi.errors.DisconnectErrorCodes;
+import com.facebook.react.bridge.WritableArray;
+import com.reactlibrary.rnwifi.errors.IsRemoveWifiNetworkErrorCodes;
+import com.reactlibrary.rnwifi.errors.LoadWifiListErrorCodes;
 import com.reactlibrary.rnwifi.receivers.WifiScanResultReceiver;
 import com.reactlibrary.utils.LocationUtils;
 import com.reactlibrary.utils.PermissionUtils;
@@ -33,11 +35,9 @@ import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionSuccessListener
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.List;
+
+import static com.reactlibrary.mappers.WifiScanResultsMapper.mapWifiScanResults;
 
 public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;
@@ -64,31 +64,24 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void loadWifiList(final Promise promise) {
+        final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
+        if (!locationPermissionGranted) {
+            promise.reject(LoadWifiListErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
+            return;
+        }
+
+        final boolean isLocationOn = LocationUtils.isLocationOn(context);
+        if (!isLocationOn) {
+            promise.reject(LoadWifiListErrorCodes.locationServicesOff.toString(), "Location service is turned off");
+            return;
+        }
+
         try {
-            final List<ScanResult> results = wifi.getScanResults();
-            final JSONArray wifiArray = new JSONArray();
-
-            for (ScanResult result : results) {
-                final JSONObject wifiObject = new JSONObject();
-                if (!result.SSID.equals("")) {
-                    try {
-                        wifiObject.put("SSID", result.SSID);
-                        wifiObject.put("BSSID", result.BSSID);
-                        wifiObject.put("capabilities", result.capabilities);
-                        wifiObject.put("frequency", result.frequency);
-                        wifiObject.put("level", result.level);
-                        wifiObject.put("timestamp", result.timestamp);
-                    } catch (final JSONException jsonException) {
-                        promise.reject("jsonException", jsonException.getMessage());
-                        return;
-                    }
-                    wifiArray.put(wifiObject);
-                }
-            }
-
-            promise.resolve(wifiArray.toString());
-        } catch (final IllegalViewOperationException illegalViewOperationException) {
-            promise.reject("exception", illegalViewOperationException.getMessage());
+            final List<ScanResult> scanResults = wifi.getScanResults();
+            final WritableArray results = mapWifiScanResults(scanResults);
+            promise.resolve(results);
+        } catch (final Exception exception) {
+            promise.reject(LoadWifiListErrorCodes.exception.toString(), exception.getMessage());
         }
     }
 
@@ -159,7 +152,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     /**
      * Method to set the WiFi on or off on the user's device.
      *
-     * @param enabled
+     * @param enabled to enable/disable wifi
      */
     @ReactMethod
     public void setEnabled(final boolean enabled) {
@@ -180,7 +173,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
         final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
         if (!locationPermissionGranted) {
-            promise.reject(ConnectErrorCodes.locationPermissionMissing.toString(), "Location permission is not granted");
+            promise.reject(ConnectErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
             return;
         }
 
@@ -237,6 +230,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void connectionStatus(final Promise promise) {
         final ConnectivityManager connectivityManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager == null) {
+            promise.resolve(false);
+            return;
+        }
+
         NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (wifiInfo == null) {
             promise.resolve(false);
@@ -261,10 +259,10 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             public void failed(@NonNull DisconnectionErrorCode errorCode) {
                 switch (errorCode) {
                     case COULD_NOT_GET_WIFI_MANAGER: {
-                        promise.reject(RemoveWifiConfigurationErrorCodes.couldNotGetWifiManager.toString(), "Could not get WifiManager.");
+                        promise.reject(DisconnectErrorCodes.couldNotGetWifiManager.toString(), "Could not get WifiManager.");
                     }
                     case COULD_NOT_GET_CONNECTIVITY_MANAGER: {
-                        promise.reject(RemoveWifiConfigurationErrorCodes.couldNotGetConnectivityManager.toString(), "Could not get Connectivity Manager.");
+                        promise.reject(DisconnectErrorCodes.couldNotGetConnectivityManager.toString(), "Could not get Connectivity Manager.");
                     }
                     case COULD_NOT_DISCONNECT: {
                         promise.resolve(false);
@@ -277,7 +275,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     /**
      * This method will return current SSID
      *
-     * @param promise
+     * @param promise to send error/result feedback
      */
     @ReactMethod
     public void getCurrentWifiSSID(final Promise promise) {
@@ -339,6 +337,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void isRemoveWifiNetwork(final String SSID, final Promise promise) {
+        final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
+        if (!locationPermissionGranted) {
+            promise.reject(IsRemoveWifiNetworkErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
+            return;
+        }
+
         WifiUtils.withContext(this.context)
                 .remove(SSID, new RemoveSuccessListener() {
                     @Override
@@ -350,10 +354,10 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                     public void failed(@NonNull RemoveErrorCode errorCode) {
                         switch (errorCode) {
                             case COULD_NOT_GET_WIFI_MANAGER: {
-                                promise.reject(RemoveWifiConfigurationErrorCodes.couldNotGetWifiManager.toString(), "Could not get WifiManager.");
+                                promise.reject(IsRemoveWifiNetworkErrorCodes.couldNotGetWifiManager.toString(), "Could not get WifiManager.");
                             }
                             case COULD_NOT_GET_CONNECTIVITY_MANAGER: {
-                                promise.reject(RemoveWifiConfigurationErrorCodes.couldNotGetConnectivityManager.toString(), "Could not get Connectivity Manager.");
+                                promise.reject(IsRemoveWifiNetworkErrorCodes.couldNotGetConnectivityManager.toString(), "Could not get Connectivity Manager.");
                             }
                             case COULD_NOT_REMOVE: {
                                 promise.resolve(false);
