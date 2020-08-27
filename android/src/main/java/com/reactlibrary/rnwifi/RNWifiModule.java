@@ -267,6 +267,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                     case COULD_NOT_GET_CONNECTIVITY_MANAGER: {
                         promise.reject(DisconnectErrorCodes.couldNotGetConnectivityManager.toString(), "Could not get Connectivity Manager.");
                     }
+                    default:
                     case COULD_NOT_DISCONNECT: {
                         promise.resolve(false);
                     }
@@ -362,6 +363,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                             case COULD_NOT_GET_CONNECTIVITY_MANAGER: {
                                 promise.reject(IsRemoveWifiNetworkErrorCodes.couldNotGetConnectivityManager.toString(), "Could not get Connectivity Manager.");
                             }
+                            default:
                             case COULD_NOT_REMOVE: {
                                 promise.resolve(false);
                             }
