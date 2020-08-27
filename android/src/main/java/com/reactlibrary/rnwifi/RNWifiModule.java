@@ -214,6 +214,9 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                             case USER_CANCELLED: {
                                 promise.reject(ConnectErrorCodes.userDenied.toString(), "On Android 10, the user cancelled connecting (via System UI).");
                             }
+                            case ANDROID_10_IMMEDIATELY_DROPPED_CONNECTION: {
+                                promise.reject(ConnectErrorCodes.android10ImmediatelyDroppedConnection.toString(), "Firmware bugs on OnePlus prevent it from connecting on some firmware versions.");
+                            }
                             default:
                             case COULD_NOT_CONNECT: {
                                 promise.reject(ConnectErrorCodes.unableToConnect.toString(), String.format("Failed to connect with %s", SSID));

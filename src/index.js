@@ -19,6 +19,7 @@ export const CONNECT_ERRORS = {
     couldNotDetectSSID: 'couldNotDetectSSID',
     didNotFindNetwork: 'didNotFindNetwork',
     authenticationErrorOccurred: 'authenticationErrorOccurred',
+    android10ImmediatelyDroppedConnection: 'android10ImmediatelyDroppedConnection',
     timeoutOccurred: 'timeoutOccurred',
 };
 

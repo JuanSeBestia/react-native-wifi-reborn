@@ -90,6 +90,11 @@ declare module 'react-native-wifi-reborn' {
          */
         authenticationErrorOccurred = 'authenticationErrorOccurred',
         /**
+         * Firmware bugs on OnePlus prevent it from connecting on some firmware versions.
+         * More info: https://github.com/ThanosFisherman/WifiUtils/issues/63
+         */
+        android10ImmediatelyDroppedConnection = 'android10ImmediatelyDroppedConnection',
+        /**
          * Could not connect in the timeout window.
          */
         timeoutOccurred = 'timeoutOccurred',

@@ -38,5 +38,10 @@ public enum ConnectErrorCodes {
      * On Android 10, the user cancelled connecting (via System UI).
      */
     userDenied,
+    /**
+     * Firmware bugs on OnePlus prevent it from connecting on some firmware versions.
+     * More info: https://github.com/ThanosFisherman/WifiUtils/issues/63
+     */
+    android10ImmediatelyDroppedConnection,
     unableToConnect,
 }
