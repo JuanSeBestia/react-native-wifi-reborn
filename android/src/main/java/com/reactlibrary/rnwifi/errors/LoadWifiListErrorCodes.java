@@ -10,11 +10,7 @@ public enum LoadWifiListErrorCodes {
      */
     locationServicesOff,
     /**
-     * Json parsing exception while parsing the result.
+     * Any other caught exception.
      */
-    jsonParsingException,
-    /**
-     * An exception caused by JS requesting the UI manager to perform an illegal view operation.
-     */
-    illegalViewOperationException,
+    exception,
 }

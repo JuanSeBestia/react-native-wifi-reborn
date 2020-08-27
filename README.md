@@ -233,10 +233,9 @@ Returns a list of nearby WiFI networks.
 #### Errors:
 * `locationPermissionMissing`: Starting android 6, location permission needs to be granted for wifi 
 * `locationServicesOff`: Starting Android 6, location services needs to be on to scan for wifi networks.
-* `jsonParsingException`: Json parsing exception while parsing the result.
-* `illegalViewOperationException`: An exception caused by JS requesting the UI manager to perform an illegal view operation.
+* `exception`: Any other caught exception.
 
-### `reScanAndLoadWifiList(): Promise<Array<string>>`
+### `reScanAndLoadWifiList(): Promise<Array<WifiEntry>>`
 Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
 
 ### `isEnabled(): Promise<boolean>`
