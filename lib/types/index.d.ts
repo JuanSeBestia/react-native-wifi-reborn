@@ -78,22 +78,13 @@ declare module 'react-native-wifi-reborn' {
 
     /**
      * Returns a list of nearby WiFI networks.
-     *
-     * @example
-     * const results = await WifiManager.loadWifiList();
-        results => {
-            let wifiArray =  JSON.parse(results);
-            wifiArray.map((value, index) =>
-                console.log(`Wifi ${index  +  1} - ${value.SSID}`)
-            );
-        },
      */
     export function loadWifiList(): Promise<Array<WifiEntry>>;
 
     /**
      * Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
      */
-    export function reScanAndLoadWifiList(): Promise<Array<string>>;
+    export function reScanAndLoadWifiList(): Promise<Array<WifiEntry>>;
 
     /**
      * Method to check if wifi is enabled.
