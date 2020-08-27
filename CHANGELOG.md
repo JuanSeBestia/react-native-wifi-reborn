@@ -1,3 +1,10 @@
+## [4.2.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.2.1...v4.2.2) (2020-08-27)
+
+
+### Bug Fixes
+
+* Fix reScanAndLoadWifiList() return type ([#108](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/108)) ([431f624](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/431f6243bbfc6f2c34ec4ba73bec4f0f5b35b645))
+
 ## [4.2.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.2.0...v4.2.1) (2020-08-25)
 
 
