@@ -95,7 +95,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void forceWifiUsage(final boolean useWifi, final Promise promise) {
-        this(useWifi, false, promise);
+        forceWifiUsage(useWifi, false, promise);
     }
     
     /**
@@ -121,7 +121,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         }
 
         if (useWifi) {
-            NetworkRequest networkRequest = new NetworkRequest.Builder();
+            NetworkRequest.Builder networkRequest = new NetworkRequest.Builder();
             
             networkRequest.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
             
@@ -129,9 +129,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                 networkRequest.removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
             }
 
-            networkRequest.build();
-
-            connectivityManager.requestNetwork(networkRequest, new ConnectivityManager.NetworkCallback() {
+            connectivityManager.requestNetwork(networkRequest.build(), new ConnectivityManager.NetworkCallback() {
                 @Override
                 public void onAvailable(@NonNull final Network network) {
                     super.onAvailable(network);
