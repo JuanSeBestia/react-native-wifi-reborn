@@ -94,8 +94,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * @param useWifi boolean to force wifi off or on
      */
     @ReactMethod
-    public void forceWifiUsage(final boolean useWifi, final Promise promise)
-    {
+    public void forceWifiUsage(final boolean useWifi, final Promise promise) {
         this(useWifi, false, promise);
     }
     
