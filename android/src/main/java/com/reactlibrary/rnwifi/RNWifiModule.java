@@ -95,7 +95,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void forceWifiUsage(final boolean useWifi, final Promise promise) {
-        forceWifiUsage(useWifi, false, promise);
+        forceWifiUsageWithInternet(useWifi, false, promise);
     }
     
     /**
@@ -111,7 +111,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * @param hasInternet boolean to remove the internet capabilitiy to prevent mobile data routing
      */
     @ReactMethod
-    public void forceWifiUsage(final boolean useWifi, final boolean hasInternet, final Promise promise) {
+    public void forceWifiUsageWithInternet(final boolean useWifi, final boolean hasInternet, final Promise promise) {
         final ConnectivityManager connectivityManager = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -325,6 +325,19 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                 promise.resolve(false);
             }
         });
+
+        // final List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
+        // final String comparableSSID = ('"' + SSID + '"'); //Add quotes because wifiConfig.SSID has them
+
+        // for (WifiConfiguration wifiConfig : mWifiConfigList) {
+        //     if (wifiConfig.SSID.equals(comparableSSID)) {
+        //         promise.resolve(wifi.removeNetwork(wifiConfig.networkId));
+        //         wifi.saveConfiguration();
+        //         return;
+        //     }
+        // }
+
+        // promise.resolve(true);
     }
 
     /**
