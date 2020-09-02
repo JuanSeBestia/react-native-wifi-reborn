@@ -28,6 +28,8 @@ import com.reactlibrary.utils.PermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
+import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
+import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
 
 import java.util.List;
 
@@ -79,8 +81,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
     /**
      * Use this to execute api calls to a wifi network that does not have internet access.
+     * Function is overloading to allow user to specifiy if the connection has internet access 
+     * in order to prevent mobile data routing.
      *
-     * Useful for commissioning IoT devices.
+     * Useful for commissioning IoT devices.  hasInternet will default to false since this is the 
+     * common use case for IoT devices.
      *
      * This will route all app network requests to the network (instead of the mobile connection).
      * It is important to disable it again after using as even when the app disconnects from the wifi
@@ -89,7 +94,25 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * @param useWifi boolean to force wifi off or on
      */
     @ReactMethod
-    public void forceWifiUsage(final boolean useWifi, final Promise promise) {
+    public void forceWifiUsage(final boolean useWifi, final Promise promise)
+    {
+        this(useWifi, false, promise);
+    }
+    
+    /**
+     * Use this to execute api calls to a wifi network that does not have internet access.
+     *
+     * Useful for commissioning IoT devices.
+     *
+     * This will route all app network requests to the network (instead of the mobile connection).
+     * It is important to disable it again after using as even when the app disconnects from the wifi
+     * network it will keep on routing everything to wifi.
+     *
+     * @param useWifi boolean to force wifi off or on
+     * @param hasInternet boolean to remove the internet capabilitiy to prevent mobile data routing
+     */
+    @ReactMethod
+    public void forceWifiUsage(final boolean useWifi, final boolean hasInternet, final Promise promise) {
         final ConnectivityManager connectivityManager = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -99,9 +122,16 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         }
 
         if (useWifi) {
-            NetworkRequest networkRequest = new NetworkRequest.Builder()
-                    .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                    .build();
+            NetworkRequest networkRequest = new NetworkRequest.Builder();
+            
+            networkRequest.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+            
+            if (!hasInternet) {
+                networkRequest.removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+            }
+
+            networkRequest.build();
+
             connectivityManager.requestNetwork(networkRequest, new ConnectivityManager.NetworkCallback() {
                 @Override
                 public void onAvailable(@NonNull final Network network) {
@@ -287,18 +317,17 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        final List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
-        final String comparableSSID = ('"' + SSID + '"'); //Add quotes because wifiConfig.SSID has them
-
-        for (WifiConfiguration wifiConfig : mWifiConfigList) {
-            if (wifiConfig.SSID.equals(comparableSSID)) {
-                promise.resolve(wifi.removeNetwork(wifiConfig.networkId));
-                wifi.saveConfiguration();
-                return;
+        WifiUtils.withContext(context).remove(SSID, new RemoveSuccessListener() {
+            @Override
+            public void success() {
+                promise.resolve(true);
             }
-        }
 
-        promise.resolve(true);
+            @Override
+            public void failed(@NonNull RemoveErrorCode errorCode) {
+                promise.resolve(false);
+            }
+        });
     }
 
     /**
