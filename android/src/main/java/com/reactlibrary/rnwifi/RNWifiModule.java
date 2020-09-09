@@ -14,6 +14,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -21,6 +22,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.reactlibrary.rnwifi.errors.ConnectErrorCodes;
 import com.reactlibrary.rnwifi.errors.DisconnectErrorCodes;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.reactlibrary.rnwifi.errors.IsRemoveWifiNetworkErrorCodes;
 import com.reactlibrary.rnwifi.errors.LoadWifiListErrorCodes;
@@ -85,6 +87,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @Deprecated
+    @ReactMethod
+    public void forceWifiUsage(final boolean useWifi, final Promise promise) {
+        forceWifiUsageWithOptions(useWifi, null , promise);
+    }
+
     /**
      * Use this to execute api calls to a wifi network that does not have internet access.
      *
@@ -95,9 +103,10 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * network it will keep on routing everything to wifi.
      *
      * @param useWifi boolean to force wifi off or on
+     * @param options `noInternet` to indicate that the wifi network does not have internet connectivity
      */
     @ReactMethod
-    public void forceWifiUsage(final boolean useWifi, final Promise promise) {
+    public void forceWifiUsageWithOptions(final boolean useWifi, @Nullable final ReadableMap options, final Promise promise) {
         final ConnectivityManager connectivityManager = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -107,10 +116,14 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         }
 
         if (useWifi) {
-            NetworkRequest networkRequest = new NetworkRequest.Builder()
-                    .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                    .build();
-            connectivityManager.requestNetwork(networkRequest, new ConnectivityManager.NetworkCallback() {
+            final NetworkRequest.Builder networkRequestBuilder = new NetworkRequest.Builder()
+                    .addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+
+            if (options != null && options.getBoolean("noInternet")) {
+                networkRequestBuilder.removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+            }
+
+            connectivityManager.requestNetwork(networkRequestBuilder.build(), new ConnectivityManager.NetworkCallback() {
                 @Override
                 public void onAvailable(@NonNull final Network network) {
                     super.onAvailable(network);
