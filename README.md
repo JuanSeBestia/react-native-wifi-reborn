@@ -70,25 +70,6 @@ if (granted === PermissionsAndroid.RESULTS.GRANTED) {
 
 This library is correctly autolinked on React Native 60+ 🎉.
 
-#### When using Wix React Native Navigation
-
-##### Android
-
-While the library is included (via settings.gradle) and added (via build.gradle), you still need to manually added to your MainApplication.
-
-```java
-import com.reactlibrary.RNWifiPackage;
-
-public class MainApplication extends NavigationApplication {
-@Override
-	public List<ReactPackage> createAdditionalReactPackages() {
-	return Arrays.asList(
-		...,
-		new RNWifiPackage());
-	}
-}
-```
-
 ### React Native Link (for React Native 0.59 and below)
 
 `$ react-native link react-native-wifi-reborn`
