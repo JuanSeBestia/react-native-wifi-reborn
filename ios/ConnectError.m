@@ -26,9 +26,8 @@
         case CouldNotDetectSSID:
             return @"couldNotDetectSSID";
         case UnableToConnect:
-            return @"unableToConnect";
         default:
-            return @"Unknown";
+            return @"unableToConnect";
     }
 }
 

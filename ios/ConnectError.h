@@ -11,8 +11,7 @@ typedef enum {
     LocationPermissionDenied,
     LocationPermissionRestricted,
     DidNotFindNetwork,
-    CouldNotDetectSSID,
-    Unknown
+    CouldNotDetectSSID
 } ConnectErrorCode;
 
 + (NSString*)code:(ConnectErrorCode)errorCode;
