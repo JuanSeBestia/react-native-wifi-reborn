@@ -8,17 +8,6 @@ declare module 'react-native-wifi-reborn' {
         timestamp: number;
     };
 
-    export type Errors = Partial<{
-        // The WIFI network is not currently in range.
-        notInRange: boolean;
-        // Could not add or update the network configuration.
-        addOrUpdateFailed: boolean;
-        // Disconnecting from the network failed. This is done as part of the connect flow
-        disconnectFailed: boolean;
-        // Could not connect to network
-        connectNetworkFailed: boolean;
-    }>;
-
     export enum CONNECT_ERRORS {
         /**
          * Starting from iOS 11, NEHotspotConfigurationError is available
