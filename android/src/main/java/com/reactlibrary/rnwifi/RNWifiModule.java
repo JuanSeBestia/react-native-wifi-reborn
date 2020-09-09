@@ -1,5 +1,6 @@
 package com.reactlibrary.rnwifi;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -8,7 +9,6 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -19,6 +19,8 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.reactlibrary.rnwifi.errors.ConnectErrorCodes;
+import com.reactlibrary.rnwifi.errors.DisconnectErrorCodes;
 import com.facebook.react.bridge.WritableArray;
 import com.reactlibrary.rnwifi.errors.IsRemoveWifiNetworkErrorCodes;
 import com.reactlibrary.rnwifi.errors.LoadWifiListErrorCodes;
@@ -28,6 +30,10 @@ import com.reactlibrary.utils.PermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
+import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionErrorCode;
+import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionSuccessListener;
+import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
+import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
 
 import java.util.List;
 
@@ -37,6 +43,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;
     private final ReactApplicationContext context;
 
+    final long CONNECT_TIMEOUT_IN_MILLISECONDS = 45000;
+
     RNWifiModule(ReactApplicationContext context) {
         super(context);
 
@@ -45,8 +53,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         this.context = context;
     }
 
-    @NonNull
     @Override
+    @NonNull
     public String getName() {
         return "WifiManager";
     }
@@ -165,27 +173,58 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
         final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
         if (!locationPermissionGranted) {
-            promise.reject("location permission missing", "Location permission (ACCESS_FINE_LOCATION) is not granted");
+            promise.reject(ConnectErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
             return;
         }
 
         final boolean isLocationOn = LocationUtils.isLocationOn(context);
         if (!isLocationOn) {
-            promise.reject("location off", "Location service is turned off");
+            promise.reject(ConnectErrorCodes.locationServicesOff.toString(), "Location service is turned off");
             return;
         }
 
-        WifiUtils.withContext(context).connectWith(SSID, password).onConnectionResult(new ConnectionSuccessListener() {
-            @Override
-            public void success() {
-                promise.resolve("connected");
-            }
+        WifiUtils.withContext(context)
+                .connectWith(SSID, password)
+                .setTimeout(CONNECT_TIMEOUT_IN_MILLISECONDS)
+                .onConnectionResult(new ConnectionSuccessListener() {
+                    @Override
+                    public void success() {
+                        promise.resolve("connected");
+                    }
 
-            @Override
-            public void failed(@NonNull ConnectionErrorCode errorCode) {
-                promise.reject("failed", "Could not connect to network");
-            }
-        }).start();
+                    @SuppressLint("DefaultLocale")
+                    @Override
+                    public void failed(@NonNull ConnectionErrorCode errorCode) {
+                        switch (errorCode) {
+                            case COULD_NOT_ENABLE_WIFI: {
+                                promise.reject(ConnectErrorCodes.couldNotEnableWifi.toString(), "On Android 10, the user has to enable wifi manually.");
+                            }
+                            case COULD_NOT_SCAN: {
+                                promise.reject(ConnectErrorCodes.couldNotScan.toString(), "Starting Android 9, apps are only allowed to scan wifi networks a few times.");
+                            }
+                            case DID_NOT_FIND_NETWORK_BY_SCANNING: {
+                                promise.reject(ConnectErrorCodes.didNotFindNetwork.toString(), "Wifi network is not in range or not seen.");
+                            }
+                            case AUTHENTICATION_ERROR_OCCURRED: {
+                                promise.reject(ConnectErrorCodes.authenticationErrorOccurred.toString(), "Authentication error, wrong password or a saved wifi configuration with a different password / security type.");
+                            }
+                            case TIMEOUT_OCCURRED: {
+                                promise.reject(ConnectErrorCodes.timeoutOccurred.toString(), String.format("Could not connect in %d milliseconds ", CONNECT_TIMEOUT_IN_MILLISECONDS));
+                            }
+                            case USER_CANCELLED: {
+                                promise.reject(ConnectErrorCodes.userDenied.toString(), "On Android 10, the user cancelled connecting (via System UI).");
+                            }
+                            case ANDROID_10_IMMEDIATELY_DROPPED_CONNECTION: {
+                                promise.reject(ConnectErrorCodes.android10ImmediatelyDroppedConnection.toString(), "Firmware bugs on OnePlus prevent it from connecting on some firmware versions.");
+                            }
+                            default:
+                            case COULD_NOT_CONNECT: {
+                                promise.reject(ConnectErrorCodes.unableToConnect.toString(), String.format("Failed to connect with %s", SSID));
+                            }
+                        }
+                    }
+                })
+                .start();
     }
 
     /**
@@ -212,8 +251,29 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * Disconnect currently connected WiFi network.
      */
     @ReactMethod
-    public void disconnect() {
-        wifi.disconnect();
+    public void disconnect(final Promise promise) {
+        WifiUtils.withContext(this.context).disconnect(new DisconnectionSuccessListener() {
+            @Override
+            public void success() {
+                promise.resolve(true);
+            }
+
+            @Override
+            public void failed(@NonNull DisconnectionErrorCode errorCode) {
+                switch (errorCode) {
+                    case COULD_NOT_GET_WIFI_MANAGER: {
+                        promise.reject(DisconnectErrorCodes.couldNotGetWifiManager.toString(), "Could not get WifiManager.");
+                    }
+                    case COULD_NOT_GET_CONNECTIVITY_MANAGER: {
+                        promise.reject(DisconnectErrorCodes.couldNotGetConnectivityManager.toString(), "Could not get Connectivity Manager.");
+                    }
+                    default:
+                    case COULD_NOT_DISCONNECT: {
+                        promise.resolve(false);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -287,18 +347,29 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        final List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
-        final String comparableSSID = ('"' + SSID + '"'); //Add quotes because wifiConfig.SSID has them
+        WifiUtils.withContext(this.context)
+                .remove(SSID, new RemoveSuccessListener() {
+                    @Override
+                    public void success() {
+                        promise.resolve(true);
+                    }
 
-        for (WifiConfiguration wifiConfig : mWifiConfigList) {
-            if (wifiConfig.SSID.equals(comparableSSID)) {
-                promise.resolve(wifi.removeNetwork(wifiConfig.networkId));
-                wifi.saveConfiguration();
-                return;
-            }
-        }
-
-        promise.resolve(true);
+                    @Override
+                    public void failed(@NonNull RemoveErrorCode errorCode) {
+                        switch (errorCode) {
+                            case COULD_NOT_GET_WIFI_MANAGER: {
+                                promise.reject(IsRemoveWifiNetworkErrorCodes.couldNotGetWifiManager.toString(), "Could not get WifiManager.");
+                            }
+                            case COULD_NOT_GET_CONNECTIVITY_MANAGER: {
+                                promise.reject(IsRemoveWifiNetworkErrorCodes.couldNotGetConnectivityManager.toString(), "Could not get Connectivity Manager.");
+                            }
+                            default:
+                            case COULD_NOT_REMOVE: {
+                                promise.resolve(false);
+                            }
+                        }
+                    }
+                });
     }
 
     /**
@@ -326,24 +397,5 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         sb.append(".");
         sb.append(strip[3]);
         return sb.toString();
-    }
-
-    private static String formatWithBackslashes(final String value) {
-        return String.format("\"%s\"", value);
-    }
-
-    /**
-     * @return true if the current sdk is above or equal to Android M
-     */
-    private static boolean isAndroidLollipopOrLater() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
-    }
-
-    /**
-     * @return true if the current sdk is above or equal to Android Q
-     */
-    private static boolean isAndroid10OrLater() {
-        return false; // TODO: Compatibility with Android 10
-        // return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
     }
 }

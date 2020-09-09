@@ -4,6 +4,8 @@
 #import <CoreLocation/CoreLocation.h>
 #import <UIKit/UIKit.h>
 
+#import "ConnectError.h"
+
 
 @interface WifiManager () <CLLocationManagerDelegate>
 @property (nonatomic,strong) CLLocationManager *locationManager;
@@ -66,14 +68,14 @@ RCT_EXPORT_METHOD(connectToSSIDPrefix:(NSString*)ssid
 
          [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
              if (error != nil) {
-                 reject(@"nehotspot_error", @"Error while configuring WiFi", error);
+                 reject([self parseError:error], @"Error while configuring WiFi", error);
              } else {
                  resolve(nil);
              }
          }];
 
      } else {
-         reject(@"ios_error", @"Not supported in iOS<13.0", nil);
+         reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<13.0", nil);
      }
  }
 
@@ -89,14 +91,14 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssid
 
         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
-                reject(@"nehotspot_error", @"Error while configuring WiFi", error);
+                reject([self parseError:error], @"Error while configuring WiFi", error);
             } else {
                 resolve(nil);
             }
         }];
 
     } else {
-        reject(@"ios_error", @"Not supported in iOS<13.0", nil);
+        reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<13.0", nil);
     }
 }
 
@@ -119,19 +121,19 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
 
         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
-                reject(@"nehotspot_error", [error localizedDescription], error);
+                reject([self parseError:error], [error localizedDescription], error);
             } else {
                 // Verify SSID connection
                 if ([ssid isEqualToString:[self getWifiSSID]]){
                     resolve(nil);
                 } else {
-                    reject(@"nehotspot_error", [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
+                    reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
                 }
             }
         }];
 
     } else {
-        reject(@"ios_error", @"Not supported in iOS<11.0", nil);
+        reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<11.0", nil);
     }
 }
 
@@ -147,7 +149,7 @@ RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
             resolve(nil);
         }];
     } else {
-        reject(@"ios_error", @"Not supported in iOS<11.0", nil);
+        reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<11.0", nil);
     }
 
 }
@@ -161,11 +163,11 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
         // Reject when permission had rejected
         if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied){
             NSLog(@"RNWIFI:ERROR:Cannot detect SSID because LocationPermission is Denied ");
-            reject(@"cannot_detect_ssid", @"Cannot detect SSID because LocationPermission is Denied", nil);
+            reject([ConnectError code:LocationPermissionDenied], @"Cannot detect SSID because LocationPermission is Denied", nil);
         }
         if([CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted){
             NSLog(@"RNWIFI:ERROR:Cannot detect SSID because LocationPermission is Restricted ");
-            reject(@"cannot_detect_ssid", @"Cannot detect SSID because LocationPermission is Restricted", nil);
+            reject([ConnectError code:LocationPermissionRestricted], @"Cannot detect SSID because LocationPermission is Restricted", nil);
         }
     }
 
@@ -187,9 +189,9 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
                         return;
                     }
                     NSLog(@"RNWIFI:ERROR:Cannot detect SSID");
-                    reject(@"cannot_detect_ssid", @"Cannot detect SSID", nil);
+                    reject([ConnectError code:CouldNotDetectSSID], @"Cannot detect SSID", nil);
                 }else{
-                    reject(@"ios_error", @"Permission not granted", nil);
+                    reject([ConnectError code:LocationPermissionDenied], @"Permission not granted", nil);
                 }
             }
             // Avoid call when live-reloaded app
@@ -202,15 +204,60 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
             return;
         }
         NSLog(@"RNWIFI:ERROR:Cannot detect SSID");
-        reject(@"cannot_detect_ssid", @"Cannot detect SSID", nil);
+        reject([ConnectError code:CouldNotDetectSSID], @"Cannot detect SSID", nil);
     }
+}
+
+- (NSString *)parseError:(NSError *)error {
+    if (@available(iOS 11, *)) {
+        
+        if (!error) {
+            return [ConnectError code:UnableToConnect];
+        };
+        
+        /*
+         NEHotspotConfigurationErrorInvalid                         = 0,
+         NEHotspotConfigurationErrorInvalidSSID                     = 1,
+         NEHotspotConfigurationErrorInvalidWPAPassphrase            = 2,
+         NEHotspotConfigurationErrorInvalidWEPPassphrase            = 3,
+         NEHotspotConfigurationErrorInvalidEAPSettings              = 4,
+         NEHotspotConfigurationErrorInvalidHS20Settings             = 5,
+         NEHotspotConfigurationErrorInvalidHS20DomainName           = 6,
+         NEHotspotConfigurationErrorUserDenied                      = 7,
+         NEHotspotConfigurationErrorInternal                        = 8,
+         NEHotspotConfigurationErrorPending                         = 9,
+         NEHotspotConfigurationErrorSystemConfiguration             = 10,
+         NEHotspotConfigurationErrorUnknown                         = 11,
+         NEHotspotConfigurationErrorJoinOnceNotSupported            = 12,
+         NEHotspotConfigurationErrorAlreadyAssociated               = 13,
+         NEHotspotConfigurationErrorApplicationIsNotInForeground    = 14,
+         NEHotspotConfigurationErrorInvalidSSIDPrefix               = 15
+         */
+
+        switch (error.code) {
+            case NEHotspotConfigurationErrorInvalid:
+                return [ConnectError code:Invalid];
+            case NEHotspotConfigurationErrorInvalidSSID:
+                return [ConnectError code:InvalidSSID];
+            case NEHotspotConfigurationErrorInvalidSSIDPrefix:
+                return [ConnectError code:InvalidSSIDPrefix];
+            case NEHotspotConfigurationErrorInvalidWPAPassphrase:
+            case NEHotspotConfigurationErrorInvalidWEPPassphrase:
+                return [ConnectError code:InvalidPassphrase];
+            case NEHotspotConfigurationErrorUserDenied:
+                return [ConnectError code:UserDenied];
+            default:
+                return [ConnectError code:UnableToConnect];
+        }
+    }
+    return [ConnectError code:UnavailableForOSVersion];
 }
 
 - (NSDictionary*)constantsToExport {
     // Officially better to use UIApplicationOpenSettingsURLString
     return @{
-             @"settingsURL": UIApplicationOpenSettingsURLString
-             };
+        @"settingsURL": UIApplicationOpenSettingsURLString
+    };
 }
 
 @end
