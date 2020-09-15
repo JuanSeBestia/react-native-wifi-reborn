@@ -226,17 +226,23 @@ declare module 'react-native-wifi-reborn' {
     }
 
     /**
-     * Use this to execute api calls to a wifi network that does not have internet access.
-     *
-     * Useful for commissioning IoT devices.
-     *
-     * This will route all app network requests to the network (instead of the mobile connection).
+     * @deprecated Use forceWifiUsageWithOptions.
+     */
+    export function forceWifiUsage(useWifi: boolean): Promise<void>;
+
+    /**
+     * Use this to route all app network requests to the wifi network (instead of the mobile connection).
      * It is important to disable it again after using as even when the app disconnects from the wifi
      * network it will keep on routing everything to wifi.
      *
-     * @param useWifi boolean to force wifi off or on
+     * Useful for commissioning IoT devices. If the wifi access point has no internet you can indicate so with
+     * the option `noInternet`.
+     *
+     * @param useWifi Force wifi usage on or off.
+     * @param options `noInternet` To indicate the access point has no internet. Usefull as some
+     * phone vendor customizations will switch back to mobile when the wifi access point has no internet.
      */
-    export function forceWifiUsage(useWifi: boolean): Promise<void>;
+    export function forceWifiUsageWithOptions(useWifi: boolean, options: { noInternet: boolean });
 
     //#endregion
 }
