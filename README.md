@@ -284,11 +284,17 @@ If you are connected to that network, it will disconnect.
 * `locationPermissionMissing`: Starting android 6, location permission needs to be granted for wifi 
 
 ### `forceWifiUsage(useWifi: boolean): Promise`
+Deprecated; see forceWifiUsageWithOptions.
 
- Use this to execute api calls to a wifi network that does not have internet access.
- Useful for commissioning IoT devices.
- This will route all app network requests to the network (instead of the mobile connection).
- It is important to disable it again after using as even when the app disconnects from the wifi network it will keep on routing everything to wifi.
+### `forceWifiUsageWithOptions(useWifi: boolean, options<Record<string, unknown>)
+
+Use this to execute api calls to a wifi network that does not have internet access.
+Useful for commissioning IoT devices.
+This will route all app network requests to the network (instead of the mobile connection).
+It is important to disable it again after using as even when the app disconnects from the wifi network it will keep on routing everything to wifi.
+
+#### options
+* `noInternet: Boolean`: Indicate the wifi network does not have internet connectivity.
 
 ## Conventions
 
