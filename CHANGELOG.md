@@ -1,3 +1,10 @@
+# [4.3.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.2.2...v4.3.0) (2020-09-15)
+
+
+### Features
+
+* **Android:** Add forceWifiUsageWithOptions & add noInternet option ([#115](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/115)) ([df1b73a](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/df1b73addc9075472687887d786de5cc6d63a0c7))
+
 ## [4.2.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.2.1...v4.2.2) (2020-08-27)
 
 
