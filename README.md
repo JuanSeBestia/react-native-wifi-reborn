@@ -70,25 +70,6 @@ if (granted === PermissionsAndroid.RESULTS.GRANTED) {
 
 This library is correctly autolinked on React Native 60+ 🎉.
 
-#### When using Wix React Native Navigation
-
-##### Android
-
-While the library is included (via settings.gradle) and added (via build.gradle), you still need to manually added to your MainApplication.
-
-```java
-import com.reactlibrary.RNWifiPackage;
-
-public class MainApplication extends NavigationApplication {
-@Override
-	public List<ReactPackage> createAdditionalReactPackages() {
-	return Arrays.asList(
-		...,
-		new RNWifiPackage());
-	}
-}
-```
-
 ### React Native Link (for React Native 0.59 and below)
 
 `$ react-native link react-native-wifi-reborn`
@@ -174,9 +155,27 @@ Type: `boolean`
 Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
 
 #### Errors:
-* `location permission missing`: The location permission (ACCESS_FINE_LOCATION) is not granted (android 6+).
-* `location off`: The location service needs to be turned on (android 6+).
-* `failed`: Could not connect to the network. Could be due to multiple reasons; not in rang or wrong password.
+* iOS:
+  * `unavailableForOSVersion`: Starting from iOS 11, NEHotspotConfigurationError is available.
+  * `invalid`: If an unknown error is occurred.
+  * `invalidSSID`: If the SSID is invalid.
+  * `invalidSSIDPrefix`: If the SSID prefix is invalid.
+  * `invalidPassphrase`: If the passphrase is invalid.
+  * `userDenied`: If the user canceled the request to join the asked network.
+  * `locationPermissionDenied`: Starting from iOS 13, location permission is denied.
+  * `locationPermissionRestricted`: Starting from iOS 13, location permission is restricted.
+  * `couldNotDetectSSID`: If the SSID couldn't be detected.
+* Android:
+  * `locationPermissionMissing`: Starting android 6, location permission needs to be granted for wifi scanning.
+  * `locationServicesOff`: Starting Android 6, location services needs to be on to scan for wifi networks.
+  * `couldNotEnableWifi`: Starting Android 10, apps are no longer allowed to enable wifi. User has to manually do this.
+  * `couldNotScan`: Starting Android 9, it's only allowed to scan 4 times per 2 minuts in a foreground app.
+  * `didNotFindNetwork`: If the wifi network is not in range, the security type is unknown and WifiUtils doesn't support connecting to the network.
+  * `authenticationErrorOccurred`: Authentication error occurred while trying to connect. The password could be incorrect or the user could have a saved network configuration with a different password!
+  * `android10ImmediatelyDroppedConnection` : Firmware bugs on OnePlus prevent it from connecting on some firmware versions. More info: https://github.com/ThanosFisherman/WifiUtils/issues/63.
+  * `timeoutOccurred`: Could not connect in the timeout window.
+* Both:
+  * `unableToConnect`: When an unknown error occurred.
 
 ### `getCurrentWifiSSID(): Promise`
 
@@ -208,28 +207,16 @@ Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 per
 
 
 #### Errors:
-
-* iOS:
-  * `unavailableForOSVersion`: Starting from iOS 11, NEHotspotConfigurationError is available.
-  * `invalid`: If an unknown error is occurred.
-  * `invalidSSID`: If the SSID is invalid.
-  * `invalidSSIDPrefix`: If the SSID prefix is invalid.
-  * `invalidPassphrase`: If the passphrase is invalid.
-  * `userDenied`: If the user canceled the request to join the asked network.
-  * `locationPermissionDenied`: Starting from iOS 13, location permission is denied.
-  * `locationPermissionRestricted`: Starting from iOS 13, location permission is restricted.
-  * `couldNotDetectSSID`: If the SSID couldn't be detected.
-* Android:
-  * `locationPermissionMissing`: Starting android 6, location permission needs to be granted for wifi scanning.
-  * `locationServicesOff`: Starting Android 6, location services needs to be on to scan for wifi networks.
-  * `couldNotEnableWifi`: Starting Android 10, apps are no longer allowed to enable wifi. User has to manually do this.
-  * `couldNotScan`: Starting Android 9, it's only allowed to scan 4 times per 2 minuts in a foreground app.
-  * `didNotFindNetwork`: If the wifi network is not in range, the security type is unknown and WifiUtils doesn't support connecting to the network.
-  * `authenticationErrorOccurred`: Authentication error occurred while trying to connect. The password could be incorrect or the user could have a saved network configuration with a different password!
-  * `android10ImmediatelyDroppedConnection` : Firmware bugs on OnePlus prevent it from connecting on some firmware versions. More info: https://github.com/ThanosFisherman/WifiUtils/issues/63.
-  * `timeoutOccurred`: Could not connect in the timeout window.
-* Both:
-  * `unableToConnect`: When an unknown error occurred.
+* `unavailableForOSVersion`: Starting from iOS 11, NEHotspotConfigurationError is available.
+* `invalid`: If an unknown error is occurred.
+* `invalidSSID`: If the SSID is invalid.
+* `invalidSSIDPrefix`: If the SSID prefix is invalid.
+* `invalidPassphrase`: If the passphrase is invalid.
+* `userDenied`: If the user canceled the request to join the asked network.
+* `locationPermissionDenied`: Starting from iOS 13, location permission is denied.
+* `locationPermissionRestricted`: Starting from iOS 13, location permission is restricted.
+* `couldNotDetectSSID`: If the SSID couldn't be detected.
+* `unableToConnect`: When an unknown error occurred.
 
 ## Only Android
 The following methods work only on Android
