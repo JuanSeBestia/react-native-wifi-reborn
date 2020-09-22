@@ -1,3 +1,10 @@
+## [4.3.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.0...v4.3.1) (2020-09-22)
+
+
+### Bug Fixes
+
+* **Android:** Fix WifiUtils dependencies ([#122](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/122)) ([caf9a7e](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/caf9a7ec82e47bf41947443373577cf256879cfb))
+
 # [4.3.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.2.2...v4.3.0) (2020-09-15)
 
 
