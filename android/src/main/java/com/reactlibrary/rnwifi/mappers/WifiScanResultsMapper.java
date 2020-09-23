@@ -1,4 +1,4 @@
-package com.reactlibrary.mappers;
+package com.reactlibrary.rnwifi.mappers;
 
 import android.net.wifi.ScanResult;
 

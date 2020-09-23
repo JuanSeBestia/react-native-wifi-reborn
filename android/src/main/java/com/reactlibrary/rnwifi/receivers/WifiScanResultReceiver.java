@@ -13,7 +13,7 @@ import com.facebook.react.bridge.WritableArray;
 
 import java.util.List;
 
-import static com.reactlibrary.mappers.WifiScanResultsMapper.mapWifiScanResults;
+import static com.reactlibrary.rnwifi.mappers.WifiScanResultsMapper.mapWifiScanResults;
 
 public class WifiScanResultReceiver extends BroadcastReceiver {
     private final WifiManager wifiManager;
