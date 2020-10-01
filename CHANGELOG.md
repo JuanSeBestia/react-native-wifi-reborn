@@ -1,3 +1,10 @@
+## [4.3.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.1...v4.3.2) (2020-10-01)
+
+
+### Bug Fixes
+
+* Fix Xcode 12 compatibility ([db9994a](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/db9994adeb11c225f1bab782db404153cd2b3d59)), closes [facebook/react-native#29633](https://github.com/facebook/react-native/issues/29633)
+
 ## [4.3.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.0...v4.3.1) (2020-09-22)
 
 
