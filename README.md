@@ -286,7 +286,7 @@ If you are connected to that network, it will disconnect.
 ### `forceWifiUsage(useWifi: boolean): Promise`
 Deprecated; see forceWifiUsageWithOptions.
 
-### `forceWifiUsageWithOptions(useWifi: boolean, options<Record<string, unknown>)
+### `forceWifiUsageWithOptions(useWifi: boolean, options<Record<string, unknown>)`
 
 Use this to execute api calls to a wifi network that does not have internet access.
 Useful for commissioning IoT devices.
