@@ -1,3 +1,10 @@
+## [4.3.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.2...v4.3.3) (2020-10-19)
+
+
+### Bug Fixes
+
+* Add compileOptions JavaVersion.VERSION_1_8 ([#133](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/133)) ([f28a8dc](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/f28a8dcf94aab49a5498f5354ca44f0534dd8892))
+
 ## [4.3.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.1...v4.3.2) (2020-10-01)
 
 
