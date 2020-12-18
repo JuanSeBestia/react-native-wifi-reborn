@@ -304,6 +304,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             ssid = ssid.substring(1, ssid.length() - 1);
         }
 
+        // Android returns `<unknown ssid>` when it is not connected or still connecting
+        if (ssid.equals("<unknown ssid>")) {
+            promise.resolve(null);
+            return;
+        }
+
         promise.resolve(ssid);
     }
 
