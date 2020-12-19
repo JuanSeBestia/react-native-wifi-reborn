@@ -1,3 +1,10 @@
+## [4.3.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.3...v4.3.4) (2020-12-19)
+
+
+### Bug Fixes
+
+* **Android:** Fix BSSID type ([#146](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/146)) ([a769618](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/a76961872638858275727ddceda04a5d5ab6d1bf))
+
 ## [4.3.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.2...v4.3.3) (2020-10-19)
 
 
