@@ -1,4 +1,4 @@
-package com.reactlibrary.utils;
+package com.reactlibrary.rnwifi.utils;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
