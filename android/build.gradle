@@ -42,5 +42,6 @@ dependencies {
     implementation 'com.facebook.react:react-native:+'
 
     implementation 'com.thanosfisherman.wifiutils:wifiutils:1.6.4'
+    implementation 'com.thanosfisherman.elvis:elvis:3.0'
 }
   
