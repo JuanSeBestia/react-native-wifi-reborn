@@ -1,3 +1,10 @@
+## [4.3.5](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.4...v4.3.5) (2021-01-07)
+
+
+### Bug Fixes
+
+* **Android:** Add elvis dependency to build.gradle ([#152](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/152)) ([1ab284a](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/1ab284ab771e1bd66156d17805dac24d3febd744))
+
 ## [4.3.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.3...v4.3.4) (2020-12-19)
 
 
