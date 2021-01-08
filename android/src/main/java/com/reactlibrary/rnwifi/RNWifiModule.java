@@ -27,8 +27,8 @@ import com.facebook.react.bridge.WritableArray;
 import com.reactlibrary.rnwifi.errors.IsRemoveWifiNetworkErrorCodes;
 import com.reactlibrary.rnwifi.errors.LoadWifiListErrorCodes;
 import com.reactlibrary.rnwifi.receivers.WifiScanResultReceiver;
-import com.reactlibrary.utils.LocationUtils;
-import com.reactlibrary.utils.PermissionUtils;
+import com.reactlibrary.rnwifi.utils.LocationUtils;
+import com.reactlibrary.rnwifi.utils.PermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
@@ -39,7 +39,7 @@ import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
 
 import java.util.List;
 
-import static com.reactlibrary.mappers.WifiScanResultsMapper.mapWifiScanResults;
+import static com.reactlibrary.rnwifi.mappers.WifiScanResultsMapper.mapWifiScanResults;
 
 public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;

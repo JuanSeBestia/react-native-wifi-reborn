@@ -124,7 +124,7 @@ declare module 'react-native-wifi-reborn' {
 
     export interface WifiEntry {
         SSID: string;
-        BSSID: number;
+        BSSID: string;
         capabilities: string;
         frequency: number;
         level: number;
