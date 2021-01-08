@@ -102,10 +102,14 @@ declare module 'react-native-wifi-reborn' {
         isWEP: boolean
     ): Promise<void>;
 
+    export enum GET_CURRENT_WIFI_SSID_ERRRORS {
+        CouldNotDetectSSID = 'CouldNotDetectSSID',
+    }
+
     /**
-     * Returns the name of the currently connected WiFi or null when not connected.
+     * Returns the name of the currently connected WiFi. When not connected, the promise will be or null when not connected.
      */
-    export function getCurrentWifiSSID(): Promise<string | null>;
+    export function getCurrentWifiSSID(): Promise<string>;
 
     //#region iOS only
 
