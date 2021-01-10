@@ -179,6 +179,11 @@ Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 pe
 
 ### `getCurrentWifiSSID(): Promise`
 
+Returns the SSID of the current WiFi network.
+
+#### Errors:
+ * `CouldNotDetectSSID`: Not connected or connecting.
+
 ## Only iOS
 
 The following methods work only on iOS

@@ -24,6 +24,7 @@ import com.reactlibrary.rnwifi.errors.ConnectErrorCodes;
 import com.reactlibrary.rnwifi.errors.DisconnectErrorCodes;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
+import com.reactlibrary.rnwifi.errors.GetCurrentWifiSSIDErrorCodes;
 import com.reactlibrary.rnwifi.errors.IsRemoveWifiNetworkErrorCodes;
 import com.reactlibrary.rnwifi.errors.LoadWifiListErrorCodes;
 import com.reactlibrary.rnwifi.receivers.WifiScanResultReceiver;
@@ -302,6 +303,12 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         String ssid = info.getSSID();
         if (ssid.startsWith("\"") && ssid.endsWith("\"")) {
             ssid = ssid.substring(1, ssid.length() - 1);
+        }
+
+        // Android returns `<unknown ssid>` when it is not connected or still connecting
+        if (ssid.equals("<unknown ssid>")) {
+            promise.reject(GetCurrentWifiSSIDErrorCodes.CouldNotDetectSSID.toString(), "Not connected or connecting.");
+            return;
         }
 
         promise.resolve(ssid);
