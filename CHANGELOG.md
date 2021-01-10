@@ -1,3 +1,10 @@
+## [4.3.6](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.5...v4.3.6) (2021-01-10)
+
+
+### Bug Fixes
+
+* **Android:** getCurrentWifiSSID return null if '<unknown ssid>' ([#148](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/148)) ([336668a](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/336668a665db05fac141f6f7f0f240cdd43b23c5))
+
 ## [4.3.5](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.4...v4.3.5) (2021-01-07)
 
 
