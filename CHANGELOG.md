@@ -1,3 +1,10 @@
+## [4.3.7](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.6...v4.3.7) (2021-01-14)
+
+
+### Bug Fixes
+
+* **Android:** Replace Kotlin files with Java ([#154](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/154)) ([1e15eac](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/1e15eac83244056fcac8ee727e4772588d096fa1))
+
 ## [4.3.6](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.5...v4.3.6) (2021-01-10)
 
 
