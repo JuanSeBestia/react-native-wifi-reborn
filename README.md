@@ -288,10 +288,10 @@ If you are connected to that network, it will disconnect.
 #### Errors:
 * `locationPermissionMissing`: Starting android 6, location permission needs to be granted for wifi 
 
-### `forceWifiUsage(useWifi: boolean): Promise`
+### `forceWifiUsage(useWifi: boolean): Promise<void>`
 Deprecated; see forceWifiUsageWithOptions.
 
-### `forceWifiUsageWithOptions(useWifi: boolean, options<Record<string, unknown>)`
+### `forceWifiUsageWithOptions(useWifi: boolean, options<Record<string, unknown>): Promise<void>`
 
 Use this to execute api calls to a wifi network that does not have internet access.
 Useful for commissioning IoT devices.
