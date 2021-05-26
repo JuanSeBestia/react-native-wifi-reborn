@@ -1,3 +1,10 @@
+## [4.3.8](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.7...v4.3.8) (2021-05-26)
+
+
+### Bug Fixes
+
+* **iOS:** Reject after not connecting to WiFi with SSID-prefix ([#183](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/183)) ([f255caa](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/f255caad992826324eaa6790451c304271faa7b4)), closes [#182](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/182)
+
 ## [4.3.7](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.6...v4.3.7) (2021-01-14)
 
 
