@@ -93,7 +93,12 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssid
             if (error != nil) {
                 reject([self parseError:error], @"Error while configuring WiFi", error);
             } else {
-                resolve(nil);
+                // Verify SSID connection
+                if ([ssid isEqualToString:[self getWifiSSID]]){
+                    resolve(nil);
+                } else {
+                    reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to Wi-Fi with prefix ", ssid], nil);
+                }
             }
         }];
 
