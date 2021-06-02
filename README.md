@@ -190,7 +190,13 @@ The following methods work only on iOS
 
 ###  `connectToSSID(ssid: string): Promise`
 
+###  `connectToSSID(ssid: string, joinOnce: boolean): Promise`
+
+### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, joinOnce: boolean): Promise`
+
 ###  `connectToSSIDPrefix(ssid: string): Promise`
+
+###  `connectToSSIDPrefix(ssid: string, joinOnce: boolean): Promise`
 
 ### `disconnectFromSSID(ssid: string): Promise`
 
@@ -209,6 +215,22 @@ The password of the wifi network to connect with.
 #### isWep
 Type: `boolean`
 Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+
+#### joinOnce
+Type: `boolean`
+Used on iOS. When joinOnce is set to true, the hotspot remains configured and connected only as long as the app that configured it is running in the foreground. The hotspot is disconnected and its configuration is removed when any of the following events occurs:
+
+* The app stays in the background for more than 15 seconds.
+
+* The device sleeps.
+
+* The app crashes, quits, or is uninstalled.
+
+* The app connects the device to a different Wi-Fi network.
+
+* The user connects the device to a different Wi-Fi network.
+
+To disconnect the device from a hotspot configured with joinOnce set to true, call `disconnectFromSSID(ssid: string)`.
 
 
 #### Errors:
