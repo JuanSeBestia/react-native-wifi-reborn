@@ -134,7 +134,7 @@ _The api documentation is in progress._
 
 The following methods work on both Android and iOS
 
-### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean): Promise`
+### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, joinOnce?: boolean): Promise`
 
 Returns a promise that resolves when connected or rejects with the error when it couldn't connect to the wifi network.
 
@@ -153,6 +153,10 @@ The password of the wifi network to connect with.
 #### isWep
 Type: `boolean`
 Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+
+#### joinOnce
+Type: `boolean`
+Used on iOS. When joinOnce is set to true, the hotspot remains configured and connected only as long as the app that configured it is running in the foreground. The hotspot is disconnected and its configuration is removed when any of the following events occurs:
 
 #### Errors:
 * iOS:
@@ -188,19 +192,13 @@ Returns the SSID of the current WiFi network.
 
 The following methods work only on iOS
 
-###  `connectToSSID(ssid: string): Promise`
+###  `connectToSSID(ssid: string, joinOnce?: boolean): Promise`
 
-###  `connectToSSID(ssid: string, joinOnce: boolean): Promise`
-
-### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, joinOnce: boolean): Promise`
-
-###  `connectToSSIDPrefix(ssid: string): Promise`
-
-###  `connectToSSIDPrefix(ssid: string, joinOnce: boolean): Promise`
+###  `connectToSSIDPrefix(ssid: string, joinOnce?: boolean): Promise`
 
 ### `disconnectFromSSID(ssid: string): Promise`
 
-### `connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean): Promise`
+### `connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean, joinOnce?: boolean): Promise`
 
 Use this function when you want to match a known SSID prefix, but don’t have a full SSID. If the system finds multiple Wi-Fi networks whose SSID string matches the given prefix, it selects the network with the greatest signal strength.
 
