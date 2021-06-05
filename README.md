@@ -156,7 +156,17 @@ Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 pe
 
 #### joinOnce
 Type: `boolean`
-Used on iOS. When joinOnce is set to true, the hotspot remains configured and connected only as long as the app that configured it is running in the foreground. The hotspot is disconnected and its configuration is removed when any of the following events occurs:
+Used on iOS. Optional param. Defaults to `false`. When joinOnce is set to true, the hotspot remains configured and connected only as long as the app that configured it is running in the foreground. The hotspot is disconnected and its configuration is removed when any of the following events occurs:
+
+* The app stays in the background for more than 15 seconds.
+
+* The device sleeps.
+
+* The app crashes, quits, or is uninstalled.
+
+* The app connects the device to a different Wi-Fi network.
+
+* The user connects the device to a different Wi-Fi network.
 
 #### Errors:
 * iOS:
@@ -216,7 +226,7 @@ Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 per
 
 #### joinOnce
 Type: `boolean`
-Used on iOS. When joinOnce is set to true, the hotspot remains configured and connected only as long as the app that configured it is running in the foreground. The hotspot is disconnected and its configuration is removed when any of the following events occurs:
+Used on iOS. Optional param. Defaults to `false`. When joinOnce is set to true, the hotspot remains configured and connected only as long as the app that configured it is running in the foreground. The hotspot is disconnected and its configuration is removed when any of the following events occurs:
 
 * The app stays in the background for more than 15 seconds.
 
@@ -227,9 +237,6 @@ Used on iOS. When joinOnce is set to true, the hotspot remains configured and co
 * The app connects the device to a different Wi-Fi network.
 
 * The user connects the device to a different Wi-Fi network.
-
-To disconnect the device from a hotspot configured with joinOnce set to true, call `disconnectFromSSID(ssid: string)`.
-
 
 #### Errors:
 * `unavailableForOSVersion`: Starting from iOS 11, NEHotspotConfigurationError is available.
