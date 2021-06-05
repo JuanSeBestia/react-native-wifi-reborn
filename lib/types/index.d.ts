@@ -115,7 +115,7 @@ declare module 'react-native-wifi-reborn' {
 
     //#region iOS only
 
-    export function connectToSSID(SSID: string): Promise<void>;
+    export function connectToSSID(SSID: string, joinOnce?: boolean): Promise<void>;
     export function connectToSSIDPrefix(SSIDPrefix: string, joinOnce?: boolean): Promise<void>;
     export function disconnectFromSSID(SSIDPrefix: string): Promise<void>;
     export function connectToProtectedSSIDPrefix(

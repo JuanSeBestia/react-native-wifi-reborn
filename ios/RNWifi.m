@@ -55,7 +55,14 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(connectToSSID:(NSString*)ssid
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    [self connectToProtectedSSID:ssid withPassphrase:@"" isWEP:false resolver:resolve rejecter:reject];
+    [self connectToProtectedSSID:ssid withPassphrase:@"" isWEP:false joinOnce:false resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(connectToSSID:(NSString*)ssid
+                  joinOnce:(BOOL)joinOnce
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    [self connectToProtectedSSID:ssid withPassphrase:@"" isWEP:false joinOnce:joinOnce resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(connectToSSIDPrefix:(NSString*)ssid
