@@ -217,8 +217,8 @@ PODS:
     - React-cxxreact (= 0.61.3)
     - React-jsi (= 0.61.3)
     - ReactCommon/jscallinvoker (= 0.61.3)
-  - RNWifi (2.1.1):
-    - React
+  - RNWifi (4.3.8):
+    - React-Core
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -249,11 +249,11 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - RNWifi (from `../node_modules/react-native-wifi-reborn`)
+  - RNWifi (from `../../..`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://cdn.cocoapods.org/:
+  trunk:
     - boost-for-react-native
 
 EXTERNAL SOURCES:
@@ -306,7 +306,7 @@ EXTERNAL SOURCES:
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
   RNWifi:
-    :path: "../node_modules/react-native-wifi-reborn"
+    :path: "../../.."
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -336,9 +336,9 @@ SPEC CHECKSUMS:
   React-RCTText: b8f895b94aa0e7778fef28d13f3d71eed4a10c3d
   React-RCTVibration: 262588c97551b0b1c675468cda857466ba5af18f
   ReactCommon: c2c63d9290b422ca6ad5b3663073a015dd892ae9
-  RNWifi: 8eb560deb90a1375d5ba5275edf7dcfa5fdd9ec7
+  RNWifi: d20602c4315268c660dfb5e061ba659d1a361b1d
   Yoga: 02036f6383c0008edb7ef0773a0e6beb6ce82bd1
 
-PODFILE CHECKSUM: 7780d4ef4d41c04154950f808e66c938f8b5bf64
+PODFILE CHECKSUM: 264b70368c9be9d427f93d9fcbff34b06cd30a8c
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.10.1

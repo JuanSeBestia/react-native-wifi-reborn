@@ -16,8 +16,7 @@ Pod::Spec.new do |s|
   s.platform       = :ios, '9.0'
 
   s.preserve_paths = 'LICENSE', 'README.md', 'package.json', 'index.js'
-  s.source_files   = 'ios/**/*.{h,m}'
-  s.exclude_files  = 'android/**/*'
+  s.source_files   = 'ios/*.{h,m,swift}'
 
   s.dependency "React-Core"
   #s.dependency "others"
