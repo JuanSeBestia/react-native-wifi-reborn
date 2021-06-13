@@ -249,7 +249,7 @@ declare module 'react-native-wifi-reborn' {
      * @param options `noInternet` To indicate the access point has no internet. Usefull as some
      * phone vendor customizations will switch back to mobile when the wifi access point has no internet.
      */
-    export function forceWifiUsageWithOptions(useWifi: boolean, options: { noInternet: boolean });
+    export function forceWifiUsageWithOptions(useWifi: boolean, options: { noInternet: boolean }): Promise<void>;
 
     //#endregion
 }
