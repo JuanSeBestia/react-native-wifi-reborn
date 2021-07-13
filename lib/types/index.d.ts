@@ -95,13 +95,11 @@ declare module 'react-native-wifi-reborn' {
      * @param SSID Wifi name.
      * @param password `null` for open networks.
      * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
-     * @param joinOnce Used on iOS. If `true`, restricts the lifetime of a configuration to the operating status of the app that created it.
      */
     export function connectToProtectedSSID(
         SSID: string,
         password: string | null,
-        isWEP: boolean,
-        joinOnce?: boolean
+        isWEP: boolean
     ): Promise<void>;
 
     export enum GET_CURRENT_WIFI_SSID_ERRRORS {
@@ -118,6 +116,20 @@ declare module 'react-native-wifi-reborn' {
     export function connectToSSID(SSID: string, joinOnce?: boolean): Promise<void>;
     export function connectToSSIDPrefix(SSIDPrefix: string, joinOnce?: boolean): Promise<void>;
     export function disconnectFromSSID(SSIDPrefix: string): Promise<void>;
+    /**
+     * Connects to a WiFi network. Rejects with an error if it couldn't connect.
+     *
+     * @param SSID Wifi name.
+     * @param password `null` for open networks.
+     * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+     * @param joinOnce Used on iOS. If `true`, restricts the lifetime of a configuration to the operating status of the app that created it.
+     */
+    export function connectToProtectedSSID(
+        SSID: string,
+        password: string | null,
+        isWEP: boolean,
+        joinOnce?: boolean
+    ): Promise<void>;
     export function connectToProtectedSSIDPrefix(
         SSIDPrefix: string,
         password: string,

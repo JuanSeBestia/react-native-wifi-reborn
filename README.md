@@ -134,7 +134,7 @@ _The api documentation is in progress._
 
 The following methods work on both Android and iOS
 
-### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, joinOnce?: boolean): Promise`
+### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean): Promise`
 
 Returns a promise that resolves when connected or rejects with the error when it couldn't connect to the wifi network.
 
@@ -153,20 +153,6 @@ The password of the wifi network to connect with.
 #### isWep
 Type: `boolean`
 Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
-
-#### joinOnce
-Type: `boolean`
-Used on iOS. Optional param. Defaults to `false`. When joinOnce is set to true, the hotspot remains configured and connected only as long as the app that configured it is running in the foreground. The hotspot is disconnected and its configuration is removed when any of the following events occurs:
-
-* The app stays in the background for more than 15 seconds.
-
-* The device sleeps.
-
-* The app crashes, quits, or is uninstalled.
-
-* The app connects the device to a different Wi-Fi network.
-
-* The user connects the device to a different Wi-Fi network.
 
 #### Errors:
 * iOS:
@@ -207,6 +193,8 @@ The following methods work only on iOS
 ###  `connectToSSIDPrefix(ssid: string, joinOnce?: boolean): Promise`
 
 ### `disconnectFromSSID(ssid: string): Promise`
+
+### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, joinOnce?: boolean): Promise`
 
 ### `connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean, joinOnce?: boolean): Promise`
 
