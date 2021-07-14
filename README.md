@@ -194,6 +194,8 @@ The following methods work only on iOS
 
 ### `disconnectFromSSID(ssid: string): Promise`
 
+### `connectToProtectedSSIDOnce(SSID: string, password: string, isWEP: boolean, joinOnce: boolean): Promise`
+
 ### `connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean): Promise`
 
 Use this function when you want to match a known SSID prefix, but don’t have a full SSID. If the system finds multiple Wi-Fi networks whose SSID string matches the given prefix, it selects the network with the greatest signal strength.
@@ -210,6 +212,19 @@ The password of the wifi network to connect with.
 Type: `boolean`
 Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
 
+#### joinOnce
+Type: `boolean`
+Used on iOS. Optional param. Defaults to `false`. When joinOnce is set to true, the hotspot remains configured and connected only as long as the app that configured it is running in the foreground. The hotspot is disconnected and its configuration is removed when any of the following events occurs:
+
+* The app stays in the background for more than 15 seconds.
+
+* The device sleeps.
+
+* The app crashes, quits, or is uninstalled.
+
+* The app connects the device to a different Wi-Fi network.
+
+* The user connects the device to a different Wi-Fi network.
 
 #### Errors:
 * `unavailableForOSVersion`: Starting from iOS 11, NEHotspotConfigurationError is available.
