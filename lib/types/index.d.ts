@@ -113,8 +113,8 @@ declare module 'react-native-wifi-reborn' {
 
     //#region iOS only
 
-    export function connectToSSID(SSID: string, joinOnce?: boolean): Promise<void>;
-    export function connectToSSIDPrefix(SSIDPrefix: string, joinOnce?: boolean): Promise<void>;
+    export function connectToSSID(SSID: string): Promise<void>;
+    export function connectToSSIDPrefix(SSIDPrefix: string): Promise<void>;
     export function disconnectFromSSID(SSIDPrefix: string): Promise<void>;
     /**
      * Connects to a WiFi network. Rejects with an error if it couldn't connect.
@@ -124,17 +124,16 @@ declare module 'react-native-wifi-reborn' {
      * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
      * @param joinOnce Used on iOS. If `true`, restricts the lifetime of a configuration to the operating status of the app that created it.
      */
-    export function connectToProtectedSSID(
+    export function connectToProtectedSSIDOnce(
         SSID: string,
         password: string | null,
         isWEP: boolean,
-        joinOnce?: boolean
+        joinOnce: boolean
     ): Promise<void>;
     export function connectToProtectedSSIDPrefix(
         SSIDPrefix: string,
         password: string,
-        isWEP: boolean,
-        joinOnce?: boolean
+        isWEP: boolean
     ): Promise<void>;
 
     //#endregion

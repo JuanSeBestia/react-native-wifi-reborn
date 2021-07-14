@@ -188,15 +188,15 @@ Returns the SSID of the current WiFi network.
 
 The following methods work only on iOS
 
-###  `connectToSSID(ssid: string, joinOnce?: boolean): Promise`
+###  `connectToSSID(ssid: string): Promise`
 
-###  `connectToSSIDPrefix(ssid: string, joinOnce?: boolean): Promise`
+###  `connectToSSIDPrefix(ssid: string): Promise`
 
 ### `disconnectFromSSID(ssid: string): Promise`
 
-### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, joinOnce?: boolean): Promise`
+### `connectToProtectedSSIDOnce(SSID: string, password: string, isWEP: boolean, joinOnce: boolean): Promise`
 
-### `connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean, joinOnce?: boolean): Promise`
+### `connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean): Promise`
 
 Use this function when you want to match a known SSID prefix, but don’t have a full SSID. If the system finds multiple Wi-Fi networks whose SSID string matches the given prefix, it selects the network with the greatest signal strength.
 
