@@ -251,5 +251,10 @@ declare module 'react-native-wifi-reborn' {
      */
     export function forceWifiUsageWithOptions(useWifi: boolean, options: { noInternet: boolean });
 
+    /**
+     * Opens Android 10+ wifi widget for quickly selecting wifi networks
+     */
+    export function openWifiSettingsWithReturn(): Promise<void>
+
     //#endregion
 }
