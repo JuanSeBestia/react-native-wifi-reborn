@@ -11,6 +11,7 @@ import android.net.NetworkRequest;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSuggestion;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.reactlibrary.rnwifi.errors.GetCurrentWifiSSIDErrorCodes;
 import com.reactlibrary.rnwifi.errors.IsRemoveWifiNetworkErrorCodes;
 import com.reactlibrary.rnwifi.errors.LoadWifiListErrorCodes;
 import com.reactlibrary.rnwifi.receivers.WifiScanResultReceiver;
+import com.reactlibrary.rnwifi.receivers.WifiSuggestResultReceiver;
 import com.reactlibrary.rnwifi.utils.LocationUtils;
 import com.reactlibrary.rnwifi.utils.PermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
@@ -39,6 +41,7 @@ import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import static com.reactlibrary.rnwifi.mappers.WifiScanResultsMapper.mapWifiScanResults;
 
@@ -400,6 +403,63 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         final WifiScanResultReceiver wifiScanResultReceiver = new WifiScanResultReceiver(wifi, promise);
         getReactApplicationContext().registerReceiver(wifiScanResultReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifi.startScan();
+    }
+
+    /**
+     * Only available on Android 10 and newer devices. Adds a WPA2 wifi hotspot as a suggestion that can be used for internet connectivity
+     * for the entire OS
+     */
+    @ReactMethod
+    public void addWifiSuggestion(@NonNull final String SSID, @NonNull final String password, final Promise promise) {
+        
+        // Remove possible conflicting network suggestions as we're not allowed to edit them
+        final WifiNetworkSuggestion removeSuggestion = new WifiNetworkSuggestion.Builder()
+            .setSsid(SSID);
+        
+        final List<WifiNetworkSuggestion> removeList = new ArrayList<WifiNetworkSuggestion>();
+
+        removeList.add(removeSuggestion);
+
+        final int removeStatus = wifi.removeNetworkSuggestions(removeList);
+
+        final WifiNetworkSuggestion suggestion = new WifiNetworkSuggestion.Builder()
+            .setSsid(SSID)
+            .setWpa2Passphrase(password)
+            .setIsAppInteractionRequired(true)
+            .build();
+        
+        final List<WifiNetworkSuggestion> suggestionsList = new ArrayList<WifiNetworkSuggestion>();
+
+        suggestionsList.add(suggestion);
+
+        final WifiSuggestResultReceiver wifiSuggestResultReceiver = new WifiSuggestResultReceiver(wifi, promise);
+
+        getReactApplicationContext().registerReceiver(wifiSuggestResultReceiver, new IntentFilter(WifiManager.ACTION_WIFI_NETWORK_SUGGESTION_POST_CONNECTION));
+
+        final int status = wifi.addNetworkSuggestions(suggestionsList);
+
+        if (status != wifi.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
+            promise.reject(ConnectErrorCodes.unableToConnect.toString(), String.format("Failed to connect with %s", SSID));
+        }
+    }
+
+    /**
+     * Only available on Android 10 and newer devices. Removes a WPA2 suggestion for a given SSID
+     */
+    @ReactMethod
+    public void removeWifiSuggestion(@NonNull final String SSID, final Promise promise) {
+        final WifiNetworkSuggestion suggestion = new WifiNetworkSuggestion.Builder()
+            .setSsid(SSID)
+            .setIsAppInteractionRequired(true)
+            .build();
+        
+        final List<WifiNetworkSuggestion> suggestionsList = new ArrayList<WifiNetworkSuggestion>();
+
+        suggestionsList.add(suggestion);
+
+        int status = wifiManager.removeNetworkSuggestions(networkSuggestions);
+
+        promise.resolve(null);
     }
 
     private static String longToIP(int longIp) {
