@@ -13,6 +13,9 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiNetworkSuggestion;
 import android.os.Build;
+import android.content.Intent;
+import android.app.Activity;  
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,7 +52,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;
     private final ReactApplicationContext context;
 
-    final long CONNECT_TIMEOUT_IN_MILLISECONDS = 45000;
+    final long CONNECT_TIMEOUT_IN_MILLISECONDS = 25000;
 
     RNWifiModule(ReactApplicationContext context) {
         super(context);
@@ -414,7 +417,9 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         
         // Remove possible conflicting network suggestions as we're not allowed to edit them
         final WifiNetworkSuggestion removeSuggestion = new WifiNetworkSuggestion.Builder()
-            .setSsid(SSID);
+            .setSsid(SSID)
+            .setIsAppInteractionRequired(true)
+            .build();
         
         final List<WifiNetworkSuggestion> removeList = new ArrayList<WifiNetworkSuggestion>();
 
@@ -434,12 +439,26 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
         final WifiSuggestResultReceiver wifiSuggestResultReceiver = new WifiSuggestResultReceiver(wifi, promise);
 
-        getReactApplicationContext().registerReceiver(wifiSuggestResultReceiver, new IntentFilter(WifiManager.ACTION_WIFI_NETWORK_SUGGESTION_POST_CONNECTION));
-
         final int status = wifi.addNetworkSuggestions(suggestionsList);
 
         if (status != wifi.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
             promise.reject(ConnectErrorCodes.unableToConnect.toString(), String.format("Failed to connect with %s", SSID));
+        } else {
+            // If we are connected to an SSID already, resolve it. 
+            WifiInfo info = wifi.getConnectionInfo();
+
+            // This value should be wrapped in double quotes, so we need to unwrap it.
+            String ssid = info.getSSID();
+            if (ssid.startsWith("\"") && ssid.endsWith("\"")) {
+                ssid = ssid.substring(1, ssid.length() - 1);
+            }
+    
+            // Android returns `<unknown ssid>` when it is not connected or still connecting
+            if (ssid.equals("<unknown ssid>")) {
+                getReactApplicationContext().registerReceiver(wifiSuggestResultReceiver, new IntentFilter(WifiManager.ACTION_WIFI_NETWORK_SUGGESTION_POST_CONNECTION));
+            } else {
+                promise.resolve(String.format("Already connected to SSID, unable to connect via suggestion %s", ssid));
+            }
         }
     }
 
@@ -457,9 +476,29 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
         suggestionsList.add(suggestion);
 
-        int status = wifiManager.removeNetworkSuggestions(networkSuggestions);
+        int status = wifi.removeNetworkSuggestions(suggestionsList);
 
         promise.resolve(null);
+    }
+
+    @ReactMethod
+    public void openWifiSettingsWithReturn(final Promise promise) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Activity currentActivity = getCurrentActivity();
+
+            if (currentActivity == null) {
+                promise.reject("E_ACTIVITY_DOES_NOT_EXIST", "Activity doesn't exist");
+                return;
+            }
+    
+            currentActivity.startActivityForResult(new Intent(Settings.Panel.ACTION_WIFI), 545);
+
+            promise.resolve(null);
+        } else {
+            promise.reject("Error", "API not available");
+        }
+
+
     }
 
     private static String longToIP(int longIp) {
