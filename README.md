@@ -40,6 +40,10 @@ You need put "Privacy - Location When In Use Usage Description" or "Privacy - Lo
 
 ### Android
 
+#### Resolving dependencies
+
+In **android > build.gradle**, you need to add `jcenter()` to the list of `repositories` under `allprojects` for the `wifiutils` amd `elvis` dependencies to be resolved.
+
 #### `ACCESS_FINE_LOCATION` permission
 
 Since [Android 6](https://developer.android.com/about/versions/marshmallow), you must request the [`ACCESS_FINE_LOCATION`](https://developer.android.com/reference/android/Manifest.permission#ACCESS_FINE_LOCATION) permission at runtime to use the device's Wi-Fi scanning and managing capabilities. In order to accomplish this, you can use the [PermissionsAndroid API](https://reactnative.dev/docs/permissionsandroid) or [React Native Permissions](https://github.com/react-native-community/react-native-permissions).
