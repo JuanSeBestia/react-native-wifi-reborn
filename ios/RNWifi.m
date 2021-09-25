@@ -150,8 +150,10 @@ RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
         [[NEHotspotConfigurationManager sharedManager] getConfiguredSSIDsWithCompletionHandler:^(NSArray<NSString *> *ssids) {
             if (ssids != nil && [ssids indexOfObject:ssid] != NSNotFound) {
                 [[NEHotspotConfigurationManager sharedManager] removeConfigurationForSSID:ssid];
+                resolve(nil);
+            } else {
+                reject([ConnectError code:InvalidSSID], @"Invalid SSID or SSID not configured by app", nil);
             }
-            resolve(nil);
         }];
     } else {
         reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<11.0", nil);
