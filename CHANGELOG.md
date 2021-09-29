@@ -1,3 +1,15 @@
+# [4.4.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.8...v4.4.0) (2021-09-29)
+
+
+### Bug Fixes
+
+* Fix return type for forceWifiUsageWithOptions ([#170](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/170)) ([6de4204](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/6de42043d01cee4c00b80b22f86d0e9545fbfd2b))
+
+
+### Features
+
+* **iOS:** allow joinOnce property to be set for iOS devices ([#187](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/187)) ([991f9cc](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/991f9ccca28fe82bfcc5f23be135e6ec2c68dc1f))
+
 ## [4.3.8](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.7...v4.3.8) (2021-05-26)
 
 
