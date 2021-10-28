@@ -94,7 +94,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssid
                 reject([self parseError:error], @"Error while configuring WiFi", error);
             } else {
                 // Verify SSID connection
-                if ([ssid isEqualToString:[self getWifiSSID]]){
+                if ([[self getWifiSSID] hasPrefix:ssid]){
                     resolve(nil);
                 } else {
                     reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to Wi-Fi with prefix ", ssid], nil);
