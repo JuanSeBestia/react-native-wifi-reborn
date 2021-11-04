@@ -1,6 +1,7 @@
 package com.reactlibrary.rnwifi;
 
-import android.annotation.SuppressLint;
+import static com.reactlibrary.rnwifi.mappers.WifiScanResultsMapper.mapWifiScanResults;
+
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -23,11 +24,10 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.WritableMap;
-import com.reactlibrary.rnwifi.errors.ConnectErrorCodes;
-import com.reactlibrary.rnwifi.errors.DisconnectErrorCodes;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
+import com.reactlibrary.rnwifi.errors.ConnectErrorCodes;
+import com.reactlibrary.rnwifi.errors.DisconnectErrorCodes;
 import com.reactlibrary.rnwifi.errors.GetCurrentWifiSSIDErrorCodes;
 import com.reactlibrary.rnwifi.errors.IsRemoveWifiNetworkErrorCodes;
 import com.reactlibrary.rnwifi.errors.LoadWifiListErrorCodes;
@@ -35,8 +35,6 @@ import com.reactlibrary.rnwifi.receivers.WifiScanResultReceiver;
 import com.reactlibrary.rnwifi.utils.LocationUtils;
 import com.reactlibrary.rnwifi.utils.PermissionUtils;
 import com.thanosfisherman.wifiutils.WifiUtils;
-import com.thanosfisherman.wifiutils.wifiConnect.ConnectionErrorCode;
-import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener;
 import com.thanosfisherman.wifiutils.wifiConnect.DisconnectCallbackHolder;
 import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionErrorCode;
 import com.thanosfisherman.wifiutils.wifiDisconnect.DisconnectionSuccessListener;
@@ -44,9 +42,6 @@ import com.thanosfisherman.wifiutils.wifiRemove.RemoveErrorCode;
 import com.thanosfisherman.wifiutils.wifiRemove.RemoveSuccessListener;
 
 import java.util.List;
-
-import static com.reactlibrary.rnwifi.mappers.WifiScanResultsMapper.mapWifiScanResults;
-import static com.thanosfisherman.wifiutils.WifiUtils.wifiLog;
 
 public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;
@@ -206,7 +201,10 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        this.removeWifiNetwork(SSID, promise, password);
+
+        this.removeWifiNetwork(SSID, promise, () -> {
+            connectToWifiDirectly(SSID, password, promise);
+        });
     }
 
 
@@ -325,7 +323,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         removeWifiNetwork(SSID, promise, null);
     }
 
-    private void removeWifiNetwork(final String SSID, final Promise promise, final String reconnectPassword) {
+    private void removeWifiNetwork(final String SSID, final Promise promise, final Runnable onSuccess) {
         final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
         if (!locationPermissionGranted) {
             promise.reject(IsRemoveWifiNetworkErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
@@ -336,8 +334,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                 .remove(SSID, new RemoveSuccessListener() {
                     @Override
                     public void success() {
-                        if (reconnectPassword != null) {
-                            connectToWifiDirectly(SSID, reconnectPassword, promise);
+                        if (onSuccess != null) {
+                            onSuccess.run();
                             return;
                         }
                         promise.resolve(true);
@@ -354,8 +352,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                             }
                             default:
                             case COULD_NOT_REMOVE: {
-                                if (reconnectPassword != null) {
-                                    connectToWifiDirectly(SSID, reconnectPassword, promise);
+                                if (onSuccess != null) {
+                                    onSuccess.run();
                                     return;
                                 }
                                 promise.resolve(false);
@@ -376,29 +374,34 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     private void connectToWifiDirectly(@NonNull final String SSID, @NonNull final String password, final Promise promise) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            connectPreAndroidQ(SSID, password, promise);
-        } else {
+        if (isAndroidTenOrLater()) {
             connectAndroidQ(SSID, password, promise);
+        } else {
+            connectPreAndroidQ(SSID, password, promise);
         }
     }
 
     private void connectPreAndroidQ(@NonNull final String SSID, @NonNull final String password, final Promise promise) {
         WifiConfiguration wifiConfig = new WifiConfiguration();
-        wifiConfig.SSID = String.format("\"%s\"", SSID);
-        wifiConfig.preSharedKey = "\"" + password + "\"";
-        wifi.disconnect();
+        wifiConfig.SSID = formatWithBackslashes(SSID);
+
+        if (!isNullOrEmpty(password)) {
+            stuffWifiConfigurationWithWPA2(wifiConfig, password);
+        } else {
+            stuffWifiConfigurationWithoutEncryption(wifiConfig);
+        }
+
         int netId = wifi.addNetwork(wifiConfig);
         if (netId == -1) {
-            promise.reject(ConnectErrorCodes.unableToConnect.toString(), String.format("Failed to connect with %s (netId)", SSID));
+            promise.reject(ConnectErrorCodes.unableToConnect.toString(), String.format("Could not add or update network configuration with SSID %s", SSID));
             return;
         }
         if (!wifi.enableNetwork(netId, true)) {
-            promise.reject(ConnectErrorCodes.unableToConnect.toString(), String.format("Failed to connect with %s (enableNetwork)", SSID));
+            promise.reject(ConnectErrorCodes.unableToConnect.toString(), String.format("Failed to enable network with %s", SSID));
             return;
         }
         if (!wifi.reconnect()) {
-            promise.reject(ConnectErrorCodes.unableToConnect.toString(), String.format("Failed to connect with %s (reconnect)", SSID));
+            promise.reject(ConnectErrorCodes.unableToConnect.toString(), String.format("Failed to reconnect with %s", SSID));
             return;
         }
         if (!pollForValidSSID(10, SSID)) {
@@ -410,14 +413,16 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void connectAndroidQ(@NonNull final String SSID, @NonNull final String password, final Promise promise) {
-        WifiNetworkSpecifier wifiNetworkSpecifier = new WifiNetworkSpecifier.Builder()
-                .setSsid(SSID)
-                .setWpa2Passphrase(password)
-                .build();
+        WifiNetworkSpecifier.Builder wifiNetworkSpecifier = new WifiNetworkSpecifier.Builder()
+                .setSsid(SSID);
+
+        if (!isNullOrEmpty(password)) {
+            wifiNetworkSpecifier.setWpa2Passphrase(password);
+        }
 
         NetworkRequest nr = new NetworkRequest.Builder()
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .setNetworkSpecifier(wifiNetworkSpecifier)
+                .setNetworkSpecifier(wifiNetworkSpecifier.build())
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED)
                 .build();
 
@@ -503,4 +508,47 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         return ssid;
     }
 
+    /**
+     * @return true if the current sdk is above or equal to Android Q
+     */
+    private boolean isAndroidTenOrLater() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+    }
+
+    /**
+     * @return true if the value is null or empty
+     */
+    private boolean isNullOrEmpty(final String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    private void stuffWifiConfigurationWithWPA2(final WifiConfiguration wifiConfiguration, final String password) {
+        if (password.matches("[0-9A-Fa-f]{64}")) {
+            wifiConfiguration.preSharedKey = password;
+        } else {
+            wifiConfiguration.preSharedKey = formatWithBackslashes(password);
+        }
+
+        wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        wifiConfiguration.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+
+        wifiConfiguration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+
+        wifiConfiguration.status = WifiConfiguration.Status.ENABLED;
+
+        wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+        wifiConfiguration.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+
+
+        wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+        wifiConfiguration.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+    }
+
+    private void stuffWifiConfigurationWithoutEncryption(final WifiConfiguration wifiConfiguration) {
+        wifiConfiguration.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+    }
+
+    private String formatWithBackslashes(final String value) {
+        return String.format("\"%s\"", value);
+    }
 }
