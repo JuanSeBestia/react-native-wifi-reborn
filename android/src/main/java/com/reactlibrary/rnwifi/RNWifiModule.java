@@ -3,18 +3,21 @@ package com.reactlibrary.rnwifi;
 import static com.reactlibrary.rnwifi.mappers.WifiScanResultsMapper.mapWifiScanResults;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiNetworkSpecifier;
 import android.os.Build;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -107,45 +110,64 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void forceWifiUsageWithOptions(final boolean useWifi, @Nullable final ReadableMap options, final Promise promise) {
-        final ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        boolean canWriteFlag = false;
 
-        if (connectivityManager == null) {
-            promise.reject(ForceWifiUsageErrorCodes.couldNotGetConnectivityManager.toString(), "Failed to get the ConnectivityManager.");
-            return;
-        }
+        try {
+            if (useWifi) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    canWriteFlag = Settings.System.canWrite(context);
 
-        if (useWifi) {
-            final NetworkRequest.Builder networkRequestBuilder = new NetworkRequest.Builder()
-                    .addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
-
-            if (options != null && options.getBoolean("noInternet")) {
-                networkRequestBuilder.removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
-            }
-
-            connectivityManager.requestNetwork(networkRequestBuilder.build(), new ConnectivityManager.NetworkCallback() {
-                @Override
-                public void onAvailable(@NonNull final Network network) {
-                    super.onAvailable(network);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        connectivityManager.bindProcessToNetwork(network);
-                    } else {
-                        ConnectivityManager.setProcessDefaultNetwork(network);
+                    if (!canWriteFlag) {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                        intent.setData(Uri.parse("package:" + context.getPackageName()));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
                     }
-
-                    connectivityManager.unregisterNetworkCallback(this);
-
-                    promise.resolve(null);
                 }
-            });
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                connectivityManager.bindProcessToNetwork(null);
-            } else {
-                ConnectivityManager.setProcessDefaultNetwork(null);
             }
 
-            promise.resolve(null);
+            final ConnectivityManager connectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            if (connectivityManager == null) {
+                promise.reject(ForceWifiUsageErrorCodes.couldNotGetConnectivityManager.toString(), "Failed to get the ConnectivityManager.");
+                return;
+            }
+
+            if (useWifi) {
+                final NetworkRequest.Builder networkRequestBuilder = new NetworkRequest.Builder()
+                        .addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+
+                if (options != null && options.getBoolean("noInternet")) {
+                    networkRequestBuilder.removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+                }
+
+                connectivityManager.requestNetwork(networkRequestBuilder.build(), new ConnectivityManager.NetworkCallback() {
+                    @Override
+                    public void onAvailable(@NonNull final Network network) {
+                        super.onAvailable(network);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            connectivityManager.bindProcessToNetwork(network);
+                        } else {
+                            ConnectivityManager.setProcessDefaultNetwork(network);
+                        }
+
+                        connectivityManager.unregisterNetworkCallback(this);
+
+                        promise.resolve(null);
+                    }
+                });
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    connectivityManager.bindProcessToNetwork(null);
+                } else {
+                    ConnectivityManager.setProcessDefaultNetwork(null);
+                }
+
+                promise.resolve(null);
+            }
+        } catch (Exception ex) {
+            promise.reject("", ex.getMessage());
         }
     }
 
