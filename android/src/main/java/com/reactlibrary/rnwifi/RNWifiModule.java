@@ -2,9 +2,11 @@ package com.reactlibrary.rnwifi;
 
 import static com.reactlibrary.rnwifi.mappers.WifiScanResultsMapper.mapWifiScanResults;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -116,8 +118,9 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             if (useWifi) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     canWriteFlag = Settings.System.canWrite(context);
+                    int networkStatePermission = context.checkCallingOrSelfPermission(Manifest.permission.CHANGE_NETWORK_STATE);
 
-                    if (!canWriteFlag) {
+                    if (!canWriteFlag && networkStatePermission != PackageManager.PERMISSION_GRANTED) {
                         Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
                         intent.setData(Uri.parse("package:" + context.getPackageName()));
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
