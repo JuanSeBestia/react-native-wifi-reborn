@@ -94,7 +94,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssid
                 reject([self parseError:error], @"Error while configuring WiFi", error);
             } else {
                 // Verify SSID connection
-                if ([ssid isEqualToString:[self getWifiSSID]]){
+                if ([[self getWifiSSID] hasPrefix:ssid]){
                     resolve(nil);
                 } else {
                     reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to Wi-Fi with prefix ", ssid], nil);
@@ -112,8 +112,18 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
                   isWEP:(BOOL)isWEP
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
+    [self connectToProtectedSSIDOnce:ssid withPassphrase:passphrase isWEP:isWEP joinOnce:false resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
+                  withPassphrase:(NSString*)passphrase
+                  isWEP:(BOOL)isWEP
+                  joinOnce:(BOOL)joinOnce
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
     // Prevent NEHotspotConfigurationManager error when connecting to an already connected network
     if ([ssid isEqualToString:[self getWifiSSID]]) resolve(nil);
+    
     if (@available(iOS 11.0, *)) {
         NEHotspotConfiguration* configuration;
         // Check if open network
@@ -122,7 +132,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
         } else {
             configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid passphrase:passphrase isWEP:isWEP];
         }
-        configuration.joinOnce = false;
+        configuration.joinOnce = joinOnce;
 
         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
@@ -147,12 +157,7 @@ RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
                   rejecter:(RCTPromiseRejectBlock)reject) {
 
     if (@available(iOS 11.0, *)) {
-        [[NEHotspotConfigurationManager sharedManager] getConfiguredSSIDsWithCompletionHandler:^(NSArray<NSString *> *ssids) {
-            if (ssids != nil && [ssids indexOfObject:ssid] != NSNotFound) {
-                [[NEHotspotConfigurationManager sharedManager] removeConfigurationForSSID:ssid];
-            }
-            resolve(nil);
-        }];
+        [[NEHotspotConfigurationManager sharedManager] removeConfigurationForSSID:ssid];
     } else {
         reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<11.0", nil);
     }

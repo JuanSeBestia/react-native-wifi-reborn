@@ -1,3 +1,24 @@
+## [4.4.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.4.0...v4.4.1) (2021-11-04)
+
+
+### Bug Fixes
+
+* **Android:** Replace jCenter with mavenCentral ([#216](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/216)) ([b047208](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/b04720822c62498a47eb8f671dd79c2d557f4d24))
+* **iOS:** Fix disconnectFromSSID having no effect ([#214](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/214)) ([0d55c08](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/0d55c086798b4c4bfc2216056138b67f25ed8173))
+* **iOS:** Fix prefix check in connectToProtectedSSIDPrefix ([#220](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/220)) ([d94f356](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/d94f356dedc357a68f397fe1dab5177e41ba0903))
+
+# [4.4.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.8...v4.4.0) (2021-09-29)
+
+
+### Bug Fixes
+
+* Fix return type for forceWifiUsageWithOptions ([#170](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/170)) ([6de4204](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/6de42043d01cee4c00b80b22f86d0e9545fbfd2b))
+
+
+### Features
+
+* **iOS:** allow joinOnce property to be set for iOS devices ([#187](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/187)) ([991f9cc](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/991f9ccca28fe82bfcc5f23be135e6ec2c68dc1f))
+
 ## [4.3.8](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.3.7...v4.3.8) (2021-05-26)
 
 
