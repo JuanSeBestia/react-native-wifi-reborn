@@ -2,3 +2,4 @@ example/
 ios/
 android/
 node_modules/
+plugin/dist/
