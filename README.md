@@ -182,7 +182,7 @@ Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 pe
 Returns the SSID of the current WiFi network.
 
 #### Errors:
- * `CouldNotDetectSSID`: Not connected or connecting.
+ * `couldNotDetectSSID`: Not connected or connecting.
 
 ## Only iOS
 

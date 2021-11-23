@@ -291,7 +291,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     public void getCurrentWifiSSID(final Promise promise) {
         String ssid = getWifiSSID();
         if (ssid == null) {
-            promise.reject(GetCurrentWifiSSIDErrorCodes.CouldNotDetectSSID.toString(), "Not connected or connecting.");
+            promise.reject(GetCurrentWifiSSIDErrorCodes.couldNotDetectSSID.toString(), "Not connected or connecting.");
             return;
         }
 
