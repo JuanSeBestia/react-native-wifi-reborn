@@ -123,6 +123,10 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
                   rejecter:(RCTPromiseRejectBlock)reject) {
     // Prevent NEHotspotConfigurationManager error when connecting to an already connected network
     if ([ssid isEqualToString:[self getWifiSSID]]) resolve(nil);
+    if ([ssid isEqualToString:[self getWifiSSID]]) {
+        resolve(nil);
+        return;
+    }
     
     if (@available(iOS 11.0, *)) {
         NEHotspotConfiguration* configuration;
