@@ -12,6 +12,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,6 +46,7 @@ import static com.reactlibrary.rnwifi.mappers.WifiScanResultsMapper.mapWifiScanR
 public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;
     private final ReactApplicationContext context;
+    private static String TAG = "RNWifiModule";
 
     final long CONNECT_TIMEOUT_IN_MILLISECONDS = 45000;
 
@@ -397,9 +399,16 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void reScanAndLoadWifiList(final Promise promise) {
+        boolean wifiStartScan = wifi.startScan();
+        Log.d(TAG, "wifi start scan: " + wifiStartScan);
+        if(wifiStartScan == true){
         final WifiScanResultReceiver wifiScanResultReceiver = new WifiScanResultReceiver(wifi, promise);
         getReactApplicationContext().registerReceiver(wifiScanResultReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        wifi.startScan();
+        }else{
+            Log.d(TAG, "Wifi scan rejected");
+            promise.resolve("Starting Android 9, it's only allowed to scan 4 times per 2 minuts in a foreground app.");
+        }
+       
     }
 
     private static String longToIP(int longIp) {
