@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "outDir": "dist",
+        "rootDir": "src",
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "declaration": true,
+    },
+    "include": ["./src"],
+}

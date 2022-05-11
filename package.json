@@ -1,16 +1,18 @@
 {
   "name": "react-native-wifi-reborn",
-  "version": "4.4.1",
+  "version": "4.5.0",
   "description": "A react-native implementation for viewing and connecting to Wifi networks on Android and iOS devices.",
   "types": "lib/types/index.d.ts",
   "main": "src/index.js",
   "scripts": {
-    "lint": "eslint src/ lib/ --ext .js,.jsx,.ts,.tsx",
+    "lint": "eslint src/ lib/ plugin/ --ext .js,.jsx,.ts,.tsx",
     "test": "echo \"No test specified\" && exit 0",
+    "build:plugin": "tsc --build plugin",
     "checkjs": "tsc",
     "semantic-release": "semantic-release"
   },
   "files": [
+    "app.plugin.js",
     "/android/src/",
     "/android/build.gradle",
     "/ios",
@@ -18,6 +20,7 @@
     "/windows",
     "/src",
     "/lib",
+    "/plugin",
     "/*.podspec",
     "/jest"
   ],
@@ -45,6 +48,7 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.8.3",
+    "@expo/config-plugins": "^4.0.7",
     "@semantic-release/changelog": "^3.0.4",
     "@semantic-release/git": "^7.0.16",
     "@types/react-native": "^0.61.17",
