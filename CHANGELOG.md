@@ -1,3 +1,17 @@
+# [4.5.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.4.2...v4.5.0) (2021-12-16)
+
+
+### Features
+
+* Add Expo config plugin ([#226](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/226)) ([d328a87](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/d328a8723169c7ca7615677c9c1150256002e187))
+
+## [4.4.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.4.1...v4.4.2) (2021-12-16)
+
+
+### Bug Fixes
+
+* **iOS:** Revert wrong removal of promise resolution ([#225](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/225)) ([89eda2d](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/89eda2d126546fcabbe85ad2de8bbee9ba0e793c))
+
 ## [4.4.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.4.0...v4.4.1) (2021-11-04)
 
 

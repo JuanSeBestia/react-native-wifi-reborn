@@ -100,6 +100,43 @@ This library is correctly autolinked on React Native 60+ 🎉.
       implementation project(':react-native-wifi-reborn')
   	```
 
+### Prebuild Plugin
+
+> This package cannot be used in the "Expo Go" app because [it requires custom native code](https://docs.expo.io/workflow/customizing/).
+
+After installing this npm package, add the [config plugin](https://docs.expo.io/guides/config-plugins/) to the [`plugins`](https://docs.expo.io/versions/latest/config/app/#plugins) array of your `app.json` or `app.config.js`:
+
+```json
+{
+  "expo": {
+    "plugins": ["react-native-wifi-reborn"]
+  }
+}
+```
+
+Next, rebuild your app as described in the ["Adding custom native code"](https://docs.expo.io/workflow/customizing/) guide.
+
+### Props
+
+The plugin provides props for extra customization. Every time you change the props or plugins, you'll need to rebuild (and `prebuild`) the native app. If no extra properties are added, defaults will be used.
+
+- `fineLocationPermission` (_false | undefined_): When `false`, the `android.permission.ACCESS_FINE_LOCATION` will not be added to the `AndroidManifest.xml`.
+
+### Example
+
+```json
+{
+  "plugins": [
+    [
+      "react-native-wifi-reborn",
+      {
+        "fineLocationPermission": false
+      }
+    ]
+  ]
+}
+```
+
 ## Usage
 
 ```javascript
