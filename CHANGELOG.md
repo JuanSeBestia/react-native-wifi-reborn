@@ -1,3 +1,10 @@
+# [4.6.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.5.1...v4.6.0) (2022-06-09)
+
+
+### Features
+
+* Minor bug fix, iOS 15 getWifiSSID fix, connect to Android Wifi without scanning (because of the limit) ([#249](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/249)) ([3389baf](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/3389baf1775e400107797acabc5491d422cdd9b1))
+
 ## [4.5.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.5.0...v4.5.1) (2022-06-09)
 
 
