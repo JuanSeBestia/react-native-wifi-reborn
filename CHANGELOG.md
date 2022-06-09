@@ -1,3 +1,10 @@
+## [4.5.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.5.0...v4.5.1) (2022-06-09)
+
+
+### Bug Fixes
+
+* Use enum types instead of const in the TypeScript declaration file ([5e6dfeb](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/5e6dfebb8586a3f981893a4aa7e0a5e7bfabeca4))
+
 # [4.5.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.4.2...v4.5.0) (2021-12-16)
 
 
