@@ -19,14 +19,15 @@ public class WifiScanResultsMapper {
         for (ScanResult result : scanResults) {
             final WritableMap wifiObject = new WritableNativeMap();
             if (!result.SSID.equals("")) {
-                wifiObject.putString("SSID", result.SSID);
-                wifiObject.putString("BSSID", result.BSSID);
-                wifiObject.putString("capabilities", result.capabilities);
-                wifiObject.putInt("frequency", result.frequency);
-                wifiObject.putInt("level", result.level);
-                wifiObject.putDouble("timestamp", result.timestamp);
-                wifiArray.pushMap(wifiObject);
+                result.SSID = "(hidden SSID)";
             }
+            wifiObject.putString("SSID", result.SSID);
+            wifiObject.putString("BSSID", result.BSSID);
+            wifiObject.putString("capabilities", result.capabilities);
+            wifiObject.putInt("frequency", result.frequency);
+            wifiObject.putInt("level", result.level);
+            wifiObject.putDouble("timestamp", result.timestamp);
+            wifiArray.pushMap(wifiObject);
         }
 
         return wifiArray;
