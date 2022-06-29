@@ -18,7 +18,7 @@ public class WifiScanResultsMapper {
 
         for (ScanResult result : scanResults) {
             final WritableMap wifiObject = new WritableNativeMap();
-            if (!result.SSID.equals("")) {
+            if (result.SSID.equals("")) {
                 result.SSID = "(hidden SSID)";
             }
             wifiObject.putString("SSID", result.SSID);
