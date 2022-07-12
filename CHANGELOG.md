@@ -1,3 +1,10 @@
+# [4.7.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.6.0...v4.7.0) (2022-07-12)
+
+
+### Features
+
+* **Android:** Allows to show hidden WiFI AP while scanning ([#255](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/255)) ([29d364a](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/29d364ac7a8eef143363eb9c2b0ecd457dc02cea))
+
 # [4.6.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.5.1...v4.6.0) (2022-06-09)
 
 
