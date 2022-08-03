@@ -116,6 +116,20 @@ declare module 'react-native-wifi-reborn' {
     export function connectToSSID(SSID: string): Promise<void>;
     export function connectToSSIDPrefix(SSIDPrefix: string): Promise<void>;
     export function disconnectFromSSID(SSIDPrefix: string): Promise<void>;
+    /**
+     * Connects to a WiFi network. Rejects with an error if it couldn't connect.
+     *
+     * @param SSID Wifi name.
+     * @param password `null` for open networks.
+     * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+     * @param joinOnce Used on iOS. If `true`, restricts the lifetime of a configuration to the operating status of the app that created it.
+     */
+    export function connectToProtectedSSIDOnce(
+        SSID: string,
+        password: string | null,
+        isWEP: boolean,
+        joinOnce: boolean
+    ): Promise<void>;
     export function connectToProtectedSSIDPrefix(
         SSIDPrefix: string,
         password: string,
@@ -176,7 +190,7 @@ declare module 'react-native-wifi-reborn' {
      */
     export function connectionStatus(): Promise<boolean>;
 
-    export const DISCONNECT_ERRORS = {
+    export enum DISCONNECT_ERRORS {
         /**
          * Could not get the WifiManager.
          * https://developer.android.com/reference/android/net/wifi/WifiManager?hl=en
@@ -187,7 +201,7 @@ declare module 'react-native-wifi-reborn' {
          * https://developer.android.com/reference/android/net/ConnectivityManager?hl=en
          */
         couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
-    };
+    }
 
     export function disconnect(): Promise<boolean>;
 
@@ -211,14 +225,14 @@ declare module 'react-native-wifi-reborn' {
      */
     export function getIP(): Promise<string>;
 
-    export const IS_REMOVE_WIFI_NETWORK_ERRORS = {
+    export enum IS_REMOVE_WIFI_NETWORK_ERRORS {
         /**
          * Starting android 6, location permission needs to be granted for wifi scanning.
          */
         locationPermissionMissing = 'locationPermissionMissing',
         couldNotGetWifiManager = 'couldNotGetWifiManager',
         couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
-    };
+    }
 
     /**
      * This method will remove the wifi network configuration.
@@ -249,7 +263,10 @@ declare module 'react-native-wifi-reborn' {
      * @param options `noInternet` To indicate the access point has no internet. Usefull as some
      * phone vendor customizations will switch back to mobile when the wifi access point has no internet.
      */
-    export function forceWifiUsageWithOptions(useWifi: boolean, options: { noInternet: boolean });
+    export function forceWifiUsageWithOptions(
+        useWifi: boolean,
+        options: { noInternet: boolean }
+    ): Promise<void>;
 
     /**
      * Opens Android 10+ wifi widget for quickly selecting wifi networks

@@ -100,6 +100,43 @@ This library is correctly autolinked on React Native 60+ 🎉.
       implementation project(':react-native-wifi-reborn')
   	```
 
+### Prebuild Plugin
+
+> This package cannot be used in the "Expo Go" app because [it requires custom native code](https://docs.expo.io/workflow/customizing/).
+
+After installing this npm package, add the [config plugin](https://docs.expo.io/guides/config-plugins/) to the [`plugins`](https://docs.expo.io/versions/latest/config/app/#plugins) array of your `app.json` or `app.config.js`:
+
+```json
+{
+  "expo": {
+    "plugins": ["react-native-wifi-reborn"]
+  }
+}
+```
+
+Next, rebuild your app as described in the ["Adding custom native code"](https://docs.expo.io/workflow/customizing/) guide.
+
+### Props
+
+The plugin provides props for extra customization. Every time you change the props or plugins, you'll need to rebuild (and `prebuild`) the native app. If no extra properties are added, defaults will be used.
+
+- `fineLocationPermission` (_false | undefined_): When `false`, the `android.permission.ACCESS_FINE_LOCATION` will not be added to the `AndroidManifest.xml`.
+
+### Example
+
+```json
+{
+  "plugins": [
+    [
+      "react-native-wifi-reborn",
+      {
+        "fineLocationPermission": false
+      }
+    ]
+  ]
+}
+```
+
 ## Usage
 
 ```javascript
@@ -182,7 +219,7 @@ Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 pe
 Returns the SSID of the current WiFi network.
 
 #### Errors:
- * `CouldNotDetectSSID`: Not connected or connecting.
+ * `couldNotDetectSSID`: Not connected or connecting.
 
 ## Only iOS
 
@@ -193,6 +230,8 @@ The following methods work only on iOS
 ###  `connectToSSIDPrefix(ssid: string): Promise`
 
 ### `disconnectFromSSID(ssid: string): Promise`
+
+### `connectToProtectedSSIDOnce(SSID: string, password: string, isWEP: boolean, joinOnce: boolean): Promise`
 
 ### `connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean): Promise`
 
@@ -210,6 +249,19 @@ The password of the wifi network to connect with.
 Type: `boolean`
 Used on iOS. If YES, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
 
+#### joinOnce
+Type: `boolean`
+Used on iOS. Optional param. Defaults to `false`. When joinOnce is set to true, the hotspot remains configured and connected only as long as the app that configured it is running in the foreground. The hotspot is disconnected and its configuration is removed when any of the following events occurs:
+
+* The app stays in the background for more than 15 seconds.
+
+* The device sleeps.
+
+* The app crashes, quits, or is uninstalled.
+
+* The app connects the device to a different Wi-Fi network.
+
+* The user connects the device to a different Wi-Fi network.
 
 #### Errors:
 * `unavailableForOSVersion`: Starting from iOS 11, NEHotspotConfigurationError is available.

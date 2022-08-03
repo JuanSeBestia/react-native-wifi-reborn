@@ -32,17 +32,25 @@
      postNotificationName:@"RNWIFI:authorizationStatus" object:nil userInfo:nil];
 }
 
-- (NSString *) getWifiSSID {
-    NSString *kSSID = (NSString*) kCNNetworkInfoKeySSID;
+- (void)getWifiSSID:(void (^)(NSString *))completionHandler {
+    if (@available(iOS 14.0, *)) {
+        [NEHotspotNetwork fetchCurrentWithCompletionHandler:^(NEHotspotNetwork * _Nullable currentNetwork) {
+            NSString  *strSSID = [currentNetwork SSID];
+            completionHandler(strSSID);
+        }];
+    } else {
+        NSString *kSSID = (NSString*) kCNNetworkInfoKeySSID;
 
-    NSArray *ifs = (__bridge_transfer id)CNCopySupportedInterfaces();
-    for (NSString *ifnam in ifs) {
-        NSDictionary *info = (__bridge_transfer id)CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam);
-        if (info[kSSID]) {
-            return info[kSSID];
+        NSArray *ifs = (__bridge_transfer id)CNCopySupportedInterfaces();
+        for (NSString *ifnam in ifs) {
+            NSDictionary *info = (__bridge_transfer id)CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam);
+            if (info[kSSID]) {
+                completionHandler(info[kSSID]);
+                return;
+            }
         }
+        completionHandler(nil);
     }
-    return nil;
 }
 
 + (BOOL)requiresMainQueueSetup
@@ -94,11 +102,13 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssid
                 reject([self parseError:error], @"Error while configuring WiFi", error);
             } else {
                 // Verify SSID connection
-                if ([ssid isEqualToString:[self getWifiSSID]]){
-                    resolve(nil);
-                } else {
-                    reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to Wi-Fi with prefix ", ssid], nil);
-                }
+                [self getWifiSSID:^(NSString* result) {
+                    if ([result hasPrefix:ssid]){
+                        resolve(nil);
+                    } else {
+                        reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to Wi-Fi with prefix ", ssid], nil);
+                    }
+                }];
             }
         }];
 
@@ -112,34 +122,51 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
                   isWEP:(BOOL)isWEP
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
+    [self connectToProtectedSSIDOnce:ssid withPassphrase:passphrase isWEP:isWEP joinOnce:false resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
+                  withPassphrase:(NSString*)passphrase
+                  isWEP:(BOOL)isWEP
+                  joinOnce:(BOOL)joinOnce
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
     // Prevent NEHotspotConfigurationManager error when connecting to an already connected network
-    if ([ssid isEqualToString:[self getWifiSSID]]) resolve(nil);
-    if (@available(iOS 11.0, *)) {
-        NEHotspotConfiguration* configuration;
-        // Check if open network
-        if (passphrase == (id)[NSNull null] || passphrase.length == 0 ) {
-            configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid];
-        } else {
-            configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid passphrase:passphrase isWEP:isWEP];
+    [self getWifiSSID:^(NSString* resultSSID) {
+        if ([ssid isEqualToString:resultSSID]) {
+            resolve(nil);
+            return;
         }
-        configuration.joinOnce = false;
-
-        [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
-            if (error != nil) {
-                reject([self parseError:error], [error localizedDescription], error);
+        
+        if (@available(iOS 11.0, *)) {
+            NEHotspotConfiguration* configuration;
+            // Check if open network
+            if (passphrase == (id)[NSNull null] || passphrase.length == 0 ) {
+                configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid];
             } else {
-                // Verify SSID connection
-                if ([ssid isEqualToString:[self getWifiSSID]]){
-                    resolve(nil);
-                } else {
-                    reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
-                }
+                configuration = [[NEHotspotConfiguration alloc] initWithSSID:ssid passphrase:passphrase isWEP:isWEP];
             }
-        }];
+            configuration.joinOnce = joinOnce;
 
-    } else {
-        reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<11.0", nil);
-    }
+            [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
+                if (error != nil) {
+                    reject([self parseError:error], [error localizedDescription], error);
+                } else {
+                    // Verify SSID connection
+                    [self getWifiSSID:^(NSString* newSSID) {
+                        if ([ssid isEqualToString:newSSID]){
+                            resolve(nil);
+                        } else {
+                            reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
+                        }
+                    }];
+                }
+            }];
+
+        } else {
+            reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<11.0", nil);
+        }
+    }];    
 }
 
 RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
@@ -147,16 +174,11 @@ RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
                   rejecter:(RCTPromiseRejectBlock)reject) {
 
     if (@available(iOS 11.0, *)) {
-        [[NEHotspotConfigurationManager sharedManager] getConfiguredSSIDsWithCompletionHandler:^(NSArray<NSString *> *ssids) {
-            if (ssids != nil && [ssids indexOfObject:ssid] != NSNotFound) {
-                [[NEHotspotConfigurationManager sharedManager] removeConfigurationForSSID:ssid];
-            }
-            resolve(nil);
-        }];
+        [[NEHotspotConfigurationManager sharedManager] removeConfigurationForSSID:ssid];
+        resolve(nil);
     } else {
         reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<11.0", nil);
     }
-
 }
 
 
@@ -188,14 +210,15 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
             if(self.solved == NO){
                 if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse ||
                     [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways){
-                    NSString *SSID = [self getWifiSSID];
-                    if (SSID){
-                        resolve(SSID);
-                        return;
-                    }
-                    NSLog(@"RNWIFI:ERROR:Cannot detect SSID");
-                    reject([ConnectError code:CouldNotDetectSSID], @"Cannot detect SSID", nil);
-                }else{
+                    [self getWifiSSID:^(NSString* SSID) {
+                        if (SSID) {
+                            resolve(SSID);
+                            return;
+                        }
+                        NSLog(@"RNWIFI:ERROR:Cannot detect SSID");
+                        reject([ConnectError code:CouldNotDetectSSID], @"Cannot detect SSID", nil);
+                    }];
+                } else{
                     reject([ConnectError code:LocationPermissionDenied], @"Permission not granted", nil);
                 }
             }
@@ -203,13 +226,14 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
             self.solved = YES;
         }];
     }else{
-        NSString *SSID = [self getWifiSSID];
-        if (SSID){
-            resolve(SSID);
-            return;
-        }
-        NSLog(@"RNWIFI:ERROR:Cannot detect SSID");
-        reject([ConnectError code:CouldNotDetectSSID], @"Cannot detect SSID", nil);
+        [self getWifiSSID:^(NSString* SSID) {
+            if (SSID){
+                resolve(SSID);
+                return;
+            }
+            NSLog(@"RNWIFI:ERROR:Cannot detect SSID");
+            reject([ConnectError code:CouldNotDetectSSID], @"Cannot detect SSID", nil);
+        }];
     }
 }
 
