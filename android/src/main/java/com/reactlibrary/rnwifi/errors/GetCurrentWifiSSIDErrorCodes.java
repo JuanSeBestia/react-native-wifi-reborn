@@ -4,5 +4,5 @@ public enum GetCurrentWifiSSIDErrorCodes {
     /**
      * Not connected or connecting.
      */
-    CouldNotDetectSSID,
+    couldNotDetectSSID,
 }

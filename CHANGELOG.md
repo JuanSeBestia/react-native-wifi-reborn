@@ -1,3 +1,24 @@
+# [4.7.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.6.0...v4.7.0) (2022-07-12)
+
+
+### Features
+
+* **Android:** Allows to show hidden WiFI AP while scanning ([#255](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/255)) ([29d364a](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/29d364ac7a8eef143363eb9c2b0ecd457dc02cea))
+
+# [4.6.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.5.1...v4.6.0) (2022-06-09)
+
+
+### Features
+
+* Minor bug fix, iOS 15 getWifiSSID fix, connect to Android Wifi without scanning (because of the limit) ([#249](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/249)) ([3389baf](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/3389baf1775e400107797acabc5491d422cdd9b1))
+
+## [4.5.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.5.0...v4.5.1) (2022-06-09)
+
+
+### Bug Fixes
+
+* Use enum types instead of const in the TypeScript declaration file ([5e6dfeb](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/5e6dfebb8586a3f981893a4aa7e0a5e7bfabeca4))
+
 # [4.5.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.4.2...v4.5.0) (2021-12-16)
 
 

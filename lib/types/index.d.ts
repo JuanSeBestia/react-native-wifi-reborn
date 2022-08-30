@@ -190,7 +190,7 @@ declare module 'react-native-wifi-reborn' {
      */
     export function connectionStatus(): Promise<boolean>;
 
-    export const DISCONNECT_ERRORS = {
+    export enum DISCONNECT_ERRORS {
         /**
          * Could not get the WifiManager.
          * https://developer.android.com/reference/android/net/wifi/WifiManager?hl=en
@@ -201,7 +201,7 @@ declare module 'react-native-wifi-reborn' {
          * https://developer.android.com/reference/android/net/ConnectivityManager?hl=en
          */
         couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
-    };
+    }
 
     export function disconnect(): Promise<boolean>;
 
@@ -225,14 +225,14 @@ declare module 'react-native-wifi-reborn' {
      */
     export function getIP(): Promise<string>;
 
-    export const IS_REMOVE_WIFI_NETWORK_ERRORS = {
+    export enum IS_REMOVE_WIFI_NETWORK_ERRORS {
         /**
          * Starting android 6, location permission needs to be granted for wifi scanning.
          */
         locationPermissionMissing = 'locationPermissionMissing',
         couldNotGetWifiManager = 'couldNotGetWifiManager',
         couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
-    };
+    }
 
     /**
      * This method will remove the wifi network configuration.
