@@ -1,4 +1,4 @@
-package com.reactlibrary.rnwifi;
+package com.reactlibrary.rnwifi.errors;
 
 public enum ForceWifiUsageErrorCodes {
     /**
