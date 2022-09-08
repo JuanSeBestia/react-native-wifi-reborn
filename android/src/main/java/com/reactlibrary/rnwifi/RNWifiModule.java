@@ -71,7 +71,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void loadWifiList(final Promise promise) {
-        if(!isLocationPermissionGranted(promise)){
+        if(!assertLocationPermissionGranted(promise)){
             return;
         }
 
@@ -201,7 +201,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
-        if(!isLocationPermissionGranted(promise)) {
+        if(!assertLocationPermissionGranted(promise)) {
             return;
         }
 
@@ -273,7 +273,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void getCurrentWifiSSID(final Promise promise) {
-        if(!isLocationPermissionGranted(promise)){
+        if(!assertLocationPermissionGranted(promise)){
             return;
         }
 
@@ -381,7 +381,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void reScanAndLoadWifiList(final Promise promise) {
-        if(!isLocationPermissionGranted(promise)) {
+        if(!assertLocationPermissionGranted(promise)) {
             return;
         }
 
@@ -569,7 +569,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         return String.format("\"%s\"", value);
     }
 
-    private boolean isLocationPermissionGranted(final Promise promise) {
+    private boolean assertLocationPermissionGranted(final Promise promise) {
         final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
         if (!locationPermissionGranted) {
             promise.reject(ConnectErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
