@@ -95,11 +95,13 @@ declare module 'react-native-wifi-reborn' {
      * @param SSID Wifi name.
      * @param password `null` for open networks.
      * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+     * @param isHidden only for android, use if WiFi is hidden
      */
     export function connectToProtectedSSID(
         SSID: string,
         password: string | null,
-        isWEP: boolean
+        isWEP: boolean,
+        isHidden: boolean
     ): Promise<void>;
 
     export enum GET_CURRENT_WIFI_SSID_ERRRORS {
