@@ -99,7 +99,8 @@ declare module 'react-native-wifi-reborn' {
     export function connectToProtectedSSID(
         SSID: string,
         password: string | null,
-        isWEP: boolean
+        isWEP: boolean,
+        forIOT: boolean
     ): Promise<void>;
 
     export enum GET_CURRENT_WIFI_SSID_ERRRORS {

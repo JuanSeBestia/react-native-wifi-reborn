@@ -208,7 +208,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * @param promise  to send success/error feedback
      */
     @ReactMethod
-    public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
+    public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final boolean forIOT, final Promise promise) {
         final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
         if (!locationPermissionGranted) {
             promise.reject(ConnectErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
@@ -228,7 +228,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
 
         this.removeWifiNetwork(SSID, promise, () -> {
-            connectToWifiDirectly(SSID, password, promise);
+            connectToWifiDirectly(SSID, password, forIOT, promise);
         });
     }
 
@@ -398,9 +398,9 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         wifi.startScan();
     }
 
-    private void connectToWifiDirectly(@NonNull final String SSID, @NonNull final String password, final Promise promise) {
+    private void connectToWifiDirectly(@NonNull final String SSID, @NonNull final String password, @NonNull final String forIOT, final Promise promise) {
         if (isAndroidTenOrLater()) {
-            connectAndroidQ(SSID, password, promise);
+            connectAndroidQ(SSID, password, forIOT, promise);
         } else {
             connectPreAndroidQ(SSID, password, promise);
         }
@@ -437,7 +437,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    private void connectAndroidQ(@NonNull final String SSID, @NonNull final String password, final Promise promise) {
+    private void connectAndroidQ(@NonNull final String SSID, @NonNull final String password, final boolean forIOT, final Promise promise) {
         WifiNetworkSpecifier.Builder wifiNetworkSpecifier = new WifiNetworkSpecifier.Builder()
                 .setSsid(SSID);
 
@@ -445,11 +445,16 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             wifiNetworkSpecifier.setWpa2Passphrase(password);
         }
 
-        NetworkRequest nr = new NetworkRequest.Builder()
-                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                .setNetworkSpecifier(wifiNetworkSpecifier.build())
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED)
-                .build();
+        NetworkRequest.Builder networkRequestBuilder = new NetworkRequest.Builder();
+        networkRequestBuilder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
+        networkRequestBuilder.setNetworkSpecifier(wifiNetworkSpecifier.build());
+        if (forIOT) {
+            networkRequestBuilder.removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        } else {
+            networkRequestBuilder.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        }
+
+        NetworkRequest nr = networkRequestBuilder.build();
 
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
