@@ -152,21 +152,45 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
                 if (error != nil) {
                     reject([self parseError:error], [error localizedDescription], error);
                 } else {
-                    // Verify SSID connection
-                    [self getWifiSSID:^(NSString* newSSID) {
-                        if ([ssid isEqualToString:newSSID]){
-                            resolve(nil);
-                        } else {
-                            reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
-                        }
-                    }];
+                    // It's not guaranteed that the connection is established before completionHandler is called, so
+                    // we check the connected WiFi network repeatedly until it's the one we requested.
+                    // The original code here checked immediately, but sometimes this completionHandler is called before
+                    // the connection is successful.
+                    __block int tries = 0;
+                    __block int maxTries = 20;
+                    double intervalSeconds = 0.5;
+                    
+                    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+                    dispatch_source_t dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+                    dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
+                    uint64_t intervalTime = (int64_t)(intervalSeconds * NSEC_PER_SEC);
+                    dispatch_source_set_timer(dispatchSource, startTime, intervalTime, 0);
+                    dispatch_source_set_event_handler(dispatchSource, ^{
+                        [self getWifiSSID:^(NSString* newSSID) {
+                            bool success = [ssid isEqualToString:newSSID];
+                            tries++;
+                            
+                            if (success){
+                                resolve(nil);
+                                dispatch_suspend(dispatchSource);
+                            } else if (tries > maxTries) {
+                                dispatch_suspend(dispatchSource);
+                                reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
+                            } else {
+                                // We aren't connected yet, keep trying
+                            }
+                        }];
+                    });
+
+                    // Start the timer
+                    dispatch_resume(dispatchSource);
                 }
             }];
 
         } else {
             reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<11.0", nil);
         }
-    }];    
+    }];
 }
 
 RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
