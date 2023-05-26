@@ -71,15 +71,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void loadWifiList(final Promise promise) {
-        final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
-        if (!locationPermissionGranted) {
-            promise.reject(LoadWifiListErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
-            return;
-        }
-
-        final boolean isLocationOn = LocationUtils.isLocationOn(context);
-        if (!isLocationOn) {
-            promise.reject(LoadWifiListErrorCodes.locationServicesOff.toString(), "Location service is turned off");
+        if(!assertLocationPermissionGranted(promise)){
             return;
         }
 
@@ -210,15 +202,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final boolean isHidden, final Promise promise) {
-        final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
-        if (!locationPermissionGranted) {
-            promise.reject(ConnectErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
-            return;
-        }
-
-        final boolean isLocationOn = LocationUtils.isLocationOn(context);
-        if (!isLocationOn) {
-            promise.reject(ConnectErrorCodes.locationServicesOff.toString(), "Location service is turned off");
+        if(!assertLocationPermissionGranted(promise)) {
             return;
         }
 
@@ -226,7 +210,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             promise.reject(ConnectErrorCodes.couldNotEnableWifi.toString(), "On Android 10, the user has to enable wifi manually.");
             return;
         }
-
 
         this.removeWifiNetwork(SSID, promise, () -> {
             connectToWifiDirectly(SSID, password, isHidden, promise);
@@ -290,6 +273,10 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void getCurrentWifiSSID(final Promise promise) {
+        if(!assertLocationPermissionGranted(promise)){
+            return;
+        }
+
         String ssid = getWifiSSID();
         if (ssid == null) {
             promise.reject(GetCurrentWifiSSIDErrorCodes.couldNotDetectSSID.toString(), "Not connected or connecting.");
@@ -394,6 +381,10 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void reScanAndLoadWifiList(final Promise promise) {
+        if(!assertLocationPermissionGranted(promise)) {
+            return;
+        }
+
         final WifiScanResultReceiver wifiScanResultReceiver = new WifiScanResultReceiver(wifi, promise);
         getReactApplicationContext().registerReceiver(wifiScanResultReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifi.startScan();
@@ -472,7 +463,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                     @Override
                     public void onUnavailable() {
                         super.onUnavailable();
-                        promise.reject(ConnectErrorCodes.userDenied.toString(), "On Android 10, the user cancelled connecting (via System UI).");
+                        promise.reject(ConnectErrorCodes.didNotFindNetwork.toString(), "Network not found or network request cannot be fulfilled.");
                     }
 
                     @Override
@@ -577,5 +568,21 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
     private String formatWithBackslashes(final String value) {
         return String.format("\"%s\"", value);
+    }
+
+    private boolean assertLocationPermissionGranted(final Promise promise) {
+        final boolean locationPermissionGranted = PermissionUtils.isLocationPermissionGranted(context);
+        if (!locationPermissionGranted) {
+            promise.reject(ConnectErrorCodes.locationPermissionMissing.toString(), "Location permission (ACCESS_FINE_LOCATION) is not granted");
+            return false;
+        }
+
+        final boolean isLocationOn = LocationUtils.isLocationOn(context);
+        if (!isLocationOn) {
+            promise.reject(ConnectErrorCodes.locationServicesOff.toString(), "Location service is turned off");
+            return false;
+        }
+
+        return true;
     }
 }
