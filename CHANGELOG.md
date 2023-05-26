@@ -1,3 +1,10 @@
+## [4.8.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.8.2...v4.8.3) (2023-05-26)
+
+
+### Bug Fixes
+
+* **iOS:** add missing isHidden flag to connectToProtectedSSID ([#306](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/306)) ([11a703d](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/11a703d4ece723fb9fce90e0dc0e02f865613190)), closes [#287](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/287)
+
 ## [4.8.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.8.1...v4.8.2) (2023-05-26)
 
 
