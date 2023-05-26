@@ -1,3 +1,10 @@
+## [4.8.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.8.1...v4.8.2) (2023-05-26)
+
+
+### Bug Fixes
+
+* prefer not to mutate the ScanResult object ([#268](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/268)) ([840c80d](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/840c80de870d91238c50842ab53827334d380ec2))
+
 ## [4.8.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.8.0...v4.8.1) (2023-05-26)
 
 
