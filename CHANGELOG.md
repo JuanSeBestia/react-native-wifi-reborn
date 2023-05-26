@@ -1,3 +1,10 @@
+# [4.8.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.7.1...v4.8.0) (2023-05-26)
+
+
+### Features
+
+* **Android:** added feature to connect to hidden wifi on android 10 ([#287](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/287)) ([32b5db2](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/32b5db2e1ebcdc757a4dec39f1441a4c9586a827))
+
 ## [4.7.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.7.0...v4.7.1) (2023-05-26)
 
 
