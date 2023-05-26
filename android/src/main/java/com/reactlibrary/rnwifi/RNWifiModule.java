@@ -197,7 +197,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * @param SSID     name of the network to connect with
      * @param password password of the network to connect with
      * @param isWep    only for iOS
-     * @param isHidden only for android, use if WiFi is hidden
+     * @param isHidden only for Android, use if WiFi is hidden
      * @param promise  to send success/error feedback
      */
     @ReactMethod

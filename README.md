@@ -171,7 +171,7 @@ _The api documentation is in progress._
 
 The following methods work on both Android and iOS
 
-### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean): Promise`
+### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, isHidden: boolean): Promise`
 
 Returns a promise that resolves when connected or rejects with the error when it couldn't connect to the wifi network.
 
@@ -188,8 +188,14 @@ Type: `string`
 The password of the wifi network to connect with.
 
 #### isWep
+
 Type: `boolean`
 Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+
+#### isHidden
+
+Type: `boolean`
+Used on Android. If true, the network is a hidden Wi-Fi network.
 
 #### Errors:
 * iOS:
