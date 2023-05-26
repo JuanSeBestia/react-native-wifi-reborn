@@ -197,10 +197,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * @param SSID     name of the network to connect with
      * @param password password of the network to connect with
      * @param isWep    only for iOS
+     * @param isHidden only for android, use if WiFi is hidden
      * @param promise  to send success/error feedback
      */
     @ReactMethod
-    public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final Promise promise) {
+    public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final boolean isHidden, final Promise promise) {
         if(!assertLocationPermissionGranted(promise)) {
             return;
         }
@@ -210,9 +211,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             return;
         }
 
-
         this.removeWifiNetwork(SSID, promise, () -> {
-            connectToWifiDirectly(SSID, password, promise);
+            connectToWifiDirectly(SSID, password, isHidden, promise);
         });
     }
 
@@ -390,9 +390,9 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         wifi.startScan();
     }
 
-    private void connectToWifiDirectly(@NonNull final String SSID, @NonNull final String password, final Promise promise) {
+    private void connectToWifiDirectly(@NonNull final String SSID, @NonNull final String password, final boolean isHidden, final Promise promise) {
         if (isAndroidTenOrLater()) {
-            connectAndroidQ(SSID, password, promise);
+            connectAndroidQ(SSID, password, isHidden, promise);
         } else {
             connectPreAndroidQ(SSID, password, promise);
         }
@@ -429,8 +429,9 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    private void connectAndroidQ(@NonNull final String SSID, @NonNull final String password, final Promise promise) {
+    private void connectAndroidQ(@NonNull final String SSID, @NonNull final String password, final boolean isHidden, final Promise promise) {
         WifiNetworkSpecifier.Builder wifiNetworkSpecifier = new WifiNetworkSpecifier.Builder()
+                .setIsHiddenSsid(isHidden)
                 .setSsid(SSID);
 
         if (!isNullOrEmpty(password)) {
