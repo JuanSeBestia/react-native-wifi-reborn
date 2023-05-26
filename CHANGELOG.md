@@ -1,3 +1,31 @@
+## [4.8.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.8.1...v4.8.2) (2023-05-26)
+
+
+### Bug Fixes
+
+* prefer not to mutate the ScanResult object ([#268](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/268)) ([840c80d](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/840c80de870d91238c50842ab53827334d380ec2))
+
+## [4.8.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.8.0...v4.8.1) (2023-05-26)
+
+
+### Bug Fixes
+
+* update android native dependencies ([472896d](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/472896d51c90b67ac6ba7329eb34929acde50155))
+
+# [4.8.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.7.1...v4.8.0) (2023-05-26)
+
+
+### Features
+
+* **Android:** added feature to connect to hidden wifi on android 10 ([#287](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/287)) ([32b5db2](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/32b5db2e1ebcdc757a4dec39f1441a4c9586a827))
+
+## [4.7.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.7.0...v4.7.1) (2023-05-26)
+
+
+### Bug Fixes
+
+* **Android:** * add location permission check for getCurrentWifiSSID and reScanAndLoadWifiList and change error message for clarity ([#264](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/264)) ([c3ba4e5](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/c3ba4e532fc937cf757937448140af50e360988c))
+
 # [4.7.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.6.0...v4.7.0) (2022-07-12)
 
 

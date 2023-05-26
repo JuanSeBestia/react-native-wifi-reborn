@@ -13,15 +13,20 @@ public class WifiScanResultsMapper {
     private WifiScanResultsMapper() {
     }
 
+    private static String parseSSID(final ScanResult scanResult) {
+        if (scanResult.SSID.equals("")) {
+            return "(hidden SSID)";
+        }
+
+        return scanResult.SSID;
+    }
+
     public static WritableArray mapWifiScanResults(final List<ScanResult> scanResults) {
         final WritableArray wifiArray = new WritableNativeArray();
 
         for (ScanResult result : scanResults) {
             final WritableMap wifiObject = new WritableNativeMap();
-            if (result.SSID.equals("")) {
-                result.SSID = "(hidden SSID)";
-            }
-            wifiObject.putString("SSID", result.SSID);
+            wifiObject.putString("SSID", parseSSID(result));
             wifiObject.putString("BSSID", result.BSSID);
             wifiObject.putString("capabilities", result.capabilities);
             wifiObject.putInt("frequency", result.frequency);
