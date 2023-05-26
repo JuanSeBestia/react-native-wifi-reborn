@@ -1,3 +1,10 @@
+## [4.8.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.8.0...v4.8.1) (2023-05-26)
+
+
+### Bug Fixes
+
+* update android native dependencies ([472896d](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/472896d51c90b67ac6ba7329eb34929acde50155))
+
 # [4.8.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.7.1...v4.8.0) (2023-05-26)
 
 
