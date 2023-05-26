@@ -65,6 +65,7 @@ const App = () => {
         ssid,
         password,
         false,
+        false,
       );
       console.log('Connected successfully!', {data});
       setConnected({connected: true, ssid});
