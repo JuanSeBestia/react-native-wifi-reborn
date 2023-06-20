@@ -11,6 +11,10 @@
     "checkjs": "tsc",
     "semantic-release": "semantic-release"
   },
+  "engines": {
+    "node": "16.18.0",
+    "npm": "8.19.2"
+  },
   "files": [
     "app.plugin.js",
     "/android/src/",
