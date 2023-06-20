@@ -17,6 +17,8 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
+    namespace = "com.reactlibrary.rnwifi"
+
     compileSdkVersion safeExtGet(compileSdkVersion, 31)
 
     compileOptions {
