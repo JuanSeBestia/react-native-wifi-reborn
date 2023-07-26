@@ -9,6 +9,7 @@
 
 @interface WifiManager () <CLLocationManagerDelegate>
 @property (nonatomic,strong) CLLocationManager *locationManager;
+@property (nonatomic,strong) NEHotspotConfiguration *hotspotConfiguration;
 @property (nonatomic) BOOL solved;
 @end
 @implementation WifiManager
@@ -78,6 +79,7 @@ RCT_EXPORT_METHOD(connectToSSIDPrefix:(NSString*)ssid
              if (error != nil) {
                  reject([self parseError:error], @"Error while configuring WiFi", error);
              } else {
+                 self.hotspotConfiguration = configuration;
                  resolve(nil);
              }
          }];
@@ -104,6 +106,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssid
                 // Verify SSID connection
                 [self getWifiSSID:^(NSString* result) {
                     if ([result hasPrefix:ssid]){
+                        self.hotspotConfiguration = configuration;
                         resolve(nil);
                     } else {
                         reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to Wi-Fi with prefix ", ssid], nil);
@@ -156,6 +159,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
                     // Verify SSID connection
                     [self getWifiSSID:^(NSString* newSSID) {
                         if ([ssid isEqualToString:newSSID]){
+                            self.hotspotConfiguration = configuration;
                             resolve(nil);
                         } else {
                             reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
