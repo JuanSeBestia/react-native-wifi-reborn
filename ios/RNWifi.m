@@ -179,8 +179,13 @@ RCT_EXPORT_METHOD(disconnectFromSSID:(NSString*)ssid
                   rejecter:(RCTPromiseRejectBlock)reject) {
 
     if (@available(iOS 11.0, *)) {
-        [[NEHotspotConfigurationManager sharedManager] removeConfigurationForSSID:ssid];
-        resolve(nil);
+        if (self.hotspotConfiguration != nil) {
+            [[NEHotspotConfigurationManager sharedManager] removeConfigurationForSSID:ssid];
+            self.hotspotConfiguration = nil;
+            resolve(nil);
+        } else {
+            reject([ConnectError code:Invalid], [NSString stringWithFormat:@"Configuration (SSID: %@) was created outside the app", ssid], nil);
+        }
     } else {
         reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<11.0", nil);
     }
