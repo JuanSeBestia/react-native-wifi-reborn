@@ -186,7 +186,22 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void setEnabled(final boolean enabled) {
-        wifi.setWifiEnabled(enabled);
+        if (isAndroidTenOrLater()) {
+            openWifiSettings();
+        } else {
+            wifi.setWifiEnabled(enabled);
+        }
+    }
+
+    /**
+     * Use this to open a wifi settings panel.
+     * For Android Q and above.
+     */
+    @ReactMethod
+    public void openWifiSettings() {
+        Intent intent = new Intent(Settings.Panel.ACTION_WIFI);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.context.startActivity(intent);
     }
 
     /**
