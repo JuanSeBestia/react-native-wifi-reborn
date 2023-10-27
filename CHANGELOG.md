@@ -1,3 +1,10 @@
+# [4.10.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.9.0...v4.10.0) (2023-10-27)
+
+
+### Features
+
+* **android:** 🌟 add support for React Native 0.73 ([#312](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/312)) ([451b92c](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/451b92c53a0e173cd48f95b38f0bcaba2c5b63a8))
+
 # [4.9.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.8.3...v4.9.0) (2023-10-27)
 
 
