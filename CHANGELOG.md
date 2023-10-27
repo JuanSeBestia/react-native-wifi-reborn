@@ -1,3 +1,15 @@
+# [4.9.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.8.3...v4.9.0) (2023-10-27)
+
+
+### Bug Fixes
+
+* **Android:** Open the Wifi settings panel on Android 10 and above. ([#319](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/319)) ([bd89902](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/bd89902d10a22ad3fc3a5f81534d6a817fae5cc6))
+
+
+### Features
+
+* add with-expo example ([#314](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/314)) ([f572a81](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/f572a81f4a45f5efa77bfca0b7103d372fbada7c))
+
 ## [4.8.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.8.2...v4.8.3) (2023-05-26)
 
 
