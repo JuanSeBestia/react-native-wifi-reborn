@@ -1,3 +1,10 @@
+## [4.10.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.10.0...v4.10.1) (2023-11-06)
+
+
+### Bug Fixes
+
+* **npm:** remove engines from package.json ([8bd1385](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/8bd13854ad02350c7a2477279e551a892062ab76))
+
 # [4.10.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.9.0...v4.10.0) (2023-10-27)
 
 
