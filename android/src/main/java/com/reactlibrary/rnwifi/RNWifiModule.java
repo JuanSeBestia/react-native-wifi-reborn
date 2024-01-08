@@ -479,7 +479,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
        
         final Handler timeoutHandler = new Handler(Looper.getMainLooper());
         final Runnable timeoutRunnable = () -> {
-            promise.reject("TimeoutError", "Connection timeout");
+            promise.reject(ConnectErrorCodes.timeoutOccurred.toString(), "Connection timeout");
             DisconnectCallbackHolder.getInstance().unbindProcessFromNetwork();
             DisconnectCallbackHolder.getInstance().disconnect();
         };
