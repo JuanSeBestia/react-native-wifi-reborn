@@ -505,7 +505,13 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                 super.onUnavailable();
                 timeoutHandler.removeCallbacks(timeoutRunnable);
                 promise.reject(ConnectErrorCodes.didNotFindNetwork.toString(), "Network not found or network request cannot be fulfilled.");
+            }
 
+            @Override
+            public void onLost(@NonNull Network network) {
+                super.onLost(network);
+                DisconnectCallbackHolder.getInstance().unbindProcessFromNetwork();
+                DisconnectCallbackHolder.getInstance().disconnect();
             }
         };
 
