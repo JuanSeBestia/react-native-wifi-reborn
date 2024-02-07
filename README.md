@@ -241,6 +241,8 @@ The following methods work only on iOS
 
 ### `connectToProtectedSSIDPrefix(SSIDPrefix: string, password: string, isWep: boolean): Promise`
 
+### `connectToProtectedSSIDPrefixOnce(SSIDPrefix: string, password: string, isWep: boolean, joinOnce: boolean): Promise`
+
 Use this function when you want to match a known SSID prefix, but don’t have a full SSID. If the system finds multiple Wi-Fi networks whose SSID string matches the given prefix, it selects the network with the greatest signal strength.
 
 #### SSIDPrefix

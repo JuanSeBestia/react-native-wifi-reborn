@@ -1,3 +1,9 @@
+## [4.10.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.10.0...v4.10.1) (2024-02-07)
+
+### Features
+
+* **iOS:** 🌟 Add connectToProtectedSSIDPrefixOnce method
+
 ## [4.10.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.10.0...v4.10.1) (2023-11-06)
 
 

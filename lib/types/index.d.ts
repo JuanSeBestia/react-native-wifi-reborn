@@ -137,6 +137,20 @@ declare module 'react-native-wifi-reborn' {
         password: string,
         isWEP: boolean
     ): Promise<void>;
+    /**
+     * Connects to a WiFi network that start with SSIDPrefix. Rejects with an error if it couldn't connect.
+     *
+     * @param SSIDPrefix Wifi name prefix.
+     * @param password `null` for open networks.
+     * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+     * @param joinOnce Used on iOS. If `true`, restricts the lifetime of a configuration to the operating status of the app that created it.
+     */
+    export function connectToProtectedSSIDPrefixOnce(
+        SSIDPrefix: string,
+        password: string | null,
+        isWEP: boolean,
+        joinOnce: boolean
+    ): Promise<void>;
 
     //#endregion
 
