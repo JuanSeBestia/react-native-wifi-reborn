@@ -1,3 +1,10 @@
+# [4.11.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.10.1...v4.11.0) (2024-02-12)
+
+
+### Features
+
+* **iOS, Loop patch:** check the connected WiFi network repeatedly until it's the one we requested ([#301](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/301)) ([e7088be](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/e7088be14546c2da79e225aad1295e32728bb558))
+
 ## [4.10.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.10.0...v4.10.1) (2023-11-06)
 
 
