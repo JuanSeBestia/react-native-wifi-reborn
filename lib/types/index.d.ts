@@ -115,7 +115,7 @@ declare module 'react-native-wifi-reborn' {
      */
     type ConnectToProtectedSSIDParams = {
         ssid: string;
-        password: string;
+        password: string | null;
         isWEP?: boolean;
         isHidden?: boolean;
         timeout?: number;
