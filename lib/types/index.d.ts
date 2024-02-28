@@ -96,14 +96,32 @@ declare module 'react-native-wifi-reborn' {
      * @param password `null` for open networks.
      * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
      * @param isHidden only for Android, use if Wi-Fi is hidden.
-     * @param timeout only for Android, timeout in seconds. If the connection is not established in this time, it will reject. Default is 15 seconds.
      */
     export function connectToProtectedSSID(
         SSID: string,
         password: string | null,
         isWEP: boolean,
-        isHidden: boolean,
-        timeout: number | null
+        isHidden: boolean
+    ): Promise<void>;
+
+    /**
+     * Connects to a WiFi network. Rejects with an error if it couldn't connect.
+     *
+     * @param SSID Wifi name.
+     * @param password `null` for open networks.
+     * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+     * @param isHidden only for Android, use if Wi-Fi is hidden.
+     * @param timeout only for Android, timeout in seconds. If the connection is not established in this time, it will reject. Default is 15 seconds.
+     */
+    type ConnectToProtectedSSIDParams = {
+        ssid: string;
+        password: string;
+        isWEP?: boolean;
+        isHidden?: boolean;
+        timeout?: number;
+    };
+    export function connectToProtectedWifiSSID(
+        options: ConnectToProtectedSSIDParams
     ): Promise<void>;
 
     export enum GET_CURRENT_WIFI_SSID_ERRRORS {

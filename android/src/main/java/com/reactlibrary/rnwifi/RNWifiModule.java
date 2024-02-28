@@ -212,6 +212,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         this.context.startActivity(intent);
     }
 
+
     /**
      * Use this to connect with a wifi network.
      * Example:  wifi.findAndConnect(ssid, password, false);
@@ -221,12 +222,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * @param password password of the network to connect with
      * @param isWep    only for iOS
      * @param isHidden only for Android, use if WiFi is hidden
-     * @param timeout  use to set timeout in seconds
      * @param promise  to send success/error feedback
      */
     @ReactMethod
-    public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final boolean isHidden, final Integer timeout, final Promise promise) {
-        if(!assertLocationPermissionGranted(promise)) {
+    public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final boolean isHidden, final Promise promise) {
+            if(!assertLocationPermissionGranted(promise)) {
             return;
         }
 
@@ -236,10 +236,44 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         }
 
         this.removeWifiNetwork(SSID, promise, () -> {
-            int secondsTimeout = timeout != null ? timeout * 1000 : TIMEOUT_MILLIS;
-            connectToWifiDirectly(SSID, password, isHidden, secondsTimeout, promise);
+            connectToWifiDirectly(SSID, password, isHidden, TIMEOUT_MILLIS, promise);
         });
     }
+
+
+    /**
+     * Use this to connect with a wifi network.
+     * Example:  wifi.findAndConnect(ssid, password, false);
+     * The promise will resolve with the message 'connected' when the user is connected on Android.
+     *
+     * @param options to connect with a wifi network
+     * @param promise  to send success/error feedback
+     */
+    @ReactMethod
+    public void connectToProtectedWifiSSID(@NonNull ReadableMap options, final Promise promise) {
+        if(!assertLocationPermissionGranted(promise)) {
+            return;
+        }
+
+        if (!wifi.isWifiEnabled() && !wifi.setWifiEnabled(true)) {
+            promise.reject(ConnectErrorCodes.couldNotEnableWifi.toString(), "On Android 10, the user has to enable wifi manually.");
+            return;
+        }
+
+        String ssid = options.getString("ssid");
+        String password = options.getString("password");
+        boolean isHidden = options.getBoolean("isHidden");
+        int secondsTimeout = options.hasKey("timeout") ? options.getInt("timeout") * 1000 : TIMEOUT_MILLIS;
+
+
+        this.removeWifiNetwork(ssid, promise, () -> {
+            assert ssid != null;
+            assert password != null;
+            connectToWifiDirectly(ssid, password, isHidden, secondsTimeout, promise);
+        });
+    }
+
+
 
 
     /**
