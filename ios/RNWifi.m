@@ -127,6 +127,16 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
     [self connectToProtectedSSIDOnce:ssid withPassphrase:passphrase isWEP:isWEP joinOnce:false resolver:resolve rejecter:reject];
 }
 
+RCT_EXPORT_METHOD(connectToProtectedWifiSSID:(NSDictionary *)params
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *ssid = params[@"ssid"];
+    NSString *passphrase = params[@"password"];
+    BOOL isWEP = [params[@"isWEP"] boolValue];
+
+    [self connectToProtectedSSIDOnce:ssid withPassphrase:passphrase isWEP:isWEP joinOnce:false resolver:resolve rejecter:reject];
+}
+
 RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
                   withPassphrase:(NSString*)passphrase
                   isWEP:(BOOL)isWEP
