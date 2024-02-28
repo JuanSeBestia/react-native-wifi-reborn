@@ -175,7 +175,7 @@ The following methods work on both Android and iOS
 ```
 connectToProtectedWifiSSID({
       ssid: string;
-      password: string;
+      password: string | null;
       isWEP?: boolean;
       isHidden?: boolean;
       timeout?: number
