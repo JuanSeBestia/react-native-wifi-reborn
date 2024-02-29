@@ -268,7 +268,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
         this.removeWifiNetwork(ssid, promise, () -> {
             assert ssid != null;
-            assert password != null;
             connectToWifiDirectly(ssid, password, isHidden, secondsTimeout, promise);
         });
     }
