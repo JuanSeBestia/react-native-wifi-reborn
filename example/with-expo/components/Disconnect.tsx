@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, TextInput, StyleSheet, Text } from 'react-native';
+import { Button, StyleSheet, Text } from 'react-native';
 import WifiManager from 'react-native-wifi-reborn';
 import { Section } from './Section';
 
