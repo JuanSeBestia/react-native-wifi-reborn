@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/geolocation": "^3.2.0",
     "react": "18.2.0",
     "react-native": "0.73.5",
     "react-native-wifi-reborn": "file:../../"

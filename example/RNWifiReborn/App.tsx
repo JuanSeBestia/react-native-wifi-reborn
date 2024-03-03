@@ -1,22 +1,14 @@
-import { PermissionsAndroid, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useEffect } from 'react';
 import { ConnectToSSID } from './components/ConnectToSSID';
 import { CurrentSSID } from './components/CurrentSSID';
 import { Disconnect } from './components/Disconnect';
+import Geolocation from '@react-native-community/geolocation';
 
 const askLocationPermission = async () => {
-  const res = await PermissionsAndroid.request(
-    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    {
-      title: 'Location permission is required for WiFi connections',
-      message:
-        'This app needs location permission as this is required  ' +
-        'to scan for wifi networks.',
-      buttonNegative: 'DENY',
-      buttonPositive: 'ALLOW',
-    },
-  );
-  console.log(res);
+  Geolocation.requestAuthorization((status:any) => {
+    console.log('Location permission status: ', status);
+  }, (error:any) => console.error('Location permission error: ', error) );
 };
 
 export default function App() {
