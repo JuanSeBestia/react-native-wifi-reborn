@@ -1,4 +1,4 @@
-rootProject.name = 'with-expo-new'
+rootProject.name = 'with-expo'
 
 dependencyResolutionManagement {
   versionCatalogs {
