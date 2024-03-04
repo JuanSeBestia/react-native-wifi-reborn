@@ -1,4 +1,4 @@
-package com.RNWifiReborn
+package com.rnwifireborn
 
 import android.app.Application
 import com.facebook.react.PackageList

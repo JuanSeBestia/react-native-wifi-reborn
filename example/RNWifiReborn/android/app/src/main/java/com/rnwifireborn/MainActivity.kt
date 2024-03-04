@@ -1,4 +1,4 @@
-package com.RNWifiReborn
+package com.rnwifireborn
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
