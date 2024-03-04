@@ -8,6 +8,7 @@ import { Disconnect } from './components/Disconnect';
 
 const askLocationPermission = async () => {
   const res = await requestForegroundPermissionsAsync();
+  // ˆ? res: { status: 'granted' | 'denied' | 'undetermined' }
   console.log(res);
 };
 
