@@ -49,8 +49,8 @@
   "devDependencies": {
     "@babel/core": "^7.8.3",
     "@expo/config-plugins": "^4.0.7",
-    "@semantic-release/changelog": "^3.0.4",
-    "@semantic-release/git": "^7.0.16",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@types/react-native": "^0.61.17",
     "@typescript-eslint/eslint-plugin": "^2.21.0",
     "@typescript-eslint/parser": "^2.21.0",
@@ -60,7 +60,7 @@
     "prettier": "^1.19.1",
     "react": "^16.9.0",
     "react-native": "^0.61.5",
-    "semantic-release": "^19.0.3",
+    "semantic-release": "^23.0.2",
     "typescript": "^3.8.2"
   }
 }
