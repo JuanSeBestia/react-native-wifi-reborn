@@ -262,7 +262,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
         String ssid = options.getString("ssid");
         String password = options.getString("password");
-        boolean isHidden = options.getBoolean("isHidden");
+        boolean isHidden = options.hasKey("isHidden") && options.getBoolean("isHidden");
         int secondsTimeout = options.hasKey("timeout") ? options.getInt("timeout") * 1000 : TIMEOUT_MILLIS;
 
 
