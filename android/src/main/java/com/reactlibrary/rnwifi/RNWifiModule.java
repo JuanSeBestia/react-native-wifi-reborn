@@ -18,6 +18,8 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiNetworkSpecifier;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.provider.Settings;
 import android.os.Build;
@@ -55,6 +57,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     private final WifiManager wifi;
     private final ReactApplicationContext context;
     private static String TAG = "RNWifiModule";
+
+    private static final int TIMEOUT_MILLIS = 15000;
 
     RNWifiModule(ReactApplicationContext context) {
         super(context);
@@ -208,6 +212,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         this.context.startActivity(intent);
     }
 
+
     /**
      * Use this to connect with a wifi network.
      * Example:  wifi.findAndConnect(ssid, password, false);
@@ -221,7 +226,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final boolean isHidden, final Promise promise) {
-        if(!assertLocationPermissionGranted(promise)) {
+            if(!assertLocationPermissionGranted(promise)) {
             return;
         }
 
@@ -231,9 +236,43 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         }
 
         this.removeWifiNetwork(SSID, promise, () -> {
-            connectToWifiDirectly(SSID, password, isHidden, promise);
+            connectToWifiDirectly(SSID, password, isHidden, TIMEOUT_MILLIS, promise);
         });
     }
+
+
+    /**
+     * Use this to connect with a wifi network.
+     * Example:  wifi.findAndConnect(ssid, password, false);
+     * The promise will resolve with the message 'connected' when the user is connected on Android.
+     *
+     * @param options to connect with a wifi network
+     * @param promise  to send success/error feedback
+     */
+    @ReactMethod
+    public void connectToProtectedWifiSSID(@NonNull ReadableMap options, final Promise promise) {
+        if(!assertLocationPermissionGranted(promise)) {
+            return;
+        }
+
+        if (!wifi.isWifiEnabled() && !wifi.setWifiEnabled(true)) {
+            promise.reject(ConnectErrorCodes.couldNotEnableWifi.toString(), "On Android 10, the user has to enable wifi manually.");
+            return;
+        }
+
+        String ssid = options.getString("ssid");
+        String password = options.getString("password");
+        boolean isHidden = options.getBoolean("isHidden");
+        int secondsTimeout = options.hasKey("timeout") ? options.getInt("timeout") * 1000 : TIMEOUT_MILLIS;
+
+
+        this.removeWifiNetwork(ssid, promise, () -> {
+            assert ssid != null;
+            connectToWifiDirectly(ssid, password, isHidden, secondsTimeout, promise);
+        });
+    }
+
+
 
 
     /**
@@ -406,7 +445,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
         boolean wifiStartScan = wifi.startScan();
         Log.d(TAG, "wifi start scan: " + wifiStartScan);
-        if (wifiStartScan == true) {
+        if (wifiStartScan) {
           final WifiScanResultReceiver wifiScanResultReceiver = new WifiScanResultReceiver(wifi, promise);
           getReactApplicationContext().registerReceiver(wifiScanResultReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         } else {
@@ -415,9 +454,9 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         }
     }
 
-    private void connectToWifiDirectly(@NonNull final String SSID, @NonNull final String password, final boolean isHidden, final Promise promise) {
+    private void connectToWifiDirectly(@NonNull final String SSID, @NonNull final String password, final boolean isHidden, final int timeout, final Promise promise) {
         if (isAndroidTenOrLater()) {
-            connectAndroidQ(SSID, password, isHidden, promise);
+            connectAndroidQ(SSID, password, isHidden,timeout, promise);
         } else {
             connectPreAndroidQ(SSID, password, promise);
         }
@@ -454,7 +493,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    private void connectAndroidQ(@NonNull final String SSID, @NonNull final String password, final boolean isHidden, final Promise promise) {
+    private void connectAndroidQ(@NonNull final String SSID, @NonNull final String password, final boolean isHidden, final int timeout, final Promise promise) {
         WifiNetworkSpecifier.Builder wifiNetworkSpecifier = new WifiNetworkSpecifier.Builder()
                 .setIsHiddenSsid(isHidden)
                 .setSsid(SSID);
@@ -470,34 +509,45 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                 .build();
 
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+       
+        final Handler timeoutHandler = new Handler(Looper.getMainLooper());
+        final Runnable timeoutRunnable = () -> {
+            promise.reject(ConnectErrorCodes.timeoutOccurred.toString(), "Connection timeout");
+            DisconnectCallbackHolder.getInstance().unbindProcessFromNetwork();
+            DisconnectCallbackHolder.getInstance().disconnect();
+        };
 
-        ConnectivityManager.NetworkCallback networkCallback = new
-                ConnectivityManager.NetworkCallback() {
-                    @Override
-                    public void onAvailable(Network network) {
-                        super.onAvailable(network);
-                        DisconnectCallbackHolder.getInstance().bindProcessToNetwork(network);
-                        connectivityManager.setNetworkPreference(ConnectivityManager.DEFAULT_NETWORK_PREFERENCE);
-                        if (!pollForValidSSID(3, SSID)) {
-                            promise.reject(ConnectErrorCodes.android10ImmediatelyDroppedConnection.toString(), "Firmware bugs on OnePlus prevent it from connecting on some firmware versions.");
-                            return;
-                        }
-                        promise.resolve("connected");
-                    }
+        timeoutHandler.postDelayed(timeoutRunnable, timeout);
 
-                    @Override
-                    public void onUnavailable() {
-                        super.onUnavailable();
-                        promise.reject(ConnectErrorCodes.didNotFindNetwork.toString(), "Network not found or network request cannot be fulfilled.");
-                    }
+        ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                super.onAvailable(network);
+                timeoutHandler.removeCallbacks(timeoutRunnable);
+                DisconnectCallbackHolder.getInstance().bindProcessToNetwork(network);
+                connectivityManager.setNetworkPreference(ConnectivityManager.DEFAULT_NETWORK_PREFERENCE);
+                if (!pollForValidSSID(3, SSID)) {
+                    promise.reject(ConnectErrorCodes.android10ImmediatelyDroppedConnection.toString(), "Firmware bugs on OnePlus prevent it from connecting on some firmware versions.");
+                    return;
+                }
+                promise.resolve("connected");
+            }
 
-                    @Override
-                    public void onLost(@NonNull Network network) {
-                        super.onLost(network);
-                        DisconnectCallbackHolder.getInstance().unbindProcessFromNetwork();
-                        DisconnectCallbackHolder.getInstance().disconnect();
-                    }
-                };
+            @Override
+            public void onUnavailable() {
+                super.onUnavailable();
+                timeoutHandler.removeCallbacks(timeoutRunnable);
+                promise.reject(ConnectErrorCodes.didNotFindNetwork.toString(), "Network not found or network request cannot be fulfilled.");
+            }
+
+            @Override
+            public void onLost(@NonNull Network network) {
+                super.onLost(network);
+                DisconnectCallbackHolder.getInstance().unbindProcessFromNetwork();
+                DisconnectCallbackHolder.getInstance().disconnect();
+            }
+        };
+
         DisconnectCallbackHolder.getInstance().addNetworkCallback(networkCallback, connectivityManager);
         DisconnectCallbackHolder.getInstance().requestNetwork(nr);
     }

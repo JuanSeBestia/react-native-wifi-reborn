@@ -142,7 +142,7 @@ The plugin provides props for extra customization. Every time you change the pro
 ```javascript
 import WifiManager from "react-native-wifi-reborn";
 
-WifiManager.connectToProtectedSSID(ssid, password, isWep).then(
+WifiManager.connectToProtectedWifiSSID(ssid, password, isWep).then(
   () => {
     console.log("Connected successfully!");
   },
@@ -171,6 +171,17 @@ _The api documentation is in progress._
 
 The following methods work on both Android and iOS
 
+### ```### NEW VERSION WITH OPTIONAL PARAMETERS ###``` 
+```
+connectToProtectedWifiSSID({
+      ssid: string;
+      password: string | null;
+      isWEP?: boolean;
+      isHidden?: boolean;
+      timeout?: number
+  ;}): Promise
+```
+
 ### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, isHidden: boolean): Promise`
 
 Returns a promise that resolves when connected or rejects with the error when it couldn't connect to the wifi network.
@@ -197,6 +208,10 @@ Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 pe
 Type: `boolean`
 Used on Android. If true, the network is a hidden Wi-Fi network.
 
+#### timeout - ```ONLY NEW VERSION```
+TypeL `number`
+Used on Android to set a timeout in seconds. Default 15 seconds.
+
 #### Errors:
 * iOS:
   * `unavailableForOSVersion`: Starting from iOS 11, NEHotspotConfigurationError is available.
@@ -216,7 +231,7 @@ Used on Android. If true, the network is a hidden Wi-Fi network.
   * `didNotFindNetwork`: If the wifi network is not in range, the security type is unknown and WifiUtils doesn't support connecting to the network.
   * `authenticationErrorOccurred`: Authentication error occurred while trying to connect. The password could be incorrect or the user could have a saved network configuration with a different password!
   * `android10ImmediatelyDroppedConnection` : Firmware bugs on OnePlus prevent it from connecting on some firmware versions. More info: https://github.com/ThanosFisherman/WifiUtils/issues/63.
-  * `timeoutOccurred`: Could not connect in the timeout window.
+  * `timeoutOccurred`: Could not connect in the timeout window. - ```ONLY NEW VERSION```
 * Both:
   * `unableToConnect`: When an unknown error occurred.
 

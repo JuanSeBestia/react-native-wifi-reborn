@@ -14,7 +14,13 @@ export const ConnectToSSID = () => {
     setError('');
     setResponse('');
     setIsLoading(true);
-    WifiManager.connectToProtectedSSID(ssid, pass, false, false)
+    WifiManager.connectToProtectedWifiSSID({
+      ssid: ssid,
+      password: pass,
+      isWEP: false,
+      isHidden: false,
+      timeout: 10,
+    })
       .then((r) => setResponse(JSON.stringify(r, null, 2)))
       .catch((e) => setError(e.toString()))
       .finally(() => setIsLoading(false));

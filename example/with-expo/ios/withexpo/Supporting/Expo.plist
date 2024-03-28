@@ -6,5 +6,9 @@
     <string>ALWAYS</string>
     <key>EXUpdatesEnabled</key>
     <false/>
+    <key>EXUpdatesLaunchWaitMs</key>
+    <integer>0</integer>
+    <key>EXUpdatesSDKVersion</key>
+    <string>50.0.0</string>
   </dict>
 </plist>

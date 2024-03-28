@@ -1,8 +1,27 @@
-## [4.10.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.10.0...v4.10.1) (2024-02-07)
+# [4.12.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.11.0...v4.12.0) (2024-03-26)
+
+
+### Bug Fixes
+
+* **android:** re-add onLost method ([be1d872](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/be1d872d3be8c9ed84a92ea9f7c0ab20935ea388))
+* IOS method ([b5bdb35](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/b5bdb35f5c51c35e2b8a4d50a9474cd396e40407))
+* removed assert password != null ([93d737a](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/93d737aef7dd5a1b1d2dcb0e5bbf2bc796c05138))
+* use enum for error ([7b7587c](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/7b7587c27ff8b4544a4b05cb62e93740188cce2c))
+
 
 ### Features
 
-* **iOS:** 🌟 Add connectToProtectedSSIDPrefixOnce method
+* add new method connectToProtectedWifiSSID ([1813073](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/1813073561a837e3a7a5eedd413fa76f003702ae))
+* add nullable password ([75ff05f](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/75ff05fd37185c2e2b5302a2c1e373447e0e4f2d))
+* **android:** add timeout parameter ([9426913](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/94269130b3ac7589accd653b8ac2948083618d72))
+* update README ([8970ba4](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/8970ba47d368e189e9f6af4d2eb060617ecfb872))
+
+# [4.11.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.10.1...v4.11.0) (2024-02-12)
+
+
+### Features
+
+* **iOS, Loop patch:** check the connected WiFi network repeatedly until it's the one we requested ([#301](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/301)) ([e7088be](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/e7088be14546c2da79e225aad1295e32728bb558))
 
 ## [4.10.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.10.0...v4.10.1) (2023-11-06)
 
