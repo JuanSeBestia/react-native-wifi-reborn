@@ -48,7 +48,7 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.8.3",
-    "@expo/config-plugins": "^4.0.7",
+    "@expo/config-plugins": "^7.8.4",
     "@semantic-release/changelog": "^3.0.4",
     "@semantic-release/git": "^7.0.16",
     "@types/react-native": "^0.61.17",
