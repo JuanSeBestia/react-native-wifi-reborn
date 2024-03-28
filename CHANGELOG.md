@@ -1,3 +1,10 @@
+## [4.12.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.12.0...v4.12.1) (2024-03-28)
+
+
+### Bug Fixes
+
+* crash on Android when isHidden params not passed ([e3d7dcc](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/e3d7dcc0910a26d50f8689e38acb7441f4343927))
+
 # [4.12.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.11.0...v4.12.0) (2024-03-26)
 
 
