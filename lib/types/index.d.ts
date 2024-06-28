@@ -112,6 +112,17 @@ declare module 'react-native-wifi-reborn' {
     ): Promise<void>;
 
     /**
+     * Suggests a list of Wi-Fi networks on Android. Resolves with 'suggested' when the suggestions are added successfully.
+     * Only works for Android and requires a minimum SDK version of 29.
+     *
+     * @param networkConfigs List of network configurations containing SSID, password, WPA3 flag, and app interaction flag.
+     * @returns Promise that resolves with 'suggested' on success, or rejects with an error message on failure.
+     */
+    export function suggestWifiNetwork(
+        networkConfigs: SuggestedNetworkConfig[],
+    ): Promise<string>;
+
+    /**
      * Connects to a WiFi network. Rejects with an error if it couldn't connect.
      *
      * @param SSID Wifi name.
