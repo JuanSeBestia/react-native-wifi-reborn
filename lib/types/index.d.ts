@@ -116,7 +116,7 @@ declare module 'react-native-wifi-reborn' {
      * Only works for Android and requires a minimum SDK version of 29.
      *
      * @param networkConfigs List of network configurations containing SSID, password, WPA3 flag, and app interaction flag.
-     * @returns Promise that resolves with 'suggested' on success, or rejects with an error message on failure.
+     * @returns Promise that resolves with 'connected' on success, or rejects with an error message on failure.
      */
     export function suggestWifiNetwork(
         networkConfigs: SuggestedNetworkConfig[],
