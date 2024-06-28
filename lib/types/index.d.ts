@@ -107,12 +107,12 @@ declare module 'react-native-wifi-reborn' {
     export function connectToProtectedSSID(
         SSID: string,
         password: string | null,
-        isWEP: boolean,
+        isWep: boolean,
         isHidden: boolean,
     ): Promise<void>;
 
     /**
-     * Suggests a list of Wi-Fi networks on Android. Resolves with 'suggested' when the suggestions are added successfully.
+     * Suggests a list of Wi-Fi networks on Android. Resolves with 'connected' when the suggestions are added successfully.
      * Only works for Android and requires a minimum SDK version of 29.
      *
      * @param networkConfigs List of network configurations containing SSID, password, WPA3 flag, and app interaction flag.
@@ -171,7 +171,7 @@ declare module 'react-native-wifi-reborn' {
     export function connectToProtectedSSIDOnce(
         SSID: string,
         password: string | null,
-        isWEP: boolean,
+        isWep: boolean,
         joinOnce: boolean,
     ): Promise<void>;
 

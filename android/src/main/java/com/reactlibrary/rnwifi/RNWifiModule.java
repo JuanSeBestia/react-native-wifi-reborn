@@ -42,6 +42,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.ReadableArray;
 import com.reactlibrary.rnwifi.errors.ConnectErrorCodes;
 import com.reactlibrary.rnwifi.errors.DisconnectErrorCodes;
 import com.reactlibrary.rnwifi.errors.ForceWifiUsageErrorCodes;
@@ -283,7 +284,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
     /**
      * Use this to suggest a list of Wi-Fi networks on Android.
-     * The promise will resolve with the message 'suggested' when the suggestions are added successfully.
+     * The promise will resolve with the message 'connected' when the suggestions are added successfully.
      * This method only works for Android and requires a minimum SDK version of 29.
      *
      * @param networkConfigs list of network configurations containing SSID, password, WPA3 flag, and app interaction flag
@@ -328,7 +329,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         final int status = wifiManager.addNetworkSuggestions(suggestionsList);
 
         if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
-            promise.reject(ConnectErrorCodes.couldNotSuggestNetwork.toString(), "Failed to add network suggestions.");
+            promise.reject(ConnectErrorCodes.unableToConnect.toString(), "Failed to add network suggestions.");
             return;
         }
 
@@ -340,7 +341,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
                 if (!WifiManager.ACTION_WIFI_NETWORK_SUGGESTION_POST_CONNECTION.equals(intent.getAction())) {
                     return;
                 }
-                promise.resolve("suggested");
+                promise.resolve("connected");
             }
         };
         getReactApplicationContext().registerReceiver(broadcastReceiver, intentFilter);
