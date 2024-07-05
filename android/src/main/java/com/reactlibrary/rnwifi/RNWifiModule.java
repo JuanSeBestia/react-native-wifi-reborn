@@ -339,6 +339,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (!WifiManager.ACTION_WIFI_NETWORK_SUGGESTION_POST_CONNECTION.equals(intent.getAction())) {
+                    promise.reject("failed to connect");
                     return;
                 }
                 promise.resolve("connected");
