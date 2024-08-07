@@ -107,7 +107,7 @@ declare module 'react-native-wifi-reborn' {
     export function connectToProtectedSSID(
         SSID: string,
         password: string | null,
-        isWep: boolean,
+        isWEP: boolean,
         isHidden: boolean,
     ): Promise<void>;
 
@@ -171,14 +171,14 @@ declare module 'react-native-wifi-reborn' {
     export function connectToProtectedSSIDOnce(
         SSID: string,
         password: string | null,
-        isWep: boolean,
+        isWEP: boolean,
         joinOnce: boolean,
     ): Promise<void>;
 
     export function connectToProtectedSSIDPrefix(
         SSIDPrefix: string,
         password: string,
-        isWep: boolean,
+        isWEP: boolean,
     ): Promise<void>;
 
     //#endregion
