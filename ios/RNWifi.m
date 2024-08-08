@@ -87,15 +87,25 @@ RCT_EXPORT_METHOD(connectToSSIDPrefix:(NSString*)ssid
      }
  }
 
-RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssid
+RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssidPrefix
                   withPassphrase:(NSString*)passphrase
                   isWEP:(BOOL)isWEP
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
 
+    [self connectToProtectedSSIDPrefixOnce:ssidPrefix withPassphrase:passphrase isWEP:isWEP joinOnce:false resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(connectToProtectedSSIDPrefixOnce:(NSString*)ssidPrefix
+                  withPassphrase:(NSString*)passphrase
+                  isWEP:(BOOL)isWEP
+                  joinOnce:(BOOL)joinOnce
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+
     if (@available(iOS 13.0, *)) {
-        NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSIDPrefix:ssid passphrase:passphrase isWEP:isWEP];
-        configuration.joinOnce = false;
+        NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSIDPrefix:ssidPrefix passphrase:passphrase isWEP:isWEP];
+        configuration.joinOnce = joinOnce;
 
         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
             if (error != nil) {
@@ -103,10 +113,10 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDPrefix:(NSString*)ssid
             } else {
                 // Verify SSID connection
                 [self getWifiSSID:^(NSString* result) {
-                    if ([result hasPrefix:ssid]){
+                    if ([result hasPrefix:ssidPrefix]){
                         resolve(nil);
                     } else {
-                        reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to Wi-Fi with prefix ", ssid], nil);
+                        reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to Wi-Fi with prefix ", ssidPrefix], nil);
                     }
                 }];
             }
