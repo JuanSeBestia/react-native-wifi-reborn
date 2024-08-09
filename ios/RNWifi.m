@@ -63,7 +63,8 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(connectToSSID:(NSString*)ssid
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    [self connectToProtectedSSID:ssid withPassphrase:@"" isWEP:false isHidden:false timeout:nil resolver:resolve rejecter:reject];
+    NSNumber *defaultTimeout = @(0); // Provide a default value for timeout, fix issue #379
+    [self connectToProtectedSSID:ssid withPassphrase:@"" isWEP:false isHidden:false timeout:defaultTimeout resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(connectToSSIDPrefix:(NSString*)ssid
@@ -131,7 +132,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
                   withPassphrase:(NSString*)passphrase
                   isWEP:(BOOL)isWEP
                   isHidden:(BOOL)isHidden
-                  timeout:(nullable NSNumber *)timeout
+                  timeout:(nonnull NSNumber *)timeout // Explicitly mark timeout as nonnull, fix issue #379
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     [self connectToProtectedSSIDOnce:ssid withPassphrase:passphrase isWEP:isWEP joinOnce:false resolver:resolve rejecter:reject];
