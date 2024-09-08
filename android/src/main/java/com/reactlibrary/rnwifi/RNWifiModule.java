@@ -88,7 +88,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void loadWifiList(final Promise promise) {
-        if (!assertLocationPermissionGranted(promise)) {
+        if(!assertLocationPermissionGranted(promise)){
             return;
         }
 
@@ -235,7 +235,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final boolean isHidden, final Promise promise) {
-        if (!assertLocationPermissionGranted(promise)) {
+        if(!assertLocationPermissionGranted(promise)){
             return;
         }
 
@@ -405,7 +405,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void getCurrentWifiSSID(final Promise promise) {
-        if (!assertLocationPermissionGranted(promise)) {
+        if(!assertLocationPermissionGranted(promise)){
             return;
         }
 
