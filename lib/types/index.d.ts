@@ -108,7 +108,7 @@ declare module 'react-native-wifi-reborn' {
         SSID: string,
         password: string | null,
         isWEP: boolean,
-        isHidden: boolean,
+        isHidden: boolean
     ): Promise<void>;
 
     /**
@@ -118,9 +118,7 @@ declare module 'react-native-wifi-reborn' {
      * @param networkConfigs List of network configurations containing SSID, password, WPA3 flag, and app interaction flag.
      * @returns Promise that resolves with 'connected' on success, or rejects with an error message on failure.
      */
-    export function suggestWifiNetwork(
-        networkConfigs: SuggestedNetworkConfig[],
-    ): Promise<string>;
+    export function suggestWifiNetwork(networkConfigs: SuggestedNetworkConfig[]): Promise<string>;
 
     /**
      * Connects to a WiFi network. Rejects with an error if it couldn't connect.
@@ -139,7 +137,7 @@ declare module 'react-native-wifi-reborn' {
         timeout?: number;
     };
     export function connectToProtectedWifiSSID(
-        options: ConnectToProtectedSSIDParams,
+        options: ConnectToProtectedSSIDParams
     ): Promise<void>;
 
     export enum GET_CURRENT_WIFI_SSID_ERRRORS {
