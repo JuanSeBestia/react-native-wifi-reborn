@@ -13,7 +13,7 @@ declare module 'react-native-wifi-reborn' {
         password?: string;
         isWpa3?: boolean;
         isAppInteractionRequired?: boolean;
-    }
+    };
 
     export enum CONNECT_ERRORS {
         /**
