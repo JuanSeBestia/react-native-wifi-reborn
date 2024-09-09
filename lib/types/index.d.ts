@@ -8,6 +8,13 @@ declare module 'react-native-wifi-reborn' {
         timestamp: number;
     };
 
+    export type SuggestedNetworkConfig = {
+        ssid: string;
+        password?: string;
+        isWpa3?: boolean;
+        isAppInteractionRequired?: boolean;
+    };
+
     export enum CONNECT_ERRORS {
         /**
          * Starting from iOS 11, NEHotspotConfigurationError is available
@@ -103,6 +110,15 @@ declare module 'react-native-wifi-reborn' {
         isWEP: boolean,
         isHidden: boolean
     ): Promise<void>;
+
+    /**
+     * Suggests a list of Wi-Fi networks on Android. Resolves with 'connected' when the suggestions are added successfully.
+     * Only works for Android and requires a minimum SDK version of 29.
+     *
+     * @param networkConfigs List of network configurations containing SSID, password, WPA3 flag, and app interaction flag.
+     * @returns Promise that resolves with 'connected' on success, or rejects with an error message on failure.
+     */
+    export function suggestWifiNetwork(networkConfigs: SuggestedNetworkConfig[]): Promise<string>;
 
     /**
      * Connects to a WiFi network. Rejects with an error if it couldn't connect.

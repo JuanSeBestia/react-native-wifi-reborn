@@ -23,6 +23,14 @@ import android.os.Looper;
 import android.util.Log;
 import android.provider.Settings;
 import android.os.Build;
+import android.content.BroadcastReceiver;
+import android.net.wifi.WifiNetworkSuggestion;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.annotation.NonNull;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +42,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.ReadableArray;
 import com.reactlibrary.rnwifi.errors.ConnectErrorCodes;
 import com.reactlibrary.rnwifi.errors.DisconnectErrorCodes;
 import com.reactlibrary.rnwifi.errors.ForceWifiUsageErrorCodes;
@@ -233,7 +242,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final boolean isHidden, final Promise promise) {
-            if(!assertLocationPermissionGranted(promise)) {
+        if(!assertLocationPermissionGranted(promise)){
             return;
         }
 
@@ -254,11 +263,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * The promise will resolve with the message 'connected' when the user is connected on Android.
      *
      * @param options to connect with a wifi network
-     * @param promise  to send success/error feedback
+     * @param promise to send success/error feedback
      */
     @ReactMethod
     public void connectToProtectedWifiSSID(@NonNull ReadableMap options, final Promise promise) {
-        if(!assertLocationPermissionGranted(promise)) {
+        if (!assertLocationPermissionGranted(promise)) {
             return;
         }
 
@@ -279,6 +288,71 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
     }
 
 
+    /**
+     * Use this to suggest a list of Wi-Fi networks on Android.
+     * The promise will resolve with the message 'connected' when the suggestions are added successfully.
+     * This method only works for Android and requires a minimum SDK version of 29.
+     *
+     * @param networkConfigs list of network configurations containing SSID, password, WPA3 flag, and app interaction flag
+     * @param promise        to send success/error feedback
+     */
+    @ReactMethod
+    public void suggestWifiNetwork(@NonNull final ReadableArray networkConfigs, final Promise promise) {
+        if (!assertLocationPermissionGranted(promise)) {
+            return;
+        }
+
+        List<WifiNetworkSuggestion> suggestionsList = new ArrayList<>();
+
+        for (int i = 0; i < networkConfigs.size(); i++) {
+            ReadableMap config = networkConfigs.getMap(i);
+            if (config == null) {
+                continue;
+            }
+
+            String ssid = config.getString("ssid");
+            String password = config.hasKey("password") ? config.getString("password") : "";
+            boolean isWpa3 = config.hasKey("isWpa3") && config.getBoolean("isWpa3");
+            boolean isAppInteractionRequired = config.hasKey("isAppInteractionRequired") && config.getBoolean("isAppInteractionRequired");
+
+            WifiNetworkSuggestion.Builder builder = new WifiNetworkSuggestion.Builder()
+                    .setSsid(ssid);
+
+            if (isAppInteractionRequired) {
+                builder.setIsAppInteractionRequired(true); // Conditional (Needs location permission)
+            }
+
+            if (isWpa3) {
+                builder.setWpa3Passphrase(password);
+            } else if (!password.isEmpty()) {
+                builder.setWpa2Passphrase(password);
+            }
+
+            suggestionsList.add(builder.build());
+        }
+
+        final WifiManager wifiManager = (WifiManager) getReactApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        final int status = wifiManager.addNetworkSuggestions(suggestionsList);
+
+        if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
+            promise.reject(ConnectErrorCodes.unableToConnect.toString(), "Failed to add network suggestions.");
+            return;
+        }
+
+        // Optional (Wait for post connection broadcast to one of your suggestions)
+        final IntentFilter intentFilter = new IntentFilter(WifiManager.ACTION_WIFI_NETWORK_SUGGESTION_POST_CONNECTION);
+        final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (!WifiManager.ACTION_WIFI_NETWORK_SUGGESTION_POST_CONNECTION.equals(intent.getAction())) {
+                    promise.reject("failed to connect");
+                    return;
+                }
+                promise.resolve("connected");
+            }
+        };
+        getReactApplicationContext().registerReceiver(broadcastReceiver, intentFilter);
+    }
 
 
     /**
@@ -480,8 +554,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         boolean wifiStartScan = wifi.startScan();
         Log.d(TAG, "wifi start scan: " + wifiStartScan);
         if (wifiStartScan) {
-          final WifiScanResultReceiver wifiScanResultReceiver = new WifiScanResultReceiver(wifi, promise);
-          getReactApplicationContext().registerReceiver(wifiScanResultReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+            final WifiScanResultReceiver wifiScanResultReceiver = new WifiScanResultReceiver(wifi, promise);
+            getReactApplicationContext().registerReceiver(wifiScanResultReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         } else {
             Log.d(TAG, "Wifi scan rejected");
             promise.resolve("Starting Android 9, it's only allowed to scan 4 times per 2 minuts in a foreground app.");
