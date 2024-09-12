@@ -28,7 +28,7 @@ This project is based on the no longer maintained https://github.com/robwalkerco
 
 ## Getting started
 
-`$ npm install react-native-wifi-reborn --save`
+`$ npm install react-native-wifi-reborn`
 
 ### iOS
 
@@ -171,18 +171,7 @@ _The api documentation is in progress._
 
 The following methods work on both Android and iOS
 
-### ```### NEW VERSION WITH OPTIONAL PARAMETERS ###``` 
-```
-connectToProtectedWifiSSID({
-      ssid: string;
-      password: string | null;
-      isWEP?: boolean;
-      isHidden?: boolean;
-      timeout?: number
-  ;}): Promise
-```
-
-### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, isHidden: boolean): Promise`
+### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, isHidden: boolean, timeout: number): Promise`
 
 Returns a promise that resolves when connected or rejects with the error when it couldn't connect to the wifi network.
 
