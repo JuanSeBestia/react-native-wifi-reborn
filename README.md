@@ -35,6 +35,7 @@ This project is based on the no longer maintained https://github.com/robwalkerco
 Beforehand in XCode, you need use enable `Access WIFI Information` in project settings - '+ Capability'
 ![image](https://github.com/user-attachments/assets/4014a442-a7bc-42a6-ba52-f7d241e3e45c)
 ![image](https://github.com/user-attachments/assets/c064f8a4-267d-4a46-b62b-a4827bcfbaf8)
+
 `Hotspot Configuration` is also required in order to connect to networks.
 
 **Please make sure your profile support these two capabilities above.**
