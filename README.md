@@ -204,7 +204,7 @@ Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 pe
 Type: `boolean`
 Used on Android. If true, the network is a hidden Wi-Fi network.
 
-#### timeout - ```ONLY NEW VERSION```
+#### timeout
 Type: `number`
 Used on Android to set a timeout in seconds. Default 15 seconds.
 
