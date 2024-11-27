@@ -228,35 +228,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         this.context.startActivity(intent);
     }
 
-
-    /**
-     * Use this to connect with a wifi network.
-     * Example:  wifi.findAndConnect(ssid, password, false);
-     * The promise will resolve with the message 'connected' when the user is connected on Android.
-     *
-     * @param SSID     name of the network to connect with
-     * @param password password of the network to connect with
-     * @param isWep    only for iOS
-     * @param isHidden only for Android, use if WiFi is hidden
-     * @param promise  to send success/error feedback
-     */
-    @ReactMethod
-    public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final boolean isHidden, final Promise promise) {
-        if(!assertLocationPermissionGranted(promise)){
-            return;
-        }
-
-        if (!wifi.isWifiEnabled() && !wifi.setWifiEnabled(true)) {
-            promise.reject(ConnectErrorCodes.couldNotEnableWifi.toString(), "On Android 10, the user has to enable wifi manually.");
-            return;
-        }
-
-        this.removeWifiNetwork(SSID, promise, () -> {
-            connectToWifiDirectly(SSID, password, isHidden, TIMEOUT_MILLIS, promise);
-        }, TIMEOUT_REMOVE_MILLIS);
-    }
-
-
     /**
      * Use this to connect with a wifi network.
      * Example:  wifi.findAndConnect(ssid, password, false);

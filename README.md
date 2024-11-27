@@ -149,7 +149,7 @@ The plugin provides props for extra customization. Every time you change the pro
 ```javascript
 import WifiManager from "react-native-wifi-reborn";
 
-WifiManager.connectToProtectedWifiSSID(ssid, password, isWep).then(
+WifiManager.connectToProtectedWifiSSID({ ssid, password, isWep }).then(
   () => {
     console.log("Connected successfully!");
   },
@@ -178,7 +178,7 @@ _The api documentation is in progress._
 
 The following methods work on both Android and iOS
 
-### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, isHidden: boolean, timeout: number): Promise`
+### `connectToProtectedWifiSSID({ SSID: string, password: string, isWEP?: boolean, isHidden?: boolean, timeout?: number }): Promise`
 
 Returns a promise that resolves when connected or rejects with the error when it couldn't connect to the wifi network.
 

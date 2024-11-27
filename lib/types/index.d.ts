@@ -97,21 +97,6 @@ declare module 'react-native-wifi-reborn' {
     }
 
     /**
-     * Connects to a WiFi network. Rejects with an error if it couldn't connect.
-     *
-     * @param SSID Wifi name.
-     * @param password `null` for open networks.
-     * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
-     * @param isHidden only for Android, use if Wi-Fi is hidden.
-     */
-    export function connectToProtectedSSID(
-        SSID: string,
-        password: string | null,
-        isWEP: boolean,
-        isHidden: boolean
-    ): Promise<void>;
-
-    /**
      * Suggests a list of Wi-Fi networks on Android. Resolves with 'connected' when the suggestions are added successfully.
      * Only works for Android and requires a minimum SDK version of 29.
      *
