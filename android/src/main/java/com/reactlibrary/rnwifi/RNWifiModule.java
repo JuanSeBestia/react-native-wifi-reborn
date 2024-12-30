@@ -354,25 +354,25 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         getReactApplicationContext().registerReceiver(broadcastReceiver, intentFilter);
     }
 
+    private boolean getConnectionStatus() {
+        final ConnectivityManager connectivityManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) {
+            return false;
+        }
+        NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo == null) {
+            return false;
+        }
+        return wifiInfo.isConnected();
+    }
 
     /**
      * Returns if the device is currently connected to a WiFi network.
      */
     @ReactMethod
     public void connectionStatus(final Promise promise) {
-        final ConnectivityManager connectivityManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager == null) {
-            promise.resolve(false);
-            return;
-        }
-
-        NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (wifiInfo == null) {
-            promise.resolve(false);
-            return;
-        }
-
-        promise.resolve(wifiInfo.isConnected());
+        promise.resolve(this.getConnectionStatus());
+        return;
     }
 
     /**
@@ -700,7 +700,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         try {
             for (int i = 0; i < maxSeconds; i++) {
                 String ssid = this.getWifiSSID();
-                if (ssid != null && ssid.equalsIgnoreCase(expectedSSID)) {
+                boolean isConnected = this.getConnectionStatus();
+                if (ssid != null && ssid.equalsIgnoreCase(expectedSSID) && isConnected) {
                     return true;
                 }
                 Thread.sleep(1000);
