@@ -149,7 +149,7 @@ The plugin provides props for extra customization. Every time you change the pro
 ```javascript
 import WifiManager from "react-native-wifi-reborn";
 
-WifiManager.connectToProtectedWifiSSID({ ssid, password, isWep }).then(
+WifiManager.connectToProtectedSSID(ssid, password, isWep, isHidden).then(
   () => {
     console.log("Connected successfully!");
   },
