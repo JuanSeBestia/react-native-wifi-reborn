@@ -149,7 +149,7 @@ The plugin provides props for extra customization. Every time you change the pro
 ```javascript
 import WifiManager from "react-native-wifi-reborn";
 
-WifiManager.connectToProtectedSSID(ssid, password, isWep).then(
+WifiManager.connectToProtectedSSID(ssid, password, isWep, isHidden).then(
   () => {
     console.log("Connected successfully!");
   },
@@ -178,7 +178,7 @@ _The api documentation is in progress._
 
 The following methods work on both Android and iOS
 
-### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, isHidden: boolean, timeout: number): Promise`
+### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, isHidden: boolean): Promise`
 
 Returns a promise that resolves when connected or rejects with the error when it couldn't connect to the wifi network.
 
@@ -204,7 +204,11 @@ Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 pe
 Type: `boolean`
 Used on Android. If true, the network is a hidden Wi-Fi network.
 
-#### timeout - ```ONLY NEW VERSION```
+### `connectToProtectedWifiSSID({ ssid: string, password: string, isWEP: boolean, isHidden: boolean, timeout: number }): Promise`
+Same params as above but passed as an object and with a timeout parameter added.
+
+#### timeout
+
 Type: `number`
 Used on Android to set a timeout in seconds. Default 15 seconds.
 
