@@ -1,3 +1,10 @@
+## [4.13.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.13.0...v4.13.1) (2024-12-30)
+
+
+### Bug Fixes
+
+* **Android:** properly check on pollForValidSSID if network connected ([#399](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/399)) ([0371acd](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/0371acd87a627cf30c0ddc72c4d28aeed4a74be1))
+
 # [4.13.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.12.1...v4.13.0) (2024-09-17)
 
 
