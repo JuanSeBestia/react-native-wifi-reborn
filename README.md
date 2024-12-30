@@ -32,6 +32,8 @@ This project is based on the no longer maintained https://github.com/robwalkerco
 
 ### iOS
 
+Your Info.plist will need to include your NSLocalNetworkUsageDescription to join other networks. 
+
 Beforehand in XCode, you need use enable `Access WIFI Information` to access Wi-Fi information in project settings - '+ Capability'
 
 ![image](https://github.com/user-attachments/assets/4014a442-a7bc-42a6-ba52-f7d241e3e45c)
@@ -40,6 +42,7 @@ Beforehand in XCode, you need use enable `Access WIFI Information` to access Wi-
 ![image](https://github.com/user-attachments/assets/c064f8a4-267d-4a46-b62b-a4827bcfbaf8)
 
 **Please make sure your profile support these two capabilities above.**
+
 
 #### iOS 13
 
@@ -116,6 +119,11 @@ After installing this npm package, add the [config plugin](https://docs.expo.io/
 ```json
 {
   "expo": {
+    ios: {
+      infoPlist: {
+        "NSLocalNetworkUsageDescription": "The app requires access to the local network so it can...",
+      },
+    },
     "plugins": ["react-native-wifi-reborn"]
   }
 }
