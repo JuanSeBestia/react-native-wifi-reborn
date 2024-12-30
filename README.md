@@ -28,11 +28,18 @@ This project is based on the no longer maintained https://github.com/robwalkerco
 
 ## Getting started
 
-`$ npm install react-native-wifi-reborn --save`
+`$ npm install react-native-wifi-reborn`
 
 ### iOS
 
-You need use enable `Access WIFI Information`, with correct profile. `Hotspot Configuration` is required in order to connect to networks.
+Beforehand in XCode, you need use enable `Access WIFI Information` to access Wi-Fi information in project settings - '+ Capability'
+
+![image](https://github.com/user-attachments/assets/4014a442-a7bc-42a6-ba52-f7d241e3e45c)
+
+`Hotspot Configuration` is also required in order to connect to networks.
+![image](https://github.com/user-attachments/assets/c064f8a4-267d-4a46-b62b-a4827bcfbaf8)
+
+**Please make sure your profile support these two capabilities above.**
 
 #### iOS 13
 
@@ -142,7 +149,7 @@ The plugin provides props for extra customization. Every time you change the pro
 ```javascript
 import WifiManager from "react-native-wifi-reborn";
 
-WifiManager.connectToProtectedWifiSSID(ssid, password, isWep).then(
+WifiManager.connectToProtectedSSID(ssid, password, isWep, isHidden).then(
   () => {
     console.log("Connected successfully!");
   },
@@ -171,17 +178,6 @@ _The api documentation is in progress._
 
 The following methods work on both Android and iOS
 
-### ```### NEW VERSION WITH OPTIONAL PARAMETERS ###``` 
-```
-connectToProtectedWifiSSID({
-      ssid: string;
-      password: string | null;
-      isWEP?: boolean;
-      isHidden?: boolean;
-      timeout?: number
-  ;}): Promise
-```
-
 ### `connectToProtectedSSID(SSID: string, password: string, isWEP: boolean, isHidden: boolean): Promise`
 
 Returns a promise that resolves when connected or rejects with the error when it couldn't connect to the wifi network.
@@ -208,7 +204,11 @@ Used on iOS. If true, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 pe
 Type: `boolean`
 Used on Android. If true, the network is a hidden Wi-Fi network.
 
-#### timeout - ```ONLY NEW VERSION```
+### `connectToProtectedWifiSSID({ ssid: string, password: string, isWEP: boolean, isHidden: boolean, timeout: number }): Promise`
+Same params as above but passed as an object and with a timeout parameter added.
+
+#### timeout
+
 Type: `number`
 Used on Android to set a timeout in seconds. Default 15 seconds.
 

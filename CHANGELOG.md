@@ -1,3 +1,17 @@
+# [4.13.0](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.12.1...v4.13.0) (2024-09-17)
+
+
+### Bug Fixes
+
+* add semicolon ([561ea0a](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/561ea0a12a57cf7bde6caf573258f1e82dbcc43e))
+* fix error argument is marked as nullable but React requires that all NSNumber arguments are nonnull ([b3f4e84](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/b3f4e8480ed7146e0300117d6b2f9208c0a3b4e8))
+* use node 20 for semantic-release ([f516e8d](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/f516e8dbf39aea549f281d23253535e25ff41ecb))
+
+
+### Features
+
+* **iOS:** Add new method to connect to a SSIDPrefix protected only once, Android: Try to address issue [#303](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/303) ([d98ccfc](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/d98ccfc42844826a45270f97567fd8bdba430fec))
+
 ## [4.12.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.12.0...v4.12.1) (2024-03-28)
 
 

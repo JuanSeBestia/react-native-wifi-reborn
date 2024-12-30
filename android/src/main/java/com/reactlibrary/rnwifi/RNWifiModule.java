@@ -23,6 +23,14 @@ import android.os.Looper;
 import android.util.Log;
 import android.provider.Settings;
 import android.os.Build;
+import android.content.BroadcastReceiver;
+import android.net.wifi.WifiNetworkSuggestion;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.annotation.NonNull;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +42,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.ReadableArray;
 import com.reactlibrary.rnwifi.errors.ConnectErrorCodes;
 import com.reactlibrary.rnwifi.errors.DisconnectErrorCodes;
 import com.reactlibrary.rnwifi.errors.ForceWifiUsageErrorCodes;
@@ -233,7 +242,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void connectToProtectedSSID(@NonNull final String SSID, @NonNull final String password, final boolean isWep, final boolean isHidden, final Promise promise) {
-            if(!assertLocationPermissionGranted(promise)) {
+        if(!assertLocationPermissionGranted(promise)){
             return;
         }
 
@@ -254,11 +263,11 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
      * The promise will resolve with the message 'connected' when the user is connected on Android.
      *
      * @param options to connect with a wifi network
-     * @param promise  to send success/error feedback
+     * @param promise to send success/error feedback
      */
     @ReactMethod
     public void connectToProtectedWifiSSID(@NonNull ReadableMap options, final Promise promise) {
-        if(!assertLocationPermissionGranted(promise)) {
+        if (!assertLocationPermissionGranted(promise)) {
             return;
         }
 
@@ -277,7 +286,6 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
             connectToWifiDirectly(ssid, password, isHidden, secondsTimeout, promise);
         }, TIMEOUT_REMOVE_MILLIS);
     }
-
 
     private boolean getConnectionStatus() {
         final ConnectivityManager connectivityManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -479,8 +487,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         boolean wifiStartScan = wifi.startScan();
         Log.d(TAG, "wifi start scan: " + wifiStartScan);
         if (wifiStartScan) {
-          final WifiScanResultReceiver wifiScanResultReceiver = new WifiScanResultReceiver(wifi, promise);
-          getReactApplicationContext().registerReceiver(wifiScanResultReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+            final WifiScanResultReceiver wifiScanResultReceiver = new WifiScanResultReceiver(wifi, promise);
+            getReactApplicationContext().registerReceiver(wifiScanResultReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         } else {
             Log.d(TAG, "Wifi scan rejected");
             promise.resolve("Starting Android 9, it's only allowed to scan 4 times per 2 minuts in a foreground app.");
