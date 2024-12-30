@@ -43,7 +43,6 @@ Beforehand in XCode, you need use enable `Access WIFI Information` to access Wi-
 
 **Please make sure your profile support these two capabilities above.**
 
-
 #### iOS 13
 
 You need put "Privacy - Location When In Use Usage Description" or "Privacy - Location Always and When In Use Usage Description" in Settings -> info
@@ -121,8 +120,8 @@ After installing this npm package, add the [config plugin](https://docs.expo.io/
   "expo": {
     ios: {
       infoPlist: {
-        "NSLocalNetworkUsageDescription": "The app requires access to the local network so it can...",
-      },
+        "NSLocalNetworkUsageDescription": "The app requires access to the local network so it can..."
+      }
     },
     "plugins": ["react-native-wifi-reborn"]
   }
