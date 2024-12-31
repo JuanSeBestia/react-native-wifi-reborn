@@ -118,8 +118,8 @@ After installing this npm package, add the [config plugin](https://docs.expo.io/
 ```json
 {
   "expo": {
-    ios: {
-      infoPlist: {
+    "ios": {
+      "infoPlist": {
         "NSLocalNetworkUsageDescription": "The app requires access to the local network so it can..."
       }
     },
