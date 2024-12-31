@@ -32,7 +32,7 @@ This project is based on the no longer maintained https://github.com/robwalkerco
 
 ### iOS
 
-Your Info.plist will need to include your NSLocalNetworkUsageDescription to join other networks. 
+Your `Info.plist` will need to include `NSLocalNetworkUsageDescription` permission to join other networks. 
 
 Beforehand in XCode, you need use enable `Access WIFI Information` to access Wi-Fi information in project settings - '+ Capability'
 
