@@ -198,7 +198,7 @@ declare module 'react-native-wifi-reborn' {
     /**
      * Interface to the WifiManager native module.
      */
-    interface WifiManagerStatic {
+    interface WifiManager {
         /**
          * Connects to a WiFi network. Rejects with an error if it couldn't connect.
          *
@@ -368,6 +368,6 @@ declare module 'react-native-wifi-reborn' {
         //#endregion
     }
 
-    var WifiManager: WifiManagerStatic;
-    export default WifiManager;
+    const _default : WifiManager;
+    export default _default;
 }
