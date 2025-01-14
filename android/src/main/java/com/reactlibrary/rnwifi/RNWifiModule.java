@@ -356,9 +356,22 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
     private boolean getConnectionStatus() {
         final ConnectivityManager connectivityManager = (ConnectivityManager) getReactApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
         if (connectivityManager == null) {
             return false;
         }
+        /**
+         * Check if there's an existing per-app connection, otherwise check the "main" WiFi state
+         */
+        if (isAndroidTenOrLater() && joinedNetwork != null) {
+            NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(joinedNetwork);
+            boolean hasWifiTransport = capabilities != null && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
+            boolean isNetworkAvailable = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED) &&
+                    capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED);
+
+            return hasWifiTransport && isNetworkAvailable;
+        }
+
         NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (wifiInfo == null) {
             return false;
