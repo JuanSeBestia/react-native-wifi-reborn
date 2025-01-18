@@ -151,9 +151,9 @@ The plugin provides props for extra customization. Every time you change the pro
 }
 ```
 
-## Usage
+## Usage then/catch
 
-```javascript
+```js
 import WifiManager from "react-native-wifi-reborn";
 
 WifiManager.connectToProtectedSSID(ssid, password, isWep, isHidden).then(
@@ -173,6 +173,28 @@ WifiManager.getCurrentWifiSSID().then(
     console.log("Cannot get current SSID!");
   }
 );
+```
+
+## Usage async/await
+```js
+import WifiManager from "react-native-wifi-reborn";
+
+async function main(ssid, password, isWep, isHidden) {
+  try {
+    await WifiManager.connectToProtectedSSID(ssid, password, isWep, isHidden);
+    console.log("Connected successfully!");
+  } catch (error) {
+    console.log("Connection failed!");
+  }
+
+  try {
+    const currentSSID = await WifiManager.getCurrentWifiSSID();
+    console.log(`Your current Wi-Fi SSID is ${currentSSID}`);
+  } catch (error) {
+    console.log("Cannot get current SSID!");
+  }
+}
+
 ```
 
 # Methods
