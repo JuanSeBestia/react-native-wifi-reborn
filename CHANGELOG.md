@@ -1,3 +1,10 @@
+## [4.13.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.13.1...v4.13.2) (2025-01-18)
+
+
+### Bug Fixes
+
+* **android:** connection status support for per-app wifi connections ([#420](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/420)) ([a0b8fb6](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/a0b8fb67cf51950b1dca5bce4c100d2e2fae0521)), closes [#419](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/419)
+
 ## [4.13.1](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.13.0...v4.13.1) (2024-12-30)
 
 
