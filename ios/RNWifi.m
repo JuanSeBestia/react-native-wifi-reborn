@@ -63,8 +63,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(connectToSSID:(NSString*)ssid
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    NSNumber *defaultTimeout = @(0); // Provide a default value for timeout, fix issue #379
-    [self connectToProtectedSSID:ssid withPassphrase:@"" isWEP:false isHidden:false timeout:defaultTimeout resolver:resolve rejecter:reject];
+    [self connectToProtectedSSID:ssid withPassphrase:@"" isWEP:false isHidden:false resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(connectToSSIDPrefix:(NSString*)ssid
@@ -132,7 +131,6 @@ RCT_EXPORT_METHOD(connectToProtectedSSID:(NSString*)ssid
                   withPassphrase:(NSString*)passphrase
                   isWEP:(BOOL)isWEP
                   isHidden:(BOOL)isHidden
-                  timeout:(nonnull NSNumber *)timeout // Explicitly mark timeout as nonnull, fix issue #379
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     [self connectToProtectedSSIDOnce:ssid withPassphrase:passphrase isWEP:isWEP joinOnce:false resolver:resolve rejecter:reject];
@@ -160,7 +158,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
             resolve(nil);
             return;
         }
-        
+
         if (@available(iOS 11.0, *)) {
             NEHotspotConfiguration* configuration;
             // Check if open network
@@ -182,7 +180,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
                     __block int tries = 0;
                     __block int maxTries = 20;
                     double intervalSeconds = 0.5;
-                    
+
                     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
                     dispatch_source_t dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
                     dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
@@ -192,7 +190,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
                         [self getWifiSSID:^(NSString* newSSID) {
                             bool success = [ssid isEqualToString:newSSID];
                             tries++;
-                            
+
                             if (success){
                                 resolve(nil);
                                 dispatch_suspend(dispatchSource);
@@ -286,11 +284,11 @@ RCT_REMAP_METHOD(getCurrentWifiSSID,
 
 - (NSString *)parseError:(NSError *)error {
     if (@available(iOS 11, *)) {
-        
+
         if (!error) {
             return [ConnectError code:UnableToConnect];
         };
-        
+
         /*
          NEHotspotConfigurationErrorInvalid                         = 0,
          NEHotspotConfigurationErrorInvalidSSID                     = 1,
