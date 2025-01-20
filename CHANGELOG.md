@@ -1,3 +1,10 @@
+## [4.13.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.13.2...v4.13.3) (2025-01-20)
+
+
+### Bug Fixes
+
+* **ios:** prevent crash when canceling WiFi connection ([#425](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/425)) ([e398406](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/e398406e87a15fc452bb230ce204d5c7382b3af4)), closes [#424](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/424)
+
 ## [4.13.2](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.13.1...v4.13.2) (2025-01-18)
 
 
