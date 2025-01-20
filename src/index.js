@@ -4,7 +4,7 @@ const { WifiManager } = NativeModules;
 
 export const GET_CURRENT_WIFI_SSID_ERRRORS = {
     CouldNotDetectSSID: 'CouldNotDetectSSID',
-}
+};
 
 export const CONNECT_ERRORS = {
     unavailableForOSVersion: 'unavailableForOSVersion',

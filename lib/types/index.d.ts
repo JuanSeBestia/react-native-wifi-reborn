@@ -128,7 +128,7 @@ declare module 'react-native-wifi-reborn' {
          */
         CouldNotDetectSSID = 'CouldNotDetectSSID',
     }
-    
+
     export interface WifiEntry {
         SSID: string;
         BSSID: string;
@@ -228,9 +228,7 @@ declare module 'react-native-wifi-reborn' {
          *
          * @param options Connection options object containing, SSID, password, isWep, isHidden, timeout
          */
-        connectToProtectedWifiSSID(
-            options: ConnectToProtectedSSIDParams
-        ): Promise<void>;
+        connectToProtectedWifiSSID(options: ConnectToProtectedSSIDParams): Promise<void>;
 
         /**
          * Returns the name of the currently connected WiFi. When not connected, the promise will be or null when not connected.
@@ -312,7 +310,6 @@ declare module 'react-native-wifi-reborn' {
          */
         connectionStatus(): Promise<boolean>;
 
-
         disconnect(): Promise<boolean>;
 
         /**
@@ -368,6 +365,6 @@ declare module 'react-native-wifi-reborn' {
         //#endregion
     }
 
-    const _default : WifiManager;
+    const _default: WifiManager;
     export default _default;
 }
