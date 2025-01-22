@@ -58,20 +58,20 @@ Example:
 import { PermissionsAndroid } from 'react-native';
 
 const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: 'Location permission is required for WiFi connections',
-        message:
-          'This app needs location permission as this is required  ' +
-          'to scan for wifi networks.',
-        buttonNegative: 'DENY',
-        buttonPositive: 'ALLOW',
-      },
+  PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  {
+    title: 'Location permission is required for WiFi connections',
+    message:
+      'This app needs location permission as this is required  ' +
+      'to scan for wifi networks.',
+    buttonNegative: 'DENY',
+    buttonPositive: 'ALLOW',
+  },
 );
 if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-    // You can now use react-native-wifi-reborn
+  // You can now use react-native-wifi-reborn
 } else {
-    // Permission denied
+  // Permission denied
 }
 ```
 
@@ -194,7 +194,26 @@ async function main(ssid, password, isWep, isHidden) {
     console.log("Cannot get current SSID!");
   }
 }
+```
 
+## IoT devices (Android)
+If you need to connect and send data to IoT devices, add a `network_security_config.xml` file with the following content:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">IP_ADDRESS</domain>
+    </domain-config>
+</network-security-config>
+```
+Replace `IP_ADDRESS` with your device IP for example `192.168.4.1`.
+
+Edit also your `AndroidManifest.xml` and add this line into `<application`:
+```xml
+<application
+  ...
+  android:networkSecurityConfig="@xml/network_security_config"
+>
 ```
 
 # Methods
