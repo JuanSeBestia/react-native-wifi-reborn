@@ -1,3 +1,10 @@
+## [4.13.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.13.3...v4.13.4) (2025-01-23)
+
+
+### Bug Fixes
+
+* **types:** Align types, index and native module interfaces ([#416](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/416)) ([f15187e](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/f15187e0cbbb6da940d40603b35149c4f49d284d))
+
 ## [4.13.3](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.13.2...v4.13.3) (2025-01-20)
 
 
