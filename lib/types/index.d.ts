@@ -97,100 +97,37 @@ declare module 'react-native-wifi-reborn' {
     }
 
     /**
-     * Connects to a WiFi network. Rejects with an error if it couldn't connect.
-     *
-     * @param SSID Wifi name.
-     * @param password `null` for open networks.
-     * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
-     * @param isHidden only for Android, use if Wi-Fi is hidden.
-     */
-    export function connectToProtectedSSID(
-        SSID: string,
-        password: string | null,
-        isWEP: boolean,
-        isHidden: boolean
-    ): Promise<void>;
-
-    /**
-     * Suggests a list of Wi-Fi networks on Android. Resolves with 'connected' when the suggestions are added successfully.
-     * Only works for Android and requires a minimum SDK version of 29.
-     *
-     * @param networkConfigs List of network configurations containing SSID, password, WPA3 flag, and app interaction flag.
-     * @returns Promise that resolves with 'connected' on success, or rejects with an error message on failure.
-     */
-    export function suggestWifiNetwork(networkConfigs: SuggestedNetworkConfig[]): Promise<string>;
-
-    /**
-     * Connects to a WiFi network. Rejects with an error if it couldn't connect.
-     *
-     * @param SSID Wifi name.
-     * @param password `null` for open networks.
-     * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
-     * @param isHidden only for Android, use if Wi-Fi is hidden.
-     * @param timeout only for Android, timeout in seconds. If the connection is not established in this time, it will reject. Default is 15 seconds.
+     * Options parameter object for use with the connectToProtectedWifiSSID function.
      */
     type ConnectToProtectedSSIDParams = {
+        /**
+         * Wifi name.
+         */
         ssid: string;
+        /**
+         * `null` for open networks.
+         */
         password: string | null;
+        /**
+         * Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+         */
         isWEP?: boolean;
+        /**
+         * only for Android, use if Wi-Fi is hidden.
+         */
         isHidden?: boolean;
+        /**
+         * only for Android, timeout in seconds. If the connection is not established in this time, it will reject. Default is 15 seconds.
+         */
         timeout?: number;
     };
-    export function connectToProtectedWifiSSID(
-        options: ConnectToProtectedSSIDParams
-    ): Promise<void>;
 
     export enum GET_CURRENT_WIFI_SSID_ERRRORS {
+        /**
+         * Not connected or connecting.
+         */
         CouldNotDetectSSID = 'CouldNotDetectSSID',
     }
-
-    /**
-     * Returns the name of the currently connected WiFi. When not connected, the promise will be or null when not connected.
-     */
-    export function getCurrentWifiSSID(): Promise<string>;
-
-    //#region iOS only
-
-    export function connectToSSID(SSID: string): Promise<void>;
-    export function connectToSSIDPrefix(SSIDPrefix: string): Promise<void>;
-    export function disconnectFromSSID(SSIDPrefix: string): Promise<void>;
-    /**
-     * Connects to a WiFi network. Rejects with an error if it couldn't connect.
-     *
-     * @param SSID Wifi name.
-     * @param password `null` for open networks.
-     * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
-     * @param joinOnce Used on iOS. If `true`, restricts the lifetime of a configuration to the operating status of the app that created it.
-     */
-    export function connectToProtectedSSIDOnce(
-        SSID: string,
-        password: string | null,
-        isWEP: boolean,
-        joinOnce: boolean
-    ): Promise<void>;
-    export function connectToProtectedSSIDPrefix(
-        SSIDPrefix: string,
-        password: string,
-        isWEP: boolean
-    ): Promise<void>;
-    /**
-     * Connects to a WiFi network that start with SSIDPrefix. Rejects with an error if it couldn't connect.
-     *
-     * @param SSIDPrefix Wifi name prefix.
-     * @param password `null` for open networks.
-     * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
-     * @param joinOnce Used on iOS. If `true`, restricts the lifetime of a configuration to the operating status of the app that created it.
-     */
-    export function connectToProtectedSSIDPrefixOnce(
-        SSIDPrefix: string,
-        password: string | null,
-        isWEP: boolean,
-        joinOnce: boolean
-    ): Promise<void>;
-
-    //#endregion
-
-    //#region Android only
 
     export interface WifiEntry {
         SSID: string;
@@ -220,28 +157,6 @@ declare module 'react-native-wifi-reborn' {
         illegalViewOperationException = 'illegalViewOperationException',
     }
 
-    /**
-     * Returns a list of nearby WiFI networks.
-     */
-    export function loadWifiList(): Promise<Array<WifiEntry>>;
-
-    /**
-     * Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
-     */
-    export function reScanAndLoadWifiList(): Promise<Array<WifiEntry>>;
-
-    /**
-     * Method to check if wifi is enabled.
-     */
-    export function isEnabled(): Promise<boolean>;
-
-    export function setEnabled(enabled: boolean): void;
-
-    /**
-     * Returns if the device is currently connected to a WiFi network.
-     */
-    export function connectionStatus(): Promise<boolean>;
-
     export enum DISCONNECT_ERRORS {
         /**
          * Could not get the WifiManager.
@@ -255,70 +170,201 @@ declare module 'react-native-wifi-reborn' {
         couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
     }
 
-    export function disconnect(): Promise<boolean>;
-
-    /**
-     * Returns the BSSID (basic service set identifier) of the currently connected WiFi network.
-     */
-    export function getBSSID(): Promise<string>;
-
-    /**
-     * Returns the RSSI (received signal strength indicator) of the currently connected WiFi network.
-     */
-    export function getCurrentSignalStrength(): Promise<number>;
-
-    /**
-     * Returns the frequency of the currently connected WiFi network.
-     */
-    export function getFrequency(): Promise<number>;
-
-    /**
-     * Returns the IP of the currently connected WiFi network.
-     */
-    export function getIP(): Promise<string>;
-
     export enum IS_REMOVE_WIFI_NETWORK_ERRORS {
         /**
          * Starting android 6, location permission needs to be granted for wifi scanning.
          */
         locationPermissionMissing = 'locationPermissionMissing',
+        /**
+         * Could not get the WifiManager.
+         * https://developer.android.com/reference/android/net/wifi/WifiManager?hl=en
+         */
         couldNotGetWifiManager = 'couldNotGetWifiManager',
+        /**
+         * Could not get the ConnectivityManager.
+         * https://developer.android.com/reference/android/net/ConnectivityManager?hl=en
+         */
         couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
     }
-
-    /**
-     * This method will remove the wifi network configuration.
-     * If you are connected to that network, it will disconnect.
-     *
-     * @param SSID wifi SSID to remove configuration for
-     */
-    export function isRemoveWifiNetwork(SSID: string): Promise<boolean>;
 
     export enum FORCE_WIFI_USAGE_ERRORS {
+        /**
+         * Could not get the ConnectivityManager.
+         * https://developer.android.com/reference/android/net/ConnectivityManager?hl=en
+         */
         couldNotGetConnectivityManager = 'couldNotGetConnectivityManager',
     }
 
     /**
-     * @deprecated Use forceWifiUsageWithOptions.
+     * Interface to the WifiManager native module.
      */
-    export function forceWifiUsage(useWifi: boolean): Promise<void>;
+    interface WifiManager {
+        /**
+         * Connects to a WiFi network. Rejects with an error if it couldn't connect.
+         *
+         * @param SSID Wifi name.
+         * @param password `null` for open networks.
+         * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+         * @param isHidden only for Android, use if Wi-Fi is hidden.
+         */
+        connectToProtectedSSID(
+            SSID: string,
+            password: string | null,
+            isWEP: boolean,
+            isHidden: boolean
+        ): Promise<void>;
 
-    /**
-     * Use this to route all app network requests to the wifi network (instead of the mobile connection).
-     * It is important to disable it again after using as even when the app disconnects from the wifi
-     * network it will keep on routing everything to wifi.
-     *
-     * Useful for commissioning IoT devices. If the wifi access point has no internet you can indicate so with
-     * the option `noInternet`.
-     *
-     * @param useWifi Force wifi usage on or off.
-     * @param options `noInternet` To indicate the access point has no internet. Usefull as some
-     * phone vendor customizations will switch back to mobile when the wifi access point has no internet.
-     */
-    export function forceWifiUsageWithOptions(
-        useWifi: boolean,
-        options: { noInternet: boolean }
-    ): Promise<void>;
+        /**
+         * Suggests a list of Wi-Fi networks on Android. Resolves with 'connected' when the suggestions are added successfully.
+         * Only works for Android and requires a minimum SDK version of 29.
+         *
+         * @param networkConfigs List of network configurations containing SSID, password, WPA3 flag, and app interaction flag.
+         * @returns Promise that resolves with 'connected' on success, or rejects with an error message on failure.
+         */
+        suggestWifiNetwork(networkConfigs: SuggestedNetworkConfig[]): Promise<string>;
 
-    //#endregion
+        /**
+         * Connects to a WiFi network. Rejects with an error if it couldn't connect.
+         *
+         * @param options Connection options object containing, SSID, password, isWep, isHidden, timeout
+         */
+        connectToProtectedWifiSSID(options: ConnectToProtectedSSIDParams): Promise<void>;
+
+        /**
+         * Returns the name of the currently connected WiFi. When not connected, the promise will be or null when not connected.
+         */
+        getCurrentWifiSSID(): Promise<string>;
+
+        //#region iOS only
+
+        connectToSSID(SSID: string): Promise<void>;
+        connectToSSIDPrefix(SSIDPrefix: string): Promise<void>;
+        disconnectFromSSID(SSIDPrefix: string): Promise<void>;
+
+        /**
+         * Connects to a WiFi network, with option to limit connection lifetime. Rejects with an error if it couldn't connect.
+         *
+         * @param SSID Wifi name.
+         * @param password `null` for open networks.
+         * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+         * @param joinOnce Used on iOS. If `true`, restricts the lifetime of a configuration to the operating status of the app that created it.
+         */
+        connectToProtectedSSIDOnce(
+            SSID: string,
+            password: string | null,
+            isWEP: boolean,
+            joinOnce: boolean
+        ): Promise<void>;
+
+        /**
+         * Connects to a WiFi network that start with SSIDPrefix. Rejects with an error if it couldn't connect.
+         *
+         * @param SSIDPrefix Wifi name prefix.
+         * @param password `null` for open networks.
+         * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+         */
+        connectToProtectedSSIDPrefix(
+            SSIDPrefix: string,
+            password: string,
+            isWEP: boolean
+        ): Promise<void>;
+
+        /**
+         * Connects to a WiFi network that start with SSIDPrefix, with option to limit connection lifetime. Rejects with an error if it couldn't connect.
+         *
+         * @param SSIDPrefix Wifi name prefix.
+         * @param password `null` for open networks.
+         * @param isWep Used on iOS. If `true`, the network is WEP Wi-Fi; otherwise it is a WPA or WPA2 personal Wi-Fi network.
+         * @param joinOnce Used on iOS. If `true`, restricts the lifetime of a configuration to the operating status of the app that created it.
+         */
+        connectToProtectedSSIDPrefixOnce(
+            SSIDPrefix: string,
+            password: string | null,
+            isWEP: boolean,
+            joinOnce: boolean
+        ): Promise<void>;
+
+        //#endregion
+
+        //#region Android only
+
+        /**
+         * Returns a list of nearby WiFI networks.
+         */
+        loadWifiList(): Promise<Array<WifiEntry>>;
+
+        /**
+         * Similar to `loadWifiList` but it forcefully starts a new WiFi scan and only passes the results when the scan is done.
+         */
+        reScanAndLoadWifiList(): Promise<Array<WifiEntry>>;
+
+        /**
+         * Method to check if wifi is enabled.
+         */
+        isEnabled(): Promise<boolean>;
+
+        setEnabled(enabled: boolean): void;
+
+        /**
+         * Returns if the device is currently connected to a WiFi network.
+         */
+        connectionStatus(): Promise<boolean>;
+
+        disconnect(): Promise<boolean>;
+
+        /**
+         * Returns the BSSID (basic service set identifier) of the currently connected WiFi network.
+         */
+        getBSSID(): Promise<string>;
+
+        /**
+         * Returns the RSSI (received signal strength indicator) of the currently connected WiFi network.
+         */
+        getCurrentSignalStrength(): Promise<number>;
+
+        /**
+         * Returns the frequency of the currently connected WiFi network.
+         */
+        getFrequency(): Promise<number>;
+
+        /**
+         * Returns the IP of the currently connected WiFi network.
+         */
+        getIP(): Promise<string>;
+
+        /**
+         * This method will remove the wifi network configuration.
+         * If you are connected to that network, it will disconnect.
+         *
+         * @param SSID wifi SSID to remove configuration for
+         */
+        isRemoveWifiNetwork(SSID: string): Promise<boolean>;
+
+        /**
+         * @deprecated Use forceWifiUsageWithOptions.
+         */
+        forceWifiUsage(useWifi: boolean): Promise<void>;
+
+        /**
+         * Use this to route all app network requests to the wifi network (instead of the mobile connection).
+         * It is important to disable it again after using as even when the app disconnects from the wifi
+         * network it will keep on routing everything to wifi.
+         *
+         * Useful for commissioning IoT devices. If the wifi access point has no internet you can indicate so with
+         * the option `noInternet`.
+         *
+         * @param useWifi Force wifi usage on or off.
+         * @param options `noInternet` To indicate the access point has no internet. Usefull as some
+         * phone vendor customizations will switch back to mobile when the wifi access point has no internet.
+         */
+        forceWifiUsageWithOptions(
+            useWifi: boolean,
+            options: { noInternet: boolean }
+        ): Promise<void>;
+
+        //#endregion
+    }
+
+    const _default: WifiManager;
+    export default _default;
 }

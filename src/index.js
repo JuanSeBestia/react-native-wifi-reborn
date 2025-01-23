@@ -2,6 +2,10 @@ import { NativeModules } from 'react-native';
 
 const { WifiManager } = NativeModules;
 
+export const GET_CURRENT_WIFI_SSID_ERRRORS = {
+    CouldNotDetectSSID: 'CouldNotDetectSSID',
+};
+
 export const CONNECT_ERRORS = {
     unavailableForOSVersion: 'unavailableForOSVersion',
     invalid: 'invalid',
@@ -25,13 +29,13 @@ export const CONNECT_ERRORS = {
 
 export const DISCONNECT_ERRORS = {
     couldNotGetWifiManager: 'couldNotGetWifiManager',
+    couldNotGetConnectivityManager: 'couldNotGetConnectivityManager',
 };
 
 export const IS_REMOVE_WIFI_NETWORK_ERRORS = {
     locationPermissionMissing: 'locationPermissionMissing',
     couldNotGetWifiManager: 'couldNotGetWifiManager',
     couldNotGetConnectivityManager: 'couldNotGetConnectivityManager',
-    couldNotRemove: 'couldNotRemove',
 };
 
 export const FORCE_WIFI_USAGE_ERRORS = {
