@@ -1,28 +1,12 @@
 # react-native-wifi-reborn
 
-<p align="center">
-  <a href="./LICENSE">
-    <img src="https://img.shields.io/badge/license-ISC-blue.svg" alt="ISC license" />
-  </a>
-  <a href="https://npmjs.org/package/react-native-wifi-reborn">
-    <img src="http://img.shields.io/npm/v/react-native-wifi-reborn.svg" alt="Current npm package version" />
-  </a>
-  <a href="https://github.com/JuanSeBestia/react-native-wifi-reborn/graphs/commit-activity">
-    <img src="https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg" alt="Maintenance" />
-  </a>
-  <a href="https://github.com/semantic-release/semantic-release#how-does-it-work">
-    <img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="Semantic Release" />
-  </a>
-  <a href="https://npmjs.org/package/react-native-wifi-reborn">
-    <img src="http://img.shields.io/npm/dm/react-native-wifi-reborn.svg" alt="Downloads" />
-  </a>
-  <a href="https://npmjs.org/package/react-native-wifi-reborn">
-    <img src="http://img.shields.io/npm/dt/react-native-wifi-reborn.svg?label=total%20downloads" alt="Total downloads" />
-  </a>
-  <a href="https://twitter.com/intent/follow?screen_name=JuanSeBestia">
-    <img src="https://img.shields.io/twitter/follow/JuanSeBestia.svg?label=Follow%20@JuanSeBestia" alt="Follow @JuanSeBestia" />
-  </a>
-</p>
+[![ISC License](https://img.shields.io/badge/license-ISC-blue.svg)](./LICENSE)
+[![Current npm package version](http://img.shields.io/npm/v/react-native-wifi-reborn.svg)](https://npmjs.org/package/react-native-wifi-reborn)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg)](https://github.com/JuanSeBestia/react-native-wifi-reborn/graphs/commit-activity)
+[![Semantic Release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release#how-does-it-work)
+[![Downloads](http://img.shields.io/npm/dm/react-native-wifi-reborn.svg)](https://npmjs.org/package/react-native-wifi-reborn)
+[![Total downloads](http://img.shields.io/npm/dt/react-native-wifi-reborn.svg?label=total%20downloads)](https://npmjs.org/package/react-native-wifi-reborn)
+[![Follow @JuanSeBestia](https://img.shields.io/twitter/follow/JuanSeBestia.svg?label=Follow%20@JuanSeBestia)](https://twitter.com/intent/follow?screen_name=JuanSeBestia)
 
 This project is based on the no longer maintained https://github.com/robwalkerco/react-native-wifi.
 
@@ -30,7 +14,7 @@ This project is based on the no longer maintained https://github.com/robwalkerco
 
 `$ npm install react-native-wifi-reborn`
 
-### iOS
+### ⚪iOS requirements
 
 Your `Info.plist` will need to include `NSLocalNetworkUsageDescription` permission to join other networks. 
 
@@ -43,11 +27,11 @@ Beforehand in XCode, you need use enable `Access WIFI Information` to access Wi-
 
 **Please make sure your profile support these two capabilities above.**
 
-#### iOS 13
+### ⚪iOS 13 requirements
 
 You need put "Privacy - Location When In Use Usage Description" or "Privacy - Location Always and When In Use Usage Description" in Settings -> info
 
-### Android
+### 🟢Android requirements
 
 #### `ACCESS_FINE_LOCATION` permission
 
@@ -79,35 +63,40 @@ if (granted === PermissionsAndroid.RESULTS.GRANTED) {
 
 This library is correctly autolinked on React Native 60+ 🎉.
 
-### React Native Link (for React Native 0.59 and below)
+<details>
+  <summary>Manual linking (for React Native 0.59 and below)</summary>
 
-`$ react-native link react-native-wifi-reborn`
+  Run: `react-native link react-native-wifi-reborn`
 
-### Manual linking
+  ⚪**iOS**
+  
+  1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
 
-#### iOS
+  2. Go to `node_modules` ➜ `react-native-wifi-reborn` and add `RNWifi.xcodeproj`
 
-1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-wifi-reborn` and add `RNWifi.xcodeproj`
-3. In XCode, in the project navigator, select your project. Add `libRNWifi.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
-4. Run your project (`Cmd+R`)<
+  3. In XCode, in the project navigator, select your project. Add `libRNWifi.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 
-#### Android
+  4. Run your project (`Cmd+R`)
 
-1. Open up `android/app/src/main/java/[...]/MainActivity.java`
+  🟢**Android**
+  
+  1. Open up `android/app/src/main/java/[...]/MainActivity.java`
 
-- Add `import com.reactlibrary.rnwifi.RNWifiPackage;` to the imports at the top of the file
-- Add `new RNWifiPackage()` to the list returned by the `getPackages()` method
+  2. Add `import com.reactlibrary.rnwifi.RNWifiPackage;` to the imports at the top of the file
 
-2. Append the following lines to `android/settings.gradle`:
-   ```
-   include ':react-native-wifi-reborn'
-   project(':react-native-wifi-reborn').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-wifi-reborn/android')
-   ```
-3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
-      implementation project(':react-native-wifi-reborn')
-  	```
+  3. Add `new RNWifiPackage()` to the list returned by the `getPackages()` method
+
+  4. Append the following lines to `android/settings.gradle`:
+
+    include ':react-native-wifi-reborn'
+    
+    project(':react-native-wifi-reborn').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-wifi-reborn/android')
+
+  5. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
+ 
+    implementation project(':react-native-wifi-reborn')
+
+</details>
 
 ### Prebuild Plugin
 
@@ -196,7 +185,7 @@ async function main(ssid, password, isWep, isHidden) {
 }
 ```
 
-## IoT devices (Android)
+## IoT devices (🟢Android)
 If you need to connect and send data to IoT devices, add a `network_security_config.xml` file with the following content:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -216,13 +205,7 @@ Edit also your `AndroidManifest.xml` and add this line into `<application`:
 >
 ```
 
-# Methods
-
-
-_The api documentation is in progress._
-
-
-## Android & iOS
+## Methods supported by 🟢Android and ⚪iOS
 
 The following methods work on both Android and iOS
 
@@ -261,7 +244,7 @@ Type: `number`
 Used on Android to set a timeout in seconds. Default 15 seconds.
 
 #### Errors:
-* iOS:
+* ⚪iOS:
   * `unavailableForOSVersion`: Starting from iOS 11, NEHotspotConfigurationError is available.
   * `invalid`: If an unknown error is occurred.
   * `invalidSSID`: If the SSID is invalid.
@@ -271,7 +254,7 @@ Used on Android to set a timeout in seconds. Default 15 seconds.
   * `locationPermissionDenied`: Starting from iOS 13, location permission is denied.
   * `locationPermissionRestricted`: Starting from iOS 13, location permission is restricted.
   * `couldNotDetectSSID`: If the SSID couldn't be detected.
-* Android:
+* 🟢Android:
   * `locationPermissionMissing`: Starting android 6, location permission needs to be granted for wifi scanning.
   * `locationServicesOff`: Starting Android 6, location services needs to be on to scan for wifi networks.
   * `couldNotEnableWifi`: Starting Android 10, apps are no longer allowed to enable wifi. User has to manually do this.
@@ -280,7 +263,7 @@ Used on Android to set a timeout in seconds. Default 15 seconds.
   * `authenticationErrorOccurred`: Authentication error occurred while trying to connect. The password could be incorrect or the user could have a saved network configuration with a different password!
   * `android10ImmediatelyDroppedConnection` : Firmware bugs on OnePlus prevent it from connecting on some firmware versions. More info: https://github.com/ThanosFisherman/WifiUtils/issues/63.
   * `timeoutOccurred`: Could not connect in the timeout window. - ```ONLY NEW VERSION```
-* Both:
+* 🟢⚪Both:
   * `unableToConnect`: When an unknown error occurred.
 
 ### `getCurrentWifiSSID(): Promise`
@@ -290,7 +273,7 @@ Returns the SSID of the current WiFi network.
 #### Errors:
  * `couldNotDetectSSID`: Not connected or connecting.
 
-## Only iOS
+## Methods supported by ⚪iOS ONLY
 
 The following methods work only on iOS
 
@@ -346,7 +329,7 @@ Used on iOS. Optional param. Defaults to `false`. When joinOnce is set to true, 
 * `couldNotDetectSSID`: If the SSID couldn't be detected.
 * `unableToConnect`: When an unknown error occurred.
 
-## Only Android
+## Methods supported by 🟢Android ONLY
 The following methods work only on Android
 
 ### `loadWifiList(): Promise<Array<WifiEntry>>`
