@@ -179,7 +179,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
                     // the connection is successful.
                     __block int tries = 0;
                     __block int maxTries = 20;
-                    __block BOOL hasCompleted = NO; // Add a flag to track completion status
+                    __block BOOL hasCompleted = NO; // Add a flag to track completion status, fixes #429
                     double intervalSeconds = 0.5;
 
                     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -201,7 +201,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
                             bool success = [ssid isEqualToString:newSSID];
                             tries++;
 
-                            if (success){
+                            if (success) {
                                 hasCompleted = YES;
                                 dispatch_suspend(dispatchSource);
                                 resolve(nil);
@@ -214,7 +214,6 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
                             }
                         }];
                     });
-
 
                     // Start the timer
                     dispatch_resume(dispatchSource);
