@@ -179,6 +179,7 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
                     // the connection is successful.
                     __block int tries = 0;
                     __block int maxTries = 20;
+                    __block BOOL hasCompleted = NO; // Add a flag to track completion status, fixes #429
                     double intervalSeconds = 0.5;
 
                     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
@@ -187,14 +188,25 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
                     uint64_t intervalTime = (int64_t)(intervalSeconds * NSEC_PER_SEC);
                     dispatch_source_set_timer(dispatchSource, startTime, intervalTime, 0);
                     dispatch_source_set_event_handler(dispatchSource, ^{
+                        // Check if we've already completed
+                        if (hasCompleted) {
+                            dispatch_source_cancel(dispatchSource);
+                            return;
+                        }
                         [self getWifiSSID:^(NSString* newSSID) {
+                            // Return early if we've already completed
+                            if (hasCompleted) {
+                                return;
+                            }
                             bool success = [ssid isEqualToString:newSSID];
                             tries++;
 
-                            if (success){
-                                resolve(nil);
+                            if (success) {
+                                hasCompleted = YES;
                                 dispatch_suspend(dispatchSource);
+                                resolve(nil);
                             } else if (tries > maxTries) {
+                                hasCompleted = YES;
                                 dispatch_suspend(dispatchSource);
                                 reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
                             } else {
