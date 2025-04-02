@@ -8,7 +8,7 @@
 [![Total downloads](http://img.shields.io/npm/dt/react-native-wifi-reborn.svg?label=total%20downloads)](https://npmjs.org/package/react-native-wifi-reborn)
 [![Follow @JuanSeBestia](https://img.shields.io/twitter/follow/JuanSeBestia.svg?label=Follow%20@JuanSeBestia)](https://twitter.com/intent/follow?screen_name=JuanSeBestia)
 
-This project is based on the no longer maintained https://github.com/robwalkerco/react-native-wifi.
+This project is based on the no longer maintained [react-native-wifi](https://github.com/robwalkerco/react-native-wifi).
 
 ## Getting started
 
