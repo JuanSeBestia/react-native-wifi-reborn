@@ -409,4 +409,4 @@ It is important to disable it again after using as even when the app disconnects
 
 ## Conventions
 
-* Angular JS Git Commit conventions are used, [https://gist.github.com/stephenparish/9941e89d80e2bc58a153#recognizing-unimportant-commits](read more)
+* Angular JS Git Commit conventions are used, [read more](https://gist.github.com/stephenparish/9941e89d80e2bc58a153#recognizing-unimportant-commits)
