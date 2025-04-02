@@ -1,3 +1,10 @@
+## [4.13.5](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.13.4...v4.13.5) (2025-04-02)
+
+
+### Bug Fixes
+
+* Update README.md ([59f92a5](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/59f92a52336f411b60aec0009c0049683e32287c))
+
 ## [4.13.4](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.13.3...v4.13.4) (2025-01-23)
 
 
