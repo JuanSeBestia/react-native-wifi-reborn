@@ -290,7 +290,7 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
 
     /**
      * Use this to suggest a list of Wi-Fi networks on Android.
-     * The promise will resolve with the message 'connected' when the suggestions are added successfully.
+     * The promise will resolve immediately when the suggestions are processed successfully.
      * This method only works for Android and requires a minimum SDK version of 29.
      *
      * @param networkConfigs list of network configurations containing SSID, password, WPA3 flag, and app interaction flag
@@ -301,57 +301,53 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         if (!assertLocationPermissionGranted(promise)) {
             return;
         }
-
         List<WifiNetworkSuggestion> suggestionsList = new ArrayList<>();
-
         for (int i = 0; i < networkConfigs.size(); i++) {
             ReadableMap config = networkConfigs.getMap(i);
             if (config == null) {
                 continue;
             }
-
             String ssid = config.getString("ssid");
             String password = config.hasKey("password") ? config.getString("password") : "";
             boolean isWpa3 = config.hasKey("isWpa3") && config.getBoolean("isWpa3");
             boolean isAppInteractionRequired = config.hasKey("isAppInteractionRequired") && config.getBoolean("isAppInteractionRequired");
-
             WifiNetworkSuggestion.Builder builder = new WifiNetworkSuggestion.Builder()
                     .setSsid(ssid);
-
             if (isAppInteractionRequired) {
                 builder.setIsAppInteractionRequired(true); // Conditional (Needs location permission)
             }
-
             if (isWpa3) {
                 builder.setWpa3Passphrase(password);
             } else if (!password.isEmpty()) {
                 builder.setWpa2Passphrase(password);
             }
-
             suggestionsList.add(builder.build());
         }
-
         final WifiManager wifiManager = (WifiManager) getReactApplicationContext().getSystemService(Context.WIFI_SERVICE);
         final int status = wifiManager.addNetworkSuggestions(suggestionsList);
 
-        if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
-            promise.reject(ConnectErrorCodes.unableToConnect.toString(), "Failed to add network suggestions.");
-            return;
+        // Handle different status codes appropriately
+        switch (status) {
+            case WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS:
+                promise.resolve("suggestions_added");
+                break;
+            case WifiManager.STATUS_NETWORK_SUGGESTIONS_ERROR_ADD_DUPLICATE:
+                // Treat duplicates as success since suggestions are already present
+                promise.resolve("suggestions_already_added");
+                break;
+            case WifiManager.STATUS_NETWORK_SUGGESTIONS_ERROR_ADD_EXCEEDS_MAX_PER_APP:
+                promise.reject(ConnectErrorCodes.unableToConnect.toString(), "Maximum number of network suggestions exceeded for this app.");
+                break;
+            case WifiManager.STATUS_NETWORK_SUGGESTIONS_ERROR_INTERNAL:
+                promise.reject(ConnectErrorCodes.unableToConnect.toString(), "Internal error occurred while adding network suggestions.");
+                break;
+            case WifiManager.STATUS_NETWORK_SUGGESTIONS_ERROR_APP_DISALLOWED:
+                promise.reject(ConnectErrorCodes.unableToConnect.toString(), "App is not allowed to add network suggestions.");
+                break;
+            default:
+                promise.reject(ConnectErrorCodes.unableToConnect.toString(), "Failed to add network suggestions. Status: " + status);
+                break;
         }
-
-        // Optional (Wait for post connection broadcast to one of your suggestions)
-        final IntentFilter intentFilter = new IntentFilter(WifiManager.ACTION_WIFI_NETWORK_SUGGESTION_POST_CONNECTION);
-        final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (!WifiManager.ACTION_WIFI_NETWORK_SUGGESTION_POST_CONNECTION.equals(intent.getAction())) {
-                    promise.reject("failed to connect");
-                    return;
-                }
-                promise.resolve("connected");
-            }
-        };
-        getReactApplicationContext().registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private boolean getConnectionStatus() {
