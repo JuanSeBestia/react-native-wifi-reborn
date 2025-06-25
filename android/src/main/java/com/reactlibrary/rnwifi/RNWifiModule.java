@@ -366,7 +366,8 @@ public class RNWifiModule extends ReactContextBaseJavaModule {
         if (isAndroidTenOrLater() && joinedNetwork != null) {
             NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(joinedNetwork);
             boolean hasWifiTransport = capabilities != null && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
-            boolean isNetworkAvailable = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED) &&
+            boolean isNetworkAvailable = capabilities != null &&
+                    capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED) &&
                     capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED);
 
             return hasWifiTransport && isNetworkAvailable;
