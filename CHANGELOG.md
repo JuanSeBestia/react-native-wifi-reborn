@@ -1,3 +1,10 @@
+## [4.13.6](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.13.5...v4.13.6) (2025-06-25)
+
+
+### Bug Fixes
+
+* suggestWifiNetwork (android) resolves immediately with status message instead of waiting for a broadcast that might never happen ([#442](https://github.com/JuanSeBestia/react-native-wifi-reborn/issues/442)) ([7437d9a](https://github.com/JuanSeBestia/react-native-wifi-reborn/commit/7437d9ab5cd8ed2965b6fe3553c08ff6552d075b))
+
 ## [4.13.5](https://github.com/JuanSeBestia/react-native-wifi-reborn/compare/v4.13.4...v4.13.5) (2025-04-02)
 
 
