@@ -35,7 +35,7 @@
   "author": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/JuanSeBestia/react-native-wifi-reborn"
+    "url": "git+https://github.com/JuanSeBestia/react-native-wifi-reborn.git"
   },
   "peerDependencies": {
     "react-native": ">=0.13"
