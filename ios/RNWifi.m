@@ -262,8 +262,9 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
                 [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if (error != nil) {
+                            NSString *elapsed = [lifecycle elapsedDescription];
                             [lifecycle finish];
-                            reject([self parseError:error], [error localizedDescription], error);
+                            reject([self parseError:error], [NSString stringWithFormat:@"%@ (elapsed: %@)", [error localizedDescription], elapsed], error);
                         } else {
                             // It's not guaranteed that the connection is established before completionHandler is called, so
                             // we check the connected WiFi network repeatedly until it's the one we requested.
