@@ -11,6 +11,65 @@
 @property (nonatomic,strong) CLLocationManager *locationManager;
 @property (nonatomic) BOOL solved;
 @end
+
+@interface WifiConnectionLifecycle : NSObject
+@property (nonatomic) NSTimeInterval applyStartTime;
+@property (nonatomic) NSTimeInterval applyEndTime;
+@property (nonatomic) BOOL didResignActive;
+@property (nonatomic) BOOL finished;
+@property (nonatomic, strong) id resignObserver;
+@property (nonatomic, strong) id activeObserver;
+- (NSString *)elapsedDescription;
+- (void)finish;
+@end
+
+@implementation WifiConnectionLifecycle
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        __weak typeof(self) weakSelf = self;
+        self.resignObserver = [notificationCenter addObserverForName:UIApplicationWillResignActiveNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+            WifiConnectionLifecycle *lifecycle = weakSelf;
+            if (!lifecycle || lifecycle.finished) {
+                return;
+            }
+            if (lifecycle.applyStartTime == 0) {
+                lifecycle.didResignActive = YES;
+            } else if (lifecycle.applyEndTime == 0) {
+                lifecycle.applyEndTime = [NSProcessInfo processInfo].systemUptime;
+            }
+        }];
+        self.activeObserver = [notificationCenter addObserverForName:UIApplicationDidBecomeActiveNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notification) {
+            WifiConnectionLifecycle *lifecycle = weakSelf;
+            if (!lifecycle || lifecycle.finished) {
+                return;
+            }
+            if (lifecycle.didResignActive && lifecycle.applyStartTime == 0) {
+                lifecycle.applyStartTime = [NSProcessInfo processInfo].systemUptime;
+            }
+        }];
+    }
+    return self;
+}
+
+- (NSString *)elapsedDescription {
+    if (self.applyStartTime > 0 && self.applyEndTime > 0) {
+        return [NSString stringWithFormat:@"%.2fs", self.applyEndTime - self.applyStartTime];
+    }
+    return @"unavailable";
+}
+
+- (void)finish {
+    self.finished = YES;
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter removeObserver:self.resignObserver];
+    [notificationCenter removeObserver:self.activeObserver];
+    self.resignObserver = nil;
+    self.activeObserver = nil;
+}
+@end
+
 @implementation WifiManager
 
 - (instancetype)init {
@@ -74,13 +133,22 @@ RCT_EXPORT_METHOD(connectToSSIDPrefix:(NSString*)ssid
          NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSIDPrefix:ssid];
          configuration.joinOnce = false;
 
-         [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
-             if (error != nil) {
-                 reject([self parseError:error], @"Error while configuring WiFi", error);
-             } else {
-                 resolve(nil);
-             }
-         }];
+         dispatch_async(dispatch_get_main_queue(), ^{
+             WifiConnectionLifecycle *lifecycle = [[WifiConnectionLifecycle alloc] init];
+
+             [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     if (error != nil) {
+                         NSString *elapsed = [lifecycle elapsedDescription];
+                         [lifecycle finish];
+                         reject([self parseError:error], [NSString stringWithFormat:@"Error while configuring WiFi (elapsed: %@)", elapsed], error);
+                     } else {
+                         [lifecycle finish];
+                         resolve(nil);
+                     }
+                 });
+             }];
+         });
 
      } else {
          reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<13.0", nil);
@@ -107,20 +175,34 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDPrefixOnce:(NSString*)ssidPrefix
         NEHotspotConfiguration* configuration = [[NEHotspotConfiguration alloc] initWithSSIDPrefix:ssidPrefix passphrase:passphrase isWEP:isWEP];
         configuration.joinOnce = joinOnce;
 
-        [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
-            if (error != nil) {
-                reject([self parseError:error], @"Error while configuring WiFi", error);
-            } else {
-                // Verify SSID connection
-                [self getWifiSSID:^(NSString* result) {
-                    if ([result hasPrefix:ssidPrefix]){
-                        resolve(nil);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            WifiConnectionLifecycle *lifecycle = [[WifiConnectionLifecycle alloc] init];
+
+            [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error != nil) {
+                        NSString *elapsed = [lifecycle elapsedDescription];
+                        [lifecycle finish];
+                        reject([self parseError:error], [NSString stringWithFormat:@"Error while configuring WiFi (elapsed: %@)", elapsed], error);
                     } else {
-                        reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to Wi-Fi with prefix ", ssidPrefix], nil);
+                        dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+                            [self getWifiSSID:^(NSString* result) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    if ([result hasPrefix:ssidPrefix]) {
+                                        [lifecycle finish];
+                                        resolve(nil);
+                                    } else {
+                                        NSString *elapsed = [lifecycle elapsedDescription];
+                                        [lifecycle finish];
+                                        reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@ (elapsed: %@)", @"Unable to connect to Wi-Fi with prefix ", ssidPrefix, elapsed], nil);
+                                    }
+                                });
+                            }];
+                        });
                     }
-                }];
-            }
-        }];
+                });
+            }];
+        });
 
     } else {
         reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<13.0", nil);
@@ -169,56 +251,76 @@ RCT_EXPORT_METHOD(connectToProtectedSSIDOnce:(NSString*)ssid
             }
             configuration.joinOnce = joinOnce;
 
-            [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
-                if (error != nil) {
-                    reject([self parseError:error], [error localizedDescription], error);
-                } else {
-                    // It's not guaranteed that the connection is established before completionHandler is called, so
-                    // we check the connected WiFi network repeatedly until it's the one we requested.
-                    // The original code here checked immediately, but sometimes this completionHandler is called before
-                    // the connection is successful.
-                    __block int tries = 0;
-                    __block int maxTries = 20;
-                    __block BOOL hasCompleted = NO; // Add a flag to track completion status, fixes #429
-                    double intervalSeconds = 0.5;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // Times the connection process for failed connections by tracking when the app re-enters
+                // focus after the join network pop up to the "unable to join" alert
+                // Requires the user to stay in the app during the connection attempt
+                // < 4.5 seconds likely indicates an out of range or non-existent ssid
+                // > 4.5 seconds likely indicates a network that is in range but failed to join
+                WifiConnectionLifecycle *lifecycle = [[WifiConnectionLifecycle alloc] init];
 
-                    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-                    dispatch_source_t dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-                    dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
-                    uint64_t intervalTime = (int64_t)(intervalSeconds * NSEC_PER_SEC);
-                    dispatch_source_set_timer(dispatchSource, startTime, intervalTime, 0);
-                    dispatch_source_set_event_handler(dispatchSource, ^{
-                        // Check if we've already completed
-                        if (hasCompleted) {
-                            dispatch_source_cancel(dispatchSource);
-                            return;
+                [[NEHotspotConfigurationManager sharedManager] applyConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (error != nil) {
+                            NSString *elapsed = [lifecycle elapsedDescription];
+                            [lifecycle finish];
+                            reject([self parseError:error], [NSString stringWithFormat:@"%@ (elapsed: %@)", [error localizedDescription], elapsed], error);
+                        } else {
+                            // It's not guaranteed that the connection is established before completionHandler is called, so
+                            // we check the connected WiFi network repeatedly until it's the one we requested.
+                            // The original code here checked immediately, but sometimes this completionHandler is called before
+                            // the connection is successful.
+                            NSTimeInterval intervalSeconds = 0.5;
+                            NSTimeInterval timeout = 10.0;
+                            NSInteger maxTries = (NSInteger)(timeout / intervalSeconds);
+                            __block NSInteger tries = 0;
+                            __block BOOL isPolling = NO;
+
+                            dispatch_queue_t queue = dispatch_get_main_queue();
+                            dispatch_source_t dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+                            dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
+                            uint64_t intervalTime = (int64_t)(intervalSeconds * NSEC_PER_SEC);
+                            dispatch_source_set_timer(dispatchSource, startTime, intervalTime, 0);
+                            dispatch_source_set_event_handler(dispatchSource, ^{
+                                if (lifecycle.finished) {
+                                    dispatch_source_cancel(dispatchSource);
+                                    return;
+                                }
+                                if (isPolling) {
+                                    return;
+                                }
+                                isPolling = YES;
+                                dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+                                    [self getWifiSSID:^(NSString* newSSID) {
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            isPolling = NO;
+                                            if (lifecycle.finished) {
+                                                return;
+                                            }
+                                            BOOL success = [ssid isEqualToString:newSSID];
+                                            tries++;
+
+                                            if (success) {
+                                                dispatch_source_cancel(dispatchSource);
+                                                [lifecycle finish];
+                                                resolve(nil);
+                                            } else if (tries > maxTries) {
+                                                dispatch_source_cancel(dispatchSource);
+                                                NSString *elapsed = [lifecycle elapsedDescription];
+                                                [lifecycle finish];
+                                                reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@ (elapsed: %@)", @"Unable to connect to ", ssid, elapsed], nil);
+                                            }
+                                        });
+                                    });
+                                });
+                            });
+
+                            // Start the timer
+                            dispatch_resume(dispatchSource);
                         }
-                        [self getWifiSSID:^(NSString* newSSID) {
-                            // Return early if we've already completed
-                            if (hasCompleted) {
-                                return;
-                            }
-                            bool success = [ssid isEqualToString:newSSID];
-                            tries++;
-
-                            if (success) {
-                                hasCompleted = YES;
-                                dispatch_suspend(dispatchSource);
-                                resolve(nil);
-                            } else if (tries > maxTries) {
-                                hasCompleted = YES;
-                                dispatch_suspend(dispatchSource);
-                                reject([ConnectError code:UnableToConnect], [NSString stringWithFormat:@"%@/%@", @"Unable to connect to ", ssid], nil);
-                            } else {
-                                // We aren't connected yet, keep trying
-                            }
-                        }];
                     });
-
-                    // Start the timer
-                    dispatch_resume(dispatchSource);
-                }
-            }];
+                }];
+            });
 
         } else {
             reject([ConnectError code:UnavailableForOSVersion], @"Not supported in iOS<11.0", nil);
